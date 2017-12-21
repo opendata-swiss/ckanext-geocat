@@ -1,0 +1,50 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+
+  <csw:Record xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:geonet="http://www.fao.org/geonetwork" xmlns:ows="http://www.opengis.net/ows" xmlns:dct="http://purl.org/dc/terms/">
+
+    <dc:identifier>393940cd-6a67-4190-8b91-378669cdea1d</dc:identifier>
+
+    <dc:date>2017-12-11T11:14:22</dc:date>
+
+    <dc:title>Energy cities</dc:title>
+
+    <dc:type>dataset</dc:type>
+
+    <dc:subject>opendata.swiss</dc:subject>
+
+    <dc:subject>utilitiesCommunication</dc:subject>
+
+    <dc:subject>utilitiesCommunication_Energy</dc:subject>
+
+    <dc:format>INTERLIS</dc:format>
+
+    <dct:abstract>The Energy City label is used for certifying municipalities that develop and implement a sustainable energy policy. Municipalities that have been awarded this label promote renewable energy and ecological mobility, and focus on the efficient use of resources. In order to qualify for the label, a municipality must have realised or adopted at least 50 percent of its scope for action in the area of energy policy. Here the calculation is based on the Energy Cities catalogue. The European Energy Award®GOLD is the highest level of certification. This label is awarded to municipalities that have implemented at least 75 percent of the measures listed in the catalogue at the time of certification. Municipalities that qualify for this award demonstrate the highest level of commitment towards a sustainable energy future. The label is based on an assessment of municipal energy policy in the areas of development and spatial planning, municipal buildings and installations, supply and disposal, mobility, internal organisation, communication and cooperation.</dct:abstract>
+
+    <dc:description>The Energy City label is used for certifying municipalities that develop and implement a sustainable energy policy. Municipalities that have been awarded this label promote renewable energy and ecological mobility, and focus on the efficient use of resources. In order to qualify for the label, a municipality must have realised or adopted at least 50 percent of its scope for action in the area of energy policy. Here the calculation is based on the Energy Cities catalogue. The European Energy Award®GOLD is the highest level of certification. This label is awarded to municipalities that have implemented at least 75 percent of the measures listed in the catalogue at the time of certification. Municipalities that qualify for this award demonstrate the highest level of commitment towards a sustainable energy future. The label is based on an assessment of municipal energy policy in the areas of development and spatial planning, municipal buildings and installations, supply and disposal, mobility, internal organisation, communication and cooperation.</dc:description>
+
+    <dc:language>ger</dc:language>
+
+    <dc:format>INTERLIS</dc:format>
+
+    <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.6:4326">
+
+      <ows:LowerCorner>10.493459 45.819747</ows:LowerCorner>
+
+      <ows:UpperCorner>5.956623 47.810467</ows:UpperCorner>
+
+    </ows:BoundingBox>
+
+    <dc:URI protocol="WWW:LINK-1.0-http--link" description="Swiss Federal Office of Energy SFOE - Detail description" />
+
+    <dc:URI protocol="WWW:DOWNLOAD-1.0-http--download" description="Swiss Federal Office of Energy SFOE - Order data" />
+
+    <dc:URI protocol="CHTOPO:specialised-geoportal" description="Thematic geoportal - map.geo.admin.ch" />
+
+    <dc:URI protocol="OGC:WMS-http-get-map" name="ch.bfe.energiestaedte" description="Web Map Services WMS" />
+
+  </csw:Record>
+
+</csw:GetRecordByIdResponse>
