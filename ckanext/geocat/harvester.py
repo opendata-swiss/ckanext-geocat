@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import traceback
+import uuid
 
 from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject
@@ -214,8 +215,7 @@ class GeocatHarvester(HarvesterBase):
                 )
                 pkg_dict['name'] = existing['name']
                 pkg_dict['id'] = existing['id']
-                updated_pkg = get_action('package_update')(
-                    package_context, pkg_dict)
+                updated_pkg = get_action('package_update')(package_context pkg_dic)citly provide a package ID
                 harvest_object.current = True
                 harvest_object.package_id = updated_pkg['id']
                 harvest_object.save()
@@ -223,18 +223,21 @@ class GeocatHarvester(HarvesterBase):
             except NotFound:
                 log.debug("No package found, create a new one!")
 
-                model.Session.execute(
-                    'SET CONSTRAINTS harvest_object_package_id_fkey DEFERRED'
-                )
-                model.Session.flush()
+                # We need to explicitly provide a package ID
+                pkg_dict['id'] = unicode(uuid.uuid4())
 
-                created_pkg = get_action('package_create')(
-                    package_context, pkg_dict)
-
+                # save the reference on the harvest object
+                harvest_object.package_id = pkg_dict['id']
                 harvest_object.current = True
-                harvest_object.package_id = created_pkg['id']
                 harvest_object.add()
 
+                # Defer constraints and flush so the dataset can be indexed with
+                # the harvest object id (on the after_show hook from the harvester
+                # plugin)
+                model.Session.execute('SET CONSTRAINTS harvest_object_package_id_fkey DEFERRED')
+                model.Session.flush()
+
+                created_pkg = get_action('package_create')(package_context, pkg_dict)
                 log.debug("Created PKG: %s" % created_pkg)
 
             Session.commit()
