@@ -58,14 +58,14 @@ class GeocatHarvester(HarvesterBase):
 
         log.debug('Using config: %r' % self.config)
 
-    def _find_existing_package(self, package_dict):
+    def _find_existing_package_by_identifier(self, identifier):
         package_show_context = {'model': model, 'session': Session,
                                 'ignore_auth': True}
 
         user = tk.get_action('get_site_user')({'ignore_auth': True}, {})
         package_show_context.update({'user': user['name']})
 
-        param = 'identifier:%s' % package_dict['identifier']
+        param = 'identifier:%s' % identifier
         result = tk.get_action('package_search')(package_show_context,
                                                  {'fq': param})
         try:
@@ -196,7 +196,7 @@ class GeocatHarvester(HarvesterBase):
         if import_action and import_action == 'delete':
             log.debug('import action: %s' % import_action)
             harvest_object.current = False
-            return self._delete_dataset({'id': harvest_object.guid})
+            return self._delete_dataset(harvest_object.guid)
 
         try:
             if 'organization' not in self.config:
@@ -240,8 +240,7 @@ class GeocatHarvester(HarvesterBase):
                         linked_uuid,
                         self.config['organization']
                     )
-                    check_dict = {'identifier': identifier}
-                    self._find_existing_package(check_dict)
+                    self._find_existing_package_by_identifier(identifier)
                     existing_see_alsos.append({'dataset_identifier': identifier})  # noqa
                 except NotFound:
                     continue
@@ -275,7 +274,7 @@ class GeocatHarvester(HarvesterBase):
 
                 package_context['schema'] = schema
 
-                existing = self._find_existing_package(pkg_dict)
+                existing = self._find_existing_package_by_identifier(pkg_dict['identifier'])
                 log.debug(
                     "Existing package found, updating %s..." % existing['id']
                 )
@@ -340,11 +339,11 @@ class GeocatHarvester(HarvesterBase):
         }
         return context
 
-    def _get_existing_package_names(self, harvest_job):
+    def _get_existing_package_identifiers(self, harvest_job):
         context = self._create_new_context()
         n = 500
         page = 1
-        existing_package_names = []
+        existing_package_identifiers = []
         while True:
             search_params = {
                 'fq': 'harvest_source_id:"{0}"'.format(harvest_job.source_id),
@@ -356,8 +355,8 @@ class GeocatHarvester(HarvesterBase):
                     context, search_params
                 )
                 if len(existing_packages['results']):
-                    existing_package_names.extend(
-                        [pkg['name'] for pkg in existing_packages['results']]
+                    existing_package_identifiers.extend(
+                        [pkg['identifier'] for pkg in existing_packages['results']]
                     )
                     page = page + 1
                 else:
@@ -367,44 +366,28 @@ class GeocatHarvester(HarvesterBase):
                     log.debug('Could not find pkges for source %s'
                               % harvest_job.source_id)
         log.info('Found %d packages for source %s' %
-                 (len(existing_package_names), harvest_job.source_id))
-        return existing_package_names
-
-    def _get_package_names_from_identifiers(self, package_identifiers):
-        package_names = []
-        for identifier in package_identifiers:
-            pkg = {'identifier': identifier}
-            try:
-                existing_package = self._find_existing_package(pkg)
-                package_names.append(existing_package['name'])
-            except NotFound:
-                continue
-
-        return package_names
+                 (len(existing_package_identifiers), harvest_job.source_id))
+        return existing_package_identifiers
 
     def _check_for_deleted_datasets(self, harvest_job,
                                     gathered_dataset_identifiers):
-        existing_package_names = self._get_existing_package_names(
+        existing_package_identifiers = self._get_existing_package_identifiers(
             harvest_job
         )
-        gathered_existing_package_names = self._get_package_names_from_identifiers(  # noqa
-            gathered_dataset_identifiers
-        )
-        delete_names = list(set(existing_package_names) -
-                            set(gathered_existing_package_names))
-        # gather delete harvest ids
-        delete_ids = []
+        delete_guids = list(set(existing_package_identifiers) -
+                            set(gathered_dataset_identifiers))
 
-        for package_name in delete_names:
+        delete_ids = []
+        for package_guid in delete_guids:
             log.debug(
                 'Dataset `%s` has been deleted at the source' %
-                package_name)
+                package_guid)
 
             if self.config['delete_missing_datasets']:
-                log.info('Add `%s` for deletion', package_name)
+                log.info('Add `%s` for deletion', package_guid)
 
                 obj = HarvestObject(
-                    guid=package_name,
+                    guid=package_guid,
                     job=harvest_job,
                     extras=[HarvestObjectExtra(key='import_action',
                                                value='delete')]
@@ -415,12 +398,13 @@ class GeocatHarvester(HarvesterBase):
                 delete_ids.append(obj.id)
         return delete_ids
 
-    def _delete_dataset(self, package_dict):
-        log.debug('deleting dataset %s' % package_dict['id'])
+    def _delete_dataset(self, identifier):
+        log.debug('deleting dataset %s' % identifier)
+        id = self._find_existing_package_by_identifier(identifier)
         context = self._create_new_context()
         get_action('dataset_purge')(
             context.copy(),
-            package_dict
+            {'id': id}
         )
         return True
 
