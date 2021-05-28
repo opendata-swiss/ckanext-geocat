@@ -34,7 +34,13 @@ class GeocatHarvester(HarvesterBase):
             'name': 'geocat_harvester',
             'title': 'Geocat harvester',
             'description': (
-                'Harvests metadata from geocat (CSW)'
+                'Harvests metadata from geocat (CSW): you can provide '
+                'the following configuration as json:'
+                'delete-missing-datasets (True/False, default is False), '
+                'geocat_perma_link_url '
+                '(Derive this link from the harvest source url, '
+                'default is '
+                'https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/)'  # noqa
             ),
             'form_config_interface': 'Text'
         }
