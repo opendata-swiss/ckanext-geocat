@@ -2,7 +2,6 @@
 
 import traceback
 
-from urlparse import urljoin
 from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
@@ -66,11 +65,8 @@ class GeocatHarvester(HarvesterBase):
         if 'delete_missing_datasets' not in self.config:
             self.config['delete_missing_datasets'] = False
 
-        # get config for geocat permalink
-        self.config['permalink_url'] = tk.config.get('ckanext.geocat.permalink_url', None) # noqa
-        self.config['permalink_bookmark'] = tk.config.get('ckanext.geocat.permalink_bookmark', None) # noqa
-        self.config['permalink_title'] = tk.config.get('ckanext.geocat.permalink_title', 'geocat.ch Permalink') # noqa
-        self.config['permalink_valid'] = self.config['permalink_url'] and self.config['permalink_bookmark'] # noqa
+        self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
+        self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
         log.debug('Using config: %r' % self.config)
 
@@ -453,22 +449,8 @@ class GeocatHarvester(HarvesterBase):
         return None
 
     def _get_geocat_permalink_relation(self, geocat_pkg_id):
-        """gets backlink for geocat from configuration:
-        the backlink consists of three parts:
-        - a base url
-        - a bookmark
-        - the package id as it comes from geocat
-        """
-        if not self.config['permalink_valid']:
-            return None
-
-        permalink_bookmark_for_pkg = \
-            self.config['permalink_bookmark'] + geocat_pkg_id
-        permalink_url_for_pkg = urljoin(
-            self.config['permalink_url'],
-            permalink_bookmark_for_pkg)
-        return {'url': permalink_url_for_pkg,
-                'label': self.config['permalink_title']}
+        return {'url': self.config['geocat_perma_link_url'] + geocat_pkg_id,
+                'label': self.config['geocat_perma_link_label']}
 
 
 class GeocatConfigError(Exception):
