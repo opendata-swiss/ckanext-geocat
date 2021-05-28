@@ -94,8 +94,16 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
-        gathered_ogdch_identifiers = ['@'.join([identifier, self.config['organization']])  # noqa
-                                      for identifier in gathered_geocat_identifiers ]  # noqa
+        gathered_ogdch_identifiers = \
+            [utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
+                                                  organization_slug=self.config['organization'])  # noqa
+             for geocat_identifier in gathered_geocat_identifiers]
+
+        packages_to_delete = utils.get_packages_to_delete(
+            organization_name=self.config['organization'],
+            harvest_source_id=harvest_job.source_id,
+            gathered_ogdch_identifiers=gathered_ogdch_identifiers,
+        )
 
         for geocat_id in gathered_geocat_identifiers:
             harvest_obj = HarvestObject(guid=geocat_id, job=harvest_job)
@@ -105,11 +113,12 @@ class GeocatHarvester(HarvesterBase):
         log.debug('IDs: %r' % harvest_obj_ids)
 
         if self.config['delete_missing_datasets']:
-            delete_ids = self._check_for_deleted_datasets(
-                harvest_job, gathered_ogdch_identifiers
-            )
-            log.debug('delete_ids: %r' % delete_ids)
-            harvest_obj_ids.extend(delete_ids)
+            for package_info in packages_to_delete:
+                obj = HarvestObject(guid=package_info.name, job=harvest_job,
+                                    extras=[HarvestObjectExtra(key='import_action',  # noqa
+                                                               value='delete')])  # noqa
+                obj.save()
+                harvest_obj_ids.append(obj.id)
 
         return harvest_obj_ids
 
@@ -318,80 +327,6 @@ class GeocatHarvester(HarvesterBase):
             'user': site_user['name'],
         }
         return context
-
-    def _get_existing_package_names(self, harvest_job):
-        context = self._create_new_context()
-        n = 500
-        page = 1
-        existing_package_names = []
-        while True:
-            search_params = {
-                'fq': 'harvest_source_id:"{0}"'.format(harvest_job.source_id),
-                'rows': n,
-                'start': n * (page - 1),
-            }
-            try:
-                existing_packages = get_action('package_search')(
-                    context, search_params
-                )
-                if len(existing_packages['results']):
-                    existing_package_names.extend(
-                        [pkg['name'] for pkg in existing_packages['results']]
-                    )
-                    page = page + 1
-                else:
-                    break
-            except NotFound:
-                if page == 1:
-                    log.debug('Could not find pkges for source %s'
-                              % harvest_job.source_id)
-        log.info('Found %d packages for source %s' %
-                 (len(existing_package_names), harvest_job.source_id))
-        return existing_package_names
-
-    def _get_package_names_from_identifiers(self, package_identifiers):
-        package_names = []
-        for identifier in package_identifiers:
-            try:
-                existing_package = utils.find_existing_package(identifier)
-                package_names.append(existing_package['name'])
-            except NotFound:
-                continue
-
-        return package_names
-
-    def _check_for_deleted_datasets(self, harvest_job,
-                                    gathered_dataset_identifiers):
-        existing_package_names = self._get_existing_package_names(
-            harvest_job
-        )
-        gathered_existing_package_names = self._get_package_names_from_identifiers(  # noqa
-            gathered_dataset_identifiers
-        )
-        delete_names = list(set(existing_package_names) -
-                            set(gathered_existing_package_names))
-        # gather delete harvest ids
-        delete_ids = []
-
-        for package_name in delete_names:
-            log.debug(
-                'Dataset `%s` has been deleted at the source' %
-                package_name)
-
-            if self.config['delete_missing_datasets']:
-                log.info('Add `%s` for deletion', package_name)
-
-                obj = HarvestObject(
-                    guid=package_name,
-                    job=harvest_job,
-                    extras=[HarvestObjectExtra(key='import_action',
-                                               value='delete')]
-                )
-                obj.save()
-                log.debug('adding ' + obj.guid + ' to the queue')
-
-                delete_ids.append(obj.id)
-        return delete_ids
 
     def _delete_dataset(self, package_dict):
         log.debug('deleting dataset %s' % package_dict['id'])
