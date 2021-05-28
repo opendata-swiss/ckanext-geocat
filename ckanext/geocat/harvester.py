@@ -20,6 +20,10 @@ import uuid
 import logging
 log = logging.getLogger(__name__)
 
+DEFAULT_PERMA_LINK_URL = 'https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/'  # noqa
+DEFAULT_PERMA_LINK_LABEL = 'geocat.ch Permalink'
+DEFAULT_GEOCAT_PROD_ENV = 'https://www.geocat.ch/geonetwork/srv'
+
 
 class GeocatHarvester(HarvesterBase):
     '''
@@ -37,6 +41,18 @@ class GeocatHarvester(HarvesterBase):
             ),
             'form_config_interface': 'Text'
         }
+
+    def validate_config(self, config):
+        if not config:
+            return config
+        try:
+            config_obj = json.loads(config)
+            if 'delete_missing_datasets' in config_obj:
+                if not isinstance(config_obj['delete_missing_datasets'], bool):
+                    raise ValueError('delete_missing_dataset must be boolean')
+        except Exception as e:
+            raise e
+        return config
 
     def _set_config(self, config_str):
         if config_str:
