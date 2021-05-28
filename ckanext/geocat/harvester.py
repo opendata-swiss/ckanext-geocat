@@ -58,7 +58,7 @@ class GeocatHarvester(HarvesterBase):
             raise e
         return config
 
-    def _set_config(self, config_str):
+    def _set_config(self, config_str, harvest_source_id):
         if config_str:
             self.config = json.loads(config_str)
         else:
@@ -70,30 +70,14 @@ class GeocatHarvester(HarvesterBase):
         self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
+        organization_slug = utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
+        self.config['organization'] = organization_slug
+
         log.debug('Using config: %r' % self.config)
 
     def gather_stage(self, harvest_job):
         log.debug('In GeocatHarvester gather_stage')
-
-        try:
-            self._set_config(harvest_job.source.config)
-
-            if 'organization' not in self.config:
-                context = {
-                    'model': model,
-                    'session': Session,
-                    'ignore_auth': True
-                }
-                source_dataset = get_action('package_show')(
-                    context, {'id': harvest_job.source_id})
-                self.config['organization'] = source_dataset.get(
-                    'organization').get('name')
-        except GeocatConfigError as e:
-            self._save_gather_error(
-                'Config value missing: %s' % str(e),
-                harvest_job
-            )
-            return []
+        self._set_config(harvest_job.source.config, harvest_job.source.id)
 
         csw_url = None
         harvest_obj_ids = []
@@ -140,7 +124,7 @@ class GeocatHarvester(HarvesterBase):
 
     def fetch_stage(self, harvest_object):
         log.debug('In GeocatHarvester fetch_stage')
-        self._set_config(harvest_object.job.source.config)
+        self._set_config(harvest_object.job.source.config, harvest_object.harvest_source_id)  # noqa
 
         if not harvest_object:
             log.error('No harvest object received')
@@ -180,7 +164,7 @@ class GeocatHarvester(HarvesterBase):
 
     def import_stage(self, harvest_object):  # noqa
         log.debug('In GeocatHarvester import_stage')
-        self._set_config(harvest_object.job.source.config)
+        self._set_config(harvest_object.job.source.config, harvest_object.harvest_source_id)  # noqa
 
         if not harvest_object:
             log.error('No harvest object received')
