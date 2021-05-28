@@ -38,18 +38,18 @@ class GeocatCommand(ckan.lib.cli.CkanCommand):
             self.helpCmd()
 
     def helpCmd(self):
-        print self.__doc__
+        print(self.__doc__)
 
     def cqlCmd(self, query=None, csw_url=None):
         if (query is None):
-            print "Argument 'query' must be set"
+            print("Argument 'query' must be set")
             self.helpCmd()
             sys.exit(1)
         if csw_url is None:
             csw_url = self.DEFAULT_CSW_SERVER
         csw = md.CswHelper(url=csw_url.rstrip('/'))
         for xml, value in csw.get_by_search(cql=query):
-            print xml
+            print(xml)
 
     def listCmd(self, cql=None, csw_url=None):
         if cql is None:
@@ -59,43 +59,40 @@ class GeocatCommand(ckan.lib.cli.CkanCommand):
 
         csw = md.CswHelper(url=csw_url.rstrip('/'))
 
-        print "CQL query: %s" % cql
+        print("CQL query: %s" % cql)
         for record_id in csw.get_id_by_search(cql=cql):
-            print 'ID: %r' % record_id
+            print('ID: %r' % record_id)
 
     def datasetCmd(self, id=None, csw_url=None):
         if id is None:
-            print "Argument 'id' must be set"
+            print("Argument 'id' must be set")
             self.helpCmd()
             sys.exit(1)
         if csw_url is None:
             csw_url = self.DEFAULT_CSW_SERVER
 
         csw = md.CswHelper(url=csw_url.rstrip('/'))
-        print "ID: %s" % id
-        print ""
+        print("ID: %s\n" % id)
 
         xml = csw.get_by_id(id)
-        print "XML: %s" % xml
+        print("XML: %s" % xml)
         xml_elem = loader.from_string(xml)
         dataset_metadata = md.GeocatDcatDatasetMetadata()
         dist_metadata = md.GeocatDcatDistributionMetadata()
 
-        print ""
-        print "Dataset:"
+        print("\nDataset:")
         pprint(dataset_metadata.get_metadata(xml_elem))
 
-        print ""
-        print "Distributions:"
+        print("\nDistributions:")
         pprint(dist_metadata.get_metadata(xml_elem))
 
     def searchCmd(self, query=None, csw_url=None):
         if (query is None):
-            print "Argument 'query' must be set"
+            print("Argument 'query' must be set")
             self.helpCmd()
             sys.exit(1)
         if csw_url is None:
             csw_url = self.DEFAULT_CSW_SERVER
         csw = md.CswHelper(url=csw_url.rstrip('/'))
         for xml, value in csw.get_by_search(query):
-            print xml
+            print(xml)
