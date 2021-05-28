@@ -7,6 +7,7 @@ from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 import ckanext.geocat.metadata as md
 import ckanext.geocat.utils as utils
+from ckanext.geocat import csw_processor
 import ckanext.geocat.xml_loader as loader
 from ckan.logic import get_action, NotFound
 from ckan.logic.schema import default_update_package_schema,\
@@ -79,32 +80,12 @@ class GeocatHarvester(HarvesterBase):
         log.debug('In GeocatHarvester gather_stage')
         self._set_config(harvest_job.source.config, harvest_job.source.id)
 
-        csw_url = None
+        csw_url = harvest_job.source.url
         harvest_obj_ids = []
-        gathered_dataset_identifiers = []
 
         try:
-            csw_url = harvest_job.source.url.rstrip('/')
-            csw = md.CswHelper(url=csw_url)
-
-            cql = self.config.get('cql', None)
-            if cql is None:
-                cql = "keyword = 'opendata.swiss'"
-
-            log.debug("CQL query: %s" % cql)
-            for record_id in csw.get_id_by_search(cql=cql):
-                harvest_obj = HarvestObject(
-                    guid=record_id,
-                    job=harvest_job
-                )
-                harvest_obj.save()
-                harvest_obj_ids.append(harvest_obj.id)
-                gathered_dataset_identifiers.append('%s@%s' % (
-                    record_id,
-                    self.config['organization']
-                ))
-
-            log.debug('IDs: %r' % harvest_obj_ids)
+            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=csw_url)
+            gathered_geocat_identifiers = csw_data.get_geocat_id_from_csw()
         except Exception as e:
             self._save_gather_error(
                 'Unable to get content for URL: %s: %s / %s'
@@ -113,9 +94,19 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
+        gathered_ogdch_identifiers = ['@'.join([identifier, self.config['organization']])  # noqa
+                                      for identifier in gathered_geocat_identifiers ]  # noqa
+
+        for geocat_id in gathered_geocat_identifiers:
+            harvest_obj = HarvestObject(guid=geocat_id, job=harvest_job)
+            harvest_obj.save()
+            harvest_obj_ids.append(harvest_obj.id)
+
+        log.debug('IDs: %r' % harvest_obj_ids)
+
         if self.config['delete_missing_datasets']:
             delete_ids = self._check_for_deleted_datasets(
-                harvest_job, gathered_dataset_identifiers
+                harvest_job, gathered_ogdch_identifiers
             )
             log.debug('delete_ids: %r' % delete_ids)
             harvest_obj_ids.extend(delete_ids)
