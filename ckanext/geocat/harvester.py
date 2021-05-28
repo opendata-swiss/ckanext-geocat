@@ -89,7 +89,7 @@ class GeocatHarvester(HarvesterBase):
                     context, {'id': harvest_job.source_id})
                 self.config['organization'] = source_dataset.get(
                     'organization').get('name')
-        except GeocatConfigError, e:
+        except GeocatConfigError as e:
             self._save_gather_error(
                 'Config value missing: %s' % str(e),
                 harvest_job
@@ -122,7 +122,7 @@ class GeocatHarvester(HarvesterBase):
                 ))
 
             log.debug('IDs: %r' % harvest_obj_ids)
-        except Exception, e:
+        except Exception as e:
             self._save_gather_error(
                 'Unable to get content for URL: %s: %s / %s'
                 % (csw_url, str(e), traceback.format_exc()),
@@ -160,7 +160,7 @@ class GeocatHarvester(HarvesterBase):
             harvest_object.save()
             log.debug('successfully processed ' + harvest_object.guid)
             return True
-        except Exception, e:
+        except Exception as e:
             response = '-'
             if csw and hasattr(csw.catalog, 'response'):
                 response = csw.catalog.response
@@ -325,7 +325,7 @@ class GeocatHarvester(HarvesterBase):
             Session.commit()
             return True
 
-        except Exception, e:
+        except Exception as e:
             self._save_object_error(
                 (
                     'Exception in import stage: %r / %s'
