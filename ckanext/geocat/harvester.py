@@ -6,6 +6,7 @@ from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 import ckanext.geocat.metadata as md
+import ckanext.geocat.utils as utils
 import ckanext.geocat.xml_loader as loader
 from ckan.logic import get_action, NotFound
 from ckan.logic.schema import default_update_package_schema,\
@@ -70,21 +71,6 @@ class GeocatHarvester(HarvesterBase):
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
         log.debug('Using config: %r' % self.config)
-
-    def _find_existing_package(self, package_dict):
-        package_show_context = {'model': model, 'session': Session,
-                                'ignore_auth': True}
-
-        user = tk.get_action('get_site_user')({'ignore_auth': True}, {})
-        package_show_context.update({'user': user['name']})
-
-        param = 'identifier:%s' % package_dict['identifier']
-        result = tk.get_action('package_search')(package_show_context,
-                                                 {'fq': param})
-        try:
-            return result['results'][0]
-        except (KeyError, IndexError, TypeError):
-            raise NotFound
 
     def gather_stage(self, harvest_job):
         log.debug('In GeocatHarvester gather_stage')
@@ -253,8 +239,7 @@ class GeocatHarvester(HarvesterBase):
                         linked_uuid,
                         self.config['organization']
                     )
-                    check_dict = {'identifier': identifier}
-                    self._find_existing_package(check_dict)
+                    utils.find_existing_package(identifier)
                     existing_see_alsos.append({'dataset_identifier': identifier})  # noqa
                 except NotFound:
                     continue
@@ -294,7 +279,7 @@ class GeocatHarvester(HarvesterBase):
 
                 package_context['schema'] = schema
 
-                existing = self._find_existing_package(pkg_dict)
+                existing = utils.find_existing_package(pkg_dict['identifier'])
                 log.debug(
                     "Existing package found, updating %s..." % existing['id']
                 )
@@ -392,9 +377,8 @@ class GeocatHarvester(HarvesterBase):
     def _get_package_names_from_identifiers(self, package_identifiers):
         package_names = []
         for identifier in package_identifiers:
-            pkg = {'identifier': identifier}
             try:
-                existing_package = self._find_existing_package(pkg)
+                existing_package = utils.find_existing_package(identifier)
                 package_names.append(existing_package['name'])
             except NotFound:
                 continue
