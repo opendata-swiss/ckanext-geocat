@@ -22,15 +22,13 @@ log = logging.getLogger(__name__)
 DEFAULT_PERMA_LINK_URL = 'https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/'  # noqa
 DEFAULT_PERMA_LINK_LABEL = 'geocat.ch Permalink'
 DEFAULT_GEOCAT_PROD_ENV = 'https://www.geocat.ch/geonetwork/srv'
+HARVEST_USER = 'harvest'
 
 
 class GeocatHarvester(HarvesterBase):
     '''
     The harvester for geocat
     '''
-
-    HARVEST_USER = 'harvest'
-
     def info(self):
         return {
             'name': 'geocat_harvester',
@@ -59,11 +57,8 @@ class GeocatHarvester(HarvesterBase):
         else:
             self.config = {}
 
-        if 'user' not in self.config:
-            self.config['user'] = self.HARVEST_USER
-
-        if 'delete_missing_datasets' not in self.config:
-            self.config['delete_missing_datasets'] = False
+        self.config['user'] = self.config.get('user', HARVEST_USER)
+        self.config['delete_missing_datasets'] = self.config.get('delete_missing_datasets', False)  # noqa
 
         self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
