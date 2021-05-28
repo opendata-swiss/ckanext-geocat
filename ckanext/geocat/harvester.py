@@ -6,8 +6,7 @@ from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 import ckanext.geocat.metadata as md
-import ckanext.geocat.utils as utils
-from ckanext.geocat import csw_processor
+from ckanext.geocat.utils import search_utils, csw_processor
 import ckanext.geocat.xml_loader as loader
 from ckan.logic import get_action, NotFound
 from ckan.logic.schema import default_update_package_schema,\
@@ -71,7 +70,7 @@ class GeocatHarvester(HarvesterBase):
         self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
-        organization_slug = utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
+        organization_slug = search_utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
         self.config['organization'] = organization_slug
 
         log.debug('Using config: %r' % self.config)
@@ -95,11 +94,11 @@ class GeocatHarvester(HarvesterBase):
             return []
 
         gathered_ogdch_identifiers = \
-            [utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
+            [search_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
                                                   organization_slug=self.config['organization'])  # noqa
              for geocat_identifier in gathered_geocat_identifiers]
 
-        packages_to_delete = utils.get_packages_to_delete(
+        packages_to_delete = search_utils.get_packages_to_delete(
             organization_name=self.config['organization'],
             harvest_source_id=harvest_job.source_id,
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
@@ -223,7 +222,7 @@ class GeocatHarvester(HarvesterBase):
                         linked_uuid,
                         self.config['organization']
                     )
-                    utils.find_existing_package(identifier)
+                    search_utils.find_existing_package(identifier)
                     existing_see_alsos.append({'dataset_identifier': identifier})  # noqa
                 except NotFound:
                     continue
@@ -263,7 +262,7 @@ class GeocatHarvester(HarvesterBase):
 
                 package_context['schema'] = schema
 
-                existing = utils.find_existing_package(pkg_dict['identifier'])
+                existing = search_utils.find_existing_package(pkg_dict['identifier'])  # noqa
                 log.debug(
                     "Existing package found, updating %s..." % existing['id']
                 )
