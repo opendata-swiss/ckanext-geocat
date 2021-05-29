@@ -6,7 +6,7 @@ from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 import ckanext.geocat.metadata as md
-from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils  # noqa
+from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
 import ckanext.geocat.xml_loader as loader
 from ckan.logic import get_action, NotFound
 from ckan.logic.schema import default_update_package_schema,\
@@ -104,7 +104,19 @@ class GeocatHarvester(HarvesterBase):
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
 
+        csw_map = csw_mapping.GeodataRecordMapping(
+            organization_slug=self.config['organization'],
+            geocat_perma_link=self.config['geocat_perma_link_url'],
+            geocat_perma_label=self.config['geocat_perma_link_label'],
+        )
+
         for geocat_id in gathered_geocat_identifiers:
+
+            csw_record_as_string = csw_data.get_record_by_id(geocat_id)
+            dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
+            from pprint import pprint
+            pprint(dataset_dict)
+
             harvest_obj = HarvestObject(guid=geocat_id, job=harvest_job)
             harvest_obj.save()
             harvest_obj_ids.append(harvest_obj.id)

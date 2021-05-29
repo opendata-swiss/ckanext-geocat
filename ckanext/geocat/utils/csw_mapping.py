@@ -35,7 +35,6 @@ class GeodataMapping(object):
         self.geocat_perma_link = geocat_perma_link
         self.geocat_perma_label = geocat_perma_label
         self.organization_slug = organization_slug
-        self.default_rights = default_rights
 
     def get_metadata(self, csw_record_as_string, geocat_id):
         root_node = get_elem_tree_from_string(csw_record_as_string)
@@ -44,6 +43,7 @@ class GeodataMapping(object):
             _map_dataset_identifier(
                 node=root_node,
                 organization_slug=self.organization_slug)
+        log.error(dataset_dict)
         return dataset_dict
 
 
