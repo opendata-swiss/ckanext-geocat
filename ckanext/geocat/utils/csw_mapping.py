@@ -51,6 +51,10 @@ class GeoMetadataMapping(object):
             _map_dataset_publisher(node=root_node)
         dataset_dict['contact_points'] = \
             _map_dataset_contact_points(node=root_node)
+        dataset_dict['issued'] = \
+            _map_dataset_issued(node=root_node)
+        dataset_dict['modified'] = \
+            _map_dataset_modified(node=root_node)
         return dataset_dict
 
 
@@ -107,3 +111,32 @@ def _map_dataset_contact_points(node):
         return [{'name':geocat_contact_point, 'email': geocat_contact_point}]  # noqa
     EMPTY_CONTACT_POINTS = []
     return EMPTY_CONTACT_POINTS
+
+
+def _map_dataset_issued(node):
+    GMD_ISSUED = [
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "publication"]//gco:DateTime',  # noqa
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "publication"]//gco:Date',  # noqa
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "creation"]//gco:DateTime',  # noqa
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "creation"]//gco:Date',  # noqa
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
+        ]
+    geocat_issued = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_ISSUED, get=xpath_utils.XPATH_TEXT)  # noqa
+    if geocat_issued:
+        return ogdch_map_utils.map_to_ogdch_datetime(geocat_issued)
+    ISSUED_EMPTY = ''
+    return ISSUED_EMPTY
+
+
+def _map_dataset_modified(node):
+    GMD_MODIFIED = [
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
+        '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
+    ]
+    geocat_modified = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_MODIFIED, get=xpath_utils.XPATH_TEXT)  # noqa
+    if geocat_modified:
+        return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)  # noqa
+    MODIFIED_EMPTY = ''
+    return MODIFIED_EMPTY
+
