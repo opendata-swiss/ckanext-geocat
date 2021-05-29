@@ -37,7 +37,7 @@ class GeodataMapping(object):
         self.organization_slug = organization_slug
         self.default_rights = default_rights
 
-    def get_matadat(self, csw_record_as_string, geocat_id):
+    def get_metadata(self, csw_record_as_string, geocat_id):
         root_node = get_elem_tree_from_string(csw_record_as_string)
         dataset_dict = {}
         dataset_dict['identifier'] = \
