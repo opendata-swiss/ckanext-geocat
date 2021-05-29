@@ -49,6 +49,8 @@ class GeoMetadataMapping(object):
             _map_dataset_description(node=root_node)
         dataset_dict['publishers'] = \
             _map_dataset_publisher(node=root_node)
+        dataset_dict['contact_points'] = \
+            _map_dataset_contact_points(node=root_node)
         return dataset_dict
 
 
@@ -89,3 +91,19 @@ def _map_dataset_publisher(node):
             return ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
     EMPTY_PUBLISHER = [{'label': ''}]
     return EMPTY_PUBLISHER
+
+
+def _map_dataset_contact_points(node):
+    GMD_CONTACT_POINT = [
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
+        '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
+    ]
+    geocat_contact_point = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_CONTACT_POINT, get=xpath_utils.XPATH_TEXT)  # noqa
+    if geocat_contact_point:
+        return [{'name':geocat_contact_point, 'email': geocat_contact_point}]  # noqa
+    EMPTY_CONTACT_POINTS = []
+    return EMPTY_CONTACT_POINTS
