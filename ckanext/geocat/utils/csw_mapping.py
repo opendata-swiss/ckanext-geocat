@@ -57,6 +57,8 @@ class GeoMetadataMapping(object):
             _map_dataset_modified(node=root_node)
         dataset_dict['keywords'] = \
             _map_dataset_keywords(node=root_node)
+        dataset_dict['groups'] = \
+            _map_dataset_categories(node=root_node)
         dataset_dict['coverage'] = \
             _map_dataset_coverage()
         dataset_dict['owner_org'] = self.organization_slug
@@ -157,6 +159,15 @@ def _map_dataset_keywords(node):
         return ogdch_map_utils.map_to_ogdch_keywords(geocat_keywords)
     KEYWORDS_EMPTY = []
     return KEYWORDS_EMPTY
+
+
+def _map_dataset_categories(node):
+    GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'
+    geocat_categories = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=node, path=GMD_THEME)
+    if geocat_categories:
+        return map_to_ogdch_categories(geocat_categories)
+    CATEGORIES_EMPTY = []
+    return CATEGORIES_EMPTY
 
 
 def _map_dataset_coverage():
