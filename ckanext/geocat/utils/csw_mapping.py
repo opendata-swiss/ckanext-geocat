@@ -55,6 +55,8 @@ class GeoMetadataMapping(object):
             _map_dataset_issued(node=root_node)
         dataset_dict['modified'] = \
             _map_dataset_modified(node=root_node)
+        dataset_dict['coverage'] = \
+            _map_dataset_coverage()
         return dataset_dict
 
 
@@ -139,3 +141,8 @@ def _map_dataset_modified(node):
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)  # noqa
     MODIFIED_EMPTY = ''
     return MODIFIED_EMPTY
+
+
+def _map_dataset_coverage():
+    COVERAGE_NOT_IMPLEMENTED = ''
+    return COVERAGE_NOT_IMPLEMENTED
