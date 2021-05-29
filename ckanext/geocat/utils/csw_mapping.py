@@ -61,6 +61,8 @@ class GeoMetadataMapping(object):
             _map_dataset_categories(node=root_node)
         dataset_dict['coverage'] = \
             _map_dataset_coverage()
+        dataset_dict['spatial'] = \
+            _map_dataset_spatial(node=root_node)
         dataset_dict['owner_org'] = self.organization_slug
         return dataset_dict
 
@@ -173,3 +175,12 @@ def _map_dataset_categories(node):
 def _map_dataset_coverage():
     COVERAGE_NOT_IMPLEMENTED = ''
     return COVERAGE_NOT_IMPLEMENTED
+
+
+def _map_dataset_spatial(node):
+    GMD_SPATIAL = '//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()'  # noqa
+    geocat_spatial = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_SPATIAL)  # noqa
+    if geocat_spatial:
+        self.dataset['spatial'] = geocat_spatial
+    SPACIAL_EMPTY = ''
+    return SPACIAL_EMPTY
