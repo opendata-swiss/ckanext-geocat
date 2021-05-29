@@ -29,7 +29,7 @@ gmd_namespaces = {
 }
 
 
-class GeodataMapping(object):
+class GeoMetadataMapping(object):
 
     def __init__(self, organization_slug, geocat_perma_link, geocat_perma_label, default_rights):  # noqa
         self.geocat_perma_link = geocat_perma_link

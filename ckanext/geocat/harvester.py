@@ -104,7 +104,7 @@ class GeocatHarvester(HarvesterBase):
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
 
-        csw_map = csw_mapping.GeodataRecordMapping(
+        csw_map = csw_mapping.GeoMetadataMapping(
             organization_slug=self.config['organization'],
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
