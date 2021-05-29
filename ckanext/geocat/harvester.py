@@ -6,7 +6,7 @@ from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 import ckanext.geocat.metadata as md
-from ckanext.geocat.utils import search_utils, csw_processor
+from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils  # noqa
 import ckanext.geocat.xml_loader as loader
 from ckan.logic import get_action, NotFound
 from ckan.logic.schema import default_update_package_schema,\
@@ -94,7 +94,7 @@ class GeocatHarvester(HarvesterBase):
             return []
 
         gathered_ogdch_identifiers = \
-            [search_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
+            [ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
                                                   organization_slug=self.config['organization'])  # noqa
              for geocat_identifier in gathered_geocat_identifiers]
 

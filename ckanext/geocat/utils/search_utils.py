@@ -75,10 +75,6 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
     return ogdch_dataset_infos
 
 
-def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
-    return '@'.join([geocat_identifier, organization_slug])
-
-
 def _get_default_context():
     return {
         'model': model,
