@@ -82,9 +82,10 @@ def _map_dataset_publisher(node):
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
         '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName/gco:CharacterString',  # noqa
     ]
-    publisher_node = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_PUBLISHER, get=XPATH_NODE)  # noqa
-    geocat_publisher = xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)
-    if geocat_publisher:
-        self.dataset['publishers'] = ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
-    else:
-        self.dataset['publishers'] = [{'label': ''}]
+    publisher_node = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_PUBLISHER, get=xpath_utils.XPATH_NODE)  # noqa
+    if publisher_node:
+        geocat_publisher = xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
+        if geocat_publisher:
+            return ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
+    EMPTY_PUBLISHER = [{'label': ''}]
+    return EMPTY_PUBLISHER
