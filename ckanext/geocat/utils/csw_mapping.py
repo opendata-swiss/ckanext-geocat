@@ -59,7 +59,7 @@ def _map_dataset_identifier(node, organization_slug):
 
 def _map_dataset_title(node):
     GMD_TITLE = '//gmd:identificationInfo//gmd:citation//gmd:title'
-    title_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TITLE)
+    title_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TITLE)  # noqa
     if title_node:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(title_node)  # noqa
 
