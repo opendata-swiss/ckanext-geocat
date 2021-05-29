@@ -47,6 +47,8 @@ class GeoMetadataMapping(object):
             _map_dataset_title(node=root_node)
         dataset_dict['decription'] = \
             _map_dataset_description(node=root_node)
+        dataset_dict['publishers'] = \
+            _map_dataset_publisher(node=root_node)
         return dataset_dict
 
 
@@ -66,6 +68,23 @@ def _map_dataset_title(node):
 
 def _map_dataset_description(node):
     GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
-    description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)
+    description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)  # noqa
     if description_node:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
+
+
+def _map_dataset_publisher(node):
+    GMD_PUBLISHER = [
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:organisationName',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:organisationName',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',  # noqa
+        '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
+        '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName/gco:CharacterString',  # noqa
+    ]
+    publisher_node = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_PUBLISHER, get=XPATH_NODE)  # noqa
+    geocat_publisher = xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)
+    if geocat_publisher:
+        self.dataset['publishers'] = ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
+    else:
+        self.dataset['publishers'] = [{'label': ''}]
