@@ -57,6 +57,7 @@ class GeoMetadataMapping(object):
             _map_dataset_modified(node=root_node)
         dataset_dict['coverage'] = \
             _map_dataset_coverage()
+        dataset_dict['owner_org'] = self.organization_slug
         return dataset_dict
 
 
