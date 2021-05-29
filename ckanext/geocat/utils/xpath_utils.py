@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from lxml import etree
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 XPATH_NODE = 'node'
@@ -30,6 +31,14 @@ gmd_namespaces = {
     'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
     'xlink': 'http://www.w3.org/1999/xlink',
 }
+
+
+def get_elem_tree_from_string(xml_string):
+    try:
+        xml_elem_tree = etree.fromstring(xml_string)
+    except etree.XMLSyntaxError as e:
+        raise MetadataFormatError('Could not parse XML: %r' % e)
+    return xml_elem_tree
 
 
 def xpath_get_single_sub_node_for_node_and_path(node, path):

@@ -37,13 +37,12 @@ class GeoMetadataMapping(object):
         self.organization_slug = organization_slug
 
     def get_metadata(self, csw_record_as_string, geocat_id):
-        root_node = get_elem_tree_from_string(csw_record_as_string)
+        root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
         dataset_dict = {}
         dataset_dict['identifier'] = \
             _map_dataset_identifier(
                 node=root_node,
                 organization_slug=self.organization_slug)
-        log.error(dataset_dict)
         return dataset_dict
 
 

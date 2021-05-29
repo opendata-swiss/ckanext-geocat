@@ -113,7 +113,7 @@ class GeocatHarvester(HarvesterBase):
         for geocat_id in gathered_geocat_identifiers:
 
             csw_record_as_string = csw_data.get_record_by_id(geocat_id)
-            dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
+            dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)  # noqa
             from pprint import pprint
             pprint(dataset_dict)
 
