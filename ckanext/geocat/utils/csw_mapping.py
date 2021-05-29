@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from lxml import etree
-import owslib
-import rdflib
-import re
-import os
-from datetime import datetime
-from pprint import pprint
-from collections import defaultdict
-from ckan.lib.munge import munge_tag
-from ckanext.geocat.utils import ogdch_map_utils
+from ckanext.geocat.utils import ogdch_map_utils, xpath_utils  # noqa
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 
@@ -40,7 +31,7 @@ gmd_namespaces = {
 
 class GeodataMapping(object):
 
-    def __init__(self, organization_slug, geocat_perma_link, geocat_perma_label, default_rights):
+    def __init__(self, organization_slug, geocat_perma_link, geocat_perma_label, default_rights):  # noqa
         self.geocat_perma_link = geocat_perma_link
         self.geocat_perma_label = geocat_perma_label
         self.organization_slug = organization_slug
@@ -55,8 +46,9 @@ class GeodataMapping(object):
                 organization_slug=self.organization_slug)
         return dataset_dict
 
+
 def _map_dataset_identifier(node, organization_slug):
     GMD_IDENTIFIER = './/gmd:fileIdentifier/gco:CharacterString/text()'
-    geocat_identifier = _xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_IDENTIFIER)
+    geocat_identifier = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_IDENTIFIER)  # noqa
     if geocat_identifier:
         return ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)  # noqa
