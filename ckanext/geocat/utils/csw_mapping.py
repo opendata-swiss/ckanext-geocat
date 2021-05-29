@@ -43,6 +43,10 @@ class GeoMetadataMapping(object):
             _map_dataset_identifier(
                 node=root_node,
                 organization_slug=self.organization_slug)
+        dataset_dict['title'] = \
+            _map_dataset_title(node=root_node)
+        dataset_dict['decription'] = \
+            _map_dataset_description(node=root_node)
         return dataset_dict
 
 
@@ -51,3 +55,17 @@ def _map_dataset_identifier(node, organization_slug):
     geocat_identifier = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_IDENTIFIER)  # noqa
     if geocat_identifier:
         return ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)  # noqa
+
+
+def _map_dataset_title(node):
+    GMD_TITLE = '//gmd:identificationInfo//gmd:citation//gmd:title'
+    title_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TITLE)
+    if title_node:
+        return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(title_node)  # noqa
+
+
+def _map_dataset_description(node):
+    GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
+    description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)
+    if description_node:
+        return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
