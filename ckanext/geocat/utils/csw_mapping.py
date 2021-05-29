@@ -139,4 +139,3 @@ def _map_dataset_modified(node):
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)  # noqa
     MODIFIED_EMPTY = ''
     return MODIFIED_EMPTY
-
