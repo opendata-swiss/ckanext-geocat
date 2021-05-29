@@ -1,4 +1,5 @@
 from datetime import datetime
+from ckan.lib.munge import munge_tag
 
 DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
 
@@ -28,3 +29,12 @@ def map_to_ogdch_datetime(datetime_value):
         return int((d - epoch).total_seconds())
     except (ValueError, KeyError, TypeError, IndexError):
         raise ValueError("Could not parse datetime")
+
+
+def map_to_ogdch_keywords(geocat_keywords):
+    ogdch_keywords = {'fr': [], 'de': [], 'en': [], 'it': []}
+    for keyword in geocat_keywords:
+        for lang, geocat_keyword in keyword.items():
+            if geocat_keyword != 'opendata.swiss' and lang in ['fr', 'de', 'en', 'it']:  # noqa
+                ogdch_keywords[lang].append(munge_tag(geocat_keyword))  # noqa
+    return ogdch_keywords

@@ -55,6 +55,8 @@ class GeoMetadataMapping(object):
             _map_dataset_issued(node=root_node)
         dataset_dict['modified'] = \
             _map_dataset_modified(node=root_node)
+        dataset_dict['keywords'] = \
+            _map_dataset_keywords(node=root_node)
         dataset_dict['coverage'] = \
             _map_dataset_coverage()
         dataset_dict['owner_org'] = self.organization_slug
@@ -142,6 +144,19 @@ def _map_dataset_modified(node):
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)  # noqa
     MODIFIED_EMPTY = ''
     return MODIFIED_EMPTY
+
+
+def _map_dataset_keywords(node):
+    GMD_KEYWORDS = '//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword'  # noqa
+    keyword_nodes = node.xpath(GMD_KEYWORDS, namespaces=gmd_namespaces)  # noqa
+    geocat_keywords = []
+    for node in keyword_nodes:
+        keyword_dict = xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(node)  # noqa
+        geocat_keywords.append(keyword_dict)
+    if geocat_keywords:
+        return ogdch_map_utils.map_to_ogdch_keywords(geocat_keywords)
+    KEYWORDS_EMPTY = []
+    return KEYWORDS_EMPTY
 
 
 def _map_dataset_coverage():
