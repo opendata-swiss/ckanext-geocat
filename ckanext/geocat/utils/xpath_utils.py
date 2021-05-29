@@ -136,3 +136,7 @@ def xpath_get_url_with_label_from_distribution(node):
 
 def _clean_string(value):
     return re.sub('\s+', ' ', value).strip()
+
+
+class MetadataFormatError(Exception):
+    pass
