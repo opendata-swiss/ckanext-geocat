@@ -94,3 +94,10 @@ def get_value_from_dataset_extras(extras, key):
         if extras_reduced_to_key:
             return extras_reduced_to_key[0]
     return None
+
+
+def get_value_from_object_extra(harvest_object_extras, key):
+    for extra in harvest_object_extras:
+        if extra.key == key:
+            return extra.value
+    return None

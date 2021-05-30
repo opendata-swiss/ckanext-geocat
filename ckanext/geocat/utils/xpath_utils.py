@@ -171,6 +171,8 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol):
     description_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_DESCRIPTION)  # noqa
     if len(description_node):
         distribution['description'] = xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
+    else:
+        distribution['description'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
     normed_protocol, protocol_name = _get_normed_protocol(protocol)
     distribution['protocol'] = normed_protocol
     distribution['protocol_name'] = protocol_name

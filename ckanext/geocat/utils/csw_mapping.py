@@ -47,7 +47,7 @@ class GeoMetadataMapping(object):
                 node=root_node,
                 organization_slug=self.organization_slug)
         dataset_dict['title'] = _map_dataset_title(node=root_node)
-        dataset_dict['decription'] = _map_dataset_description(node=root_node)
+        dataset_dict['description'] = _map_dataset_description(node=root_node)
         dataset_dict['publishers'] = _map_dataset_publisher(node=root_node)
         dataset_dict['contact_points'] = _map_dataset_contact_points(node=root_node)
         dataset_dict['issued'] = _map_dataset_issued(node=root_node)
@@ -108,6 +108,7 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(
                 legal_basis_url=legal_basis_url,
             ))
+        dataset_dict['resources'] = []
         return dataset_dict
 
 

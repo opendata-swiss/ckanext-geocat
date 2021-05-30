@@ -168,12 +168,13 @@ def map_resource(geocat_resource, issued, modified, rights):
     name = geocat_resource.get('name')
     protocol_name = geocat_resource.get('protocol_name')
     if name and protocol_name:
-        resource_dict['title'] = protocol_name + " " + name
+        title = protocol_name + " " + name
     elif protocol_name:
-        resource_dict['title'] = protocol_name
+        title = protocol_name
     else:
-        resource_dict['title'] = name
-    resource_dict['access_url'] = geocat_resource['url']
+        title = name
+    resource_dict['title'] = {'de': title, 'fr': title, 'en':title, 'it': title}
+    resource_dict['url'] = geocat_resource['url']
     if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['download_url'] = geocat_resource['url']
     resource_dict['language'] = geocat_resource['language']
