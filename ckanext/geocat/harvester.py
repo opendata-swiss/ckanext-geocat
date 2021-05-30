@@ -70,6 +70,8 @@ class GeocatHarvester(HarvesterBase):
         self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
+        self.config['legal_basis_url'] = self.config.get('legal_basis_url', None)
+
         organization_slug = search_utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
         self.config['organization'] = organization_slug
 
@@ -93,29 +95,45 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
+        existing_dataset_infos = search_utils.get_dataset_infos_for_organization(
+            organization_name=self.config['organization'],
+            harvest_source_id=harvest_job.source_id,
+        )
+
         gathered_ogdch_identifiers = \
             [ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
                                                   organization_slug=self.config['organization'])  # noqa
              for geocat_identifier in gathered_geocat_identifiers]
 
+        all_ogdch_identifiers = set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
+
         packages_to_delete = search_utils.get_packages_to_delete(
-            organization_name=self.config['organization'],
-            harvest_source_id=harvest_job.source_id,
+            existing_dataset_infos=existing_dataset_infos,
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
+        packages_that_cannot_be_created = search_utils.get_double_packages(
+            existing_dataset_infos=existing_dataset_infos,
+            gathered_ogdch_identifiers=gathered_ogdch_identifiers,
+        )
+        for identifier, info in packages_that_cannot_be_created:
+            self._save_gather_error(
+                'Unable to create package: %s since a package with this identifier already exists'
+                % (identifier),
+                harvest_job
+            )
 
         csw_map = csw_mapping.GeoMetadataMapping(
             organization_slug=self.config['organization'],
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
+            legal_basis_url=self.config['legal_basis_url'],
+            valid_identifiers=all_ogdch_identifiers,
         )
 
         for geocat_id in gathered_geocat_identifiers:
 
             csw_record_as_string = csw_data.get_record_by_id(geocat_id)
             dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)  # noqa
-            from pprint import pprint
-            pprint(dataset_dict)
 
             harvest_obj = HarvestObject(guid=geocat_id, job=harvest_job)
             harvest_obj.save()
@@ -280,6 +298,7 @@ class GeocatHarvester(HarvesterBase):
                 )
                 pkg_dict['name'] = existing['name']
                 pkg_dict['id'] = existing['id']
+                import pdb; pdb.set_trace()
                 updated_pkg = get_action('package_update')(
                     package_context, pkg_dict)
                 harvest_object.current = True

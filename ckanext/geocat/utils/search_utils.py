@@ -27,13 +27,18 @@ def get_organization_slug_for_harvest_source(harvest_source_id):
         raise tk.ObjectNotFound
 
 
-def get_packages_to_delete(organization_name, harvest_source_id, gathered_ogdch_identifiers):  # noqa
-    existing_dataset_infos = get_dataset_infos_for_organization(
-        organization_name=organization_name,
-        harvest_source_id=harvest_source_id
-    )
-    return [(identifier, info) for identifier, info in existing_dataset_infos.items()    # noqa
-            if info.belongs_to_harvester and identifier not in gathered_ogdch_identifiers]    # noqa
+def get_packages_to_delete(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
+    return [
+        (identifier, info) for identifier, info in existing_dataset_infos.items()    # noqa
+        if info.belongs_to_harvester and identifier not in gathered_ogdch_identifiers  # noqa
+    ]
+
+
+def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
+    return [
+        (identifier, info) for identifier, info in existing_dataset_infos.items()  # noqa
+        if not info.belongs_to_harvester and identifier in gathered_ogdch_identifiers  # noqa
+    ]
 
 
 def get_dataset_infos_for_organization(organization_name, harvest_source_id):
