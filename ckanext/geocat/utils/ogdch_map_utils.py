@@ -117,7 +117,7 @@ def map_language(geocat_language):
 
 
 def map_see_alsos(geocat_see_alsos, organization_slug, valid_identifiers):
-    ogdch_see_alsos = [map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)
+    ogdch_see_alsos = [map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)  # noqa
                        for geocat_identifier in geocat_see_alsos]
     return [see_also for see_also in ogdch_see_alsos
             if see_also in valid_identifiers]
@@ -137,12 +137,12 @@ def map_temporals(geocat_temporal_start, geocat_temporal_end):
 
 def get_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
     permalink = geocat_perma_link + geocat_id
-    return {'url':permalink, 'label': geocat_perma_label}
+    return {'url': permalink, 'label': geocat_perma_label}
 
 
 def get_legal_basis_link(legal_basis_url):
     LEGAL_BASIS_LABEL = 'legal_basis'
-    return {'url':legal_basis_url, 'label': LEGAL_BASIS_LABEL}
+    return {'url': legal_basis_url, 'label': LEGAL_BASIS_LABEL}
 
 
 def map_rights(geocat_rights_dict):
@@ -150,7 +150,7 @@ def map_rights(geocat_rights_dict):
 
 
 def get_relation_protocols():
-    return ['WWW:LINK-1.0-http--link', 'WWW:LINK', 'CHTOPO:specialised-geoportal']
+    return ['WWW:LINK-1.0-http--link', 'WWW:LINK', 'CHTOPO:specialised-geoportal']  # noqa
 
 
 def get_landing_page_protocols():
@@ -168,12 +168,13 @@ def map_resource(geocat_resource, issued, modified, rights):
     name = geocat_resource.get('name')
     protocol_name = geocat_resource.get('protocol_name')
     if name and protocol_name:
-        resource_dict['title'] = protocol_name + " " + name
+        title = protocol_name + " " + name
     elif protocol_name:
-        resource_dict['title'] = protocol_name
+        title = protocol_name
     else:
-        resource_dict['title'] = name
-    resource_dict['access_url'] = geocat_resource['url']
+        title = name
+    resource_dict['title'] = {'de': title, 'fr': title, 'en': title, 'it': title}  # noqa
+    resource_dict['url'] = geocat_resource['url']
     if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['download_url'] = geocat_resource['url']
     resource_dict['language'] = geocat_resource['language']

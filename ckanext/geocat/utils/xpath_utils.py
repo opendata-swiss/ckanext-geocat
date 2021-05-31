@@ -39,7 +39,7 @@ OGC_WMS_PROTOCOL = "OGC:WMS"
 LINKED_DATA_PROTOCOL = "LINKED:DATA"
 ESRI_REST_PROTOCOL = "ESRI:REST"
 MAP_PROTOCOL = 'MAP:Preview'
-SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL, OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL, ESRI_REST_PROTOCOL, MAP_PROTOCOL]
+SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL, OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL, ESRI_REST_PROTOCOL, MAP_PROTOCOL]  # noqa
 SERVICE_FORMAT = 'SERVICE'
 
 
@@ -111,7 +111,7 @@ def xpath_get_url_and_languages(node):
         './/gmd:URL/text()',
     ]
     languages = []
-    url = xpath_get_first_of_values_from_path_list(node=node, path_list=URL_PATH_LIST)
+    url = xpath_get_first_of_values_from_path_list(node=node, path_list=URL_PATH_LIST)  # noqa
     for locale in LOCALES:
         value_locale = node.xpath('.//che:LocalisedURL[@locale="#{}"]'.format(locale) + '/text()',  # noqa
                                   namespaces=gmd_namespaces)
@@ -163,25 +163,31 @@ def xpath_get_url_with_label_from_distribution(node):
     return url
 
 
-def xpath_get_distribution_from_distribution_node(resource_node, protocol):
+def xpath_get_distribution_from_distribution_node(resource_node, protocol, download_formats, service_formats):  # noqa
     GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
     GMD_RESOURCE_DESCRIPTION = './/gmd:description'
     distribution = {}
-    distribution['name'] = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_NAME)
+    distribution['name'] = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_NAME)  # noqa
     description_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_DESCRIPTION)  # noqa
     if len(description_node):
         distribution['description'] = xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
+    else:
+        distribution['description'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
     normed_protocol, protocol_name = _get_normed_protocol(protocol)
     distribution['protocol'] = normed_protocol
     distribution['protocol_name'] = protocol_name
-    if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):
-        distribution['format'] = protocol.strip(DOWNLOAD_PROTOCOL + ':')
+    if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
+        format = protocol.strip(DOWNLOAD_PROTOCOL + ':')
+        if format in download_formats:
+            distribution['format'] = format
     if normed_protocol in SERVICE_PROTOCOLS:
-        distribution['format'] = SERVICE_FORMAT
+        format = SERVICE_FORMAT
+        if format in service_formats:
+            distribution['format'] = format
     GMD_URL = './/gmd:linkage'
-    url_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_URL)
+    url_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_URL)  # noqa
     if url_node:
-        distribution['url'], distribution['language'] = xpath_get_url_and_languages(url_node)
+        distribution['url'], distribution['language'] = xpath_get_url_and_languages(url_node)  # noqa
     return distribution
 
 
@@ -197,7 +203,7 @@ def _get_normed_protocol(protocol):
     }
     for normed_protocol in protocol_to_name_mapping.items():
         if protocol.startswith(normed_protocol):
-            return normed_protocol, protocol_to_name_mapping.get(normed_protocol)
+            return normed_protocol, protocol_to_name_mapping.get(normed_protocol)  # noqa
     return None, None
 
 

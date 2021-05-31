@@ -70,7 +70,7 @@ class GeocatHarvester(HarvesterBase):
         self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
-        self.config['legal_basis_url'] = self.config.get('legal_basis_url', None)
+        self.config['legal_basis_url'] = self.config.get('legal_basis_url', None)  # noqa
 
         organization_slug = search_utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
         self.config['organization'] = organization_slug
@@ -95,7 +95,7 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
-        existing_dataset_infos = search_utils.get_dataset_infos_for_organization(
+        existing_dataset_infos = search_utils.get_dataset_infos_for_organization(  # noqa
             organization_name=self.config['organization'],
             harvest_source_id=harvest_job.source_id,
         )
@@ -105,7 +105,7 @@ class GeocatHarvester(HarvesterBase):
                                                   organization_slug=self.config['organization'])  # noqa
              for geocat_identifier in gathered_geocat_identifiers]
 
-        all_ogdch_identifiers = set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
+        all_ogdch_identifiers = set(gathered_ogdch_identifiers + existing_dataset_infos.keys())  # noqa
 
         packages_to_delete = search_utils.get_packages_to_delete(
             existing_dataset_infos=existing_dataset_infos,
@@ -117,7 +117,7 @@ class GeocatHarvester(HarvesterBase):
         )
         for identifier, info in packages_that_cannot_be_created:
             self._save_gather_error(
-                'Unable to create package: %s since a package with this identifier already exists'
+                'Unable to create package: %s since a package with this identifier already exists'  # noqa
                 % (identifier),
                 harvest_job
             )
