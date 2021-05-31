@@ -80,3 +80,8 @@ def map_to_ogdch_categories(geocat_categories):
         ogdch_groups.extend(theme_mapping.get(category))
     ogdch_groups = set(ogdch_groups)
     return [{'name': group} for group in ogdch_groups]
+
+
+def map_contact_points(geocat_contact_point):
+    contacts = [{'name': geocat_contact_point, 'email': geocat_contact_point}]  # noqa
+    return contacts

@@ -117,7 +117,7 @@ def _map_dataset_contact_points(node):
     ]
     geocat_contact_point = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_CONTACT_POINT, get=xpath_utils.XPATH_TEXT)  # noqa
     if geocat_contact_point:
-        return [{'name':geocat_contact_point, 'email': geocat_contact_point}]  # noqa
+        return ogdch_map_utils.map_contact_points(geocat_contact_point)  # noqa
     EMPTY_CONTACT_POINTS = []
     return EMPTY_CONTACT_POINTS
 
