@@ -93,14 +93,20 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
+        existing_dataset_infos = search_utils.get_dataset_infos_for_organization(
+            organization_name=self.config['organization'],
+            harvest_source_id=harvest_job.source_id,
+        )
+
         gathered_ogdch_identifiers = \
             [ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
                                                   organization_slug=self.config['organization'])  # noqa
              for geocat_identifier in gathered_geocat_identifiers]
 
+        all_ogdch_identifiers = set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
+
         packages_to_delete = search_utils.get_packages_to_delete(
-            organization_name=self.config['organization'],
-            harvest_source_id=harvest_job.source_id,
+            existing_dataset_infos=existing_dataset_infos,
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
 
@@ -108,6 +114,7 @@ class GeocatHarvester(HarvesterBase):
             organization_slug=self.config['organization'],
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
+            valid_identifiers=all_ogdch_identifiers,
         )
 
         for geocat_id in gathered_geocat_identifiers:

@@ -31,10 +31,11 @@ gmd_namespaces = {
 
 class GeoMetadataMapping(object):
 
-    def __init__(self, organization_slug, geocat_perma_link, geocat_perma_label):  # noqa
+    def __init__(self, organization_slug, geocat_perma_link, geocat_perma_label, valid_identifiers):  # noqa
         self.geocat_perma_link = geocat_perma_link
         self.geocat_perma_label = geocat_perma_label
         self.organization_slug = organization_slug
+        self.valid_identifiers = valid_identifiers
 
     def get_metadata(self, csw_record_as_string, geocat_id):
         root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
@@ -56,6 +57,10 @@ class GeoMetadataMapping(object):
         dataset_dict['coverage'] = _map_dataset_coverage()
         dataset_dict['spatial'] = _map_dataset_spatial(node=root_node)
         dataset_dict['temporals'] = _map_dataset_temporals(node=root_node)
+        dataset_dict['see_alsos'] = \
+            _map_dataset_see_alsos(node=root_node,
+                                   organization_slug=self.organization_slug,
+                                   valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
         return dataset_dict
 
@@ -209,3 +214,11 @@ def _map_dataset_temporals(node):
     geocat_temporal_start = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TEMPORAL_START)
     geocat_temporal_end = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TEMPORAL_END)
     return ogdch_map_utils.map_temporals(geocat_temporal_start, geocat_temporal_end)
+
+
+def _map_dataset_see_alsos(node, organization_slug, valid_identifiers):
+    GMD_SEE_ALSOS = '//gmd:identificationInfo//gmd:aggregationInfo//gmd:aggregateDataSetIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString/text()'
+    geocat_see_alsos = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=node, path=GMD_SEE_ALSOS)
+    if geocat_see_alsos:
+        return ogdch_map_utils.map_see_alsos(geocat_see_alsos, organization_slug, valid_identifiers)
+    return []
