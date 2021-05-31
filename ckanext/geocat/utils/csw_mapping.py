@@ -181,6 +181,6 @@ def _map_dataset_spatial(node):
     GMD_SPATIAL = '//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()'  # noqa
     geocat_spatial = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_SPATIAL)  # noqa
     if geocat_spatial:
-        self.dataset['spatial'] = geocat_spatial
+        return geocat_spatial
     SPACIAL_EMPTY = ''
     return SPACIAL_EMPTY
