@@ -111,3 +111,15 @@ def map_language(geocat_language):
         'ita': 'it',
     }
     return language_mapping.get(geocat_language, '')
+
+
+def map_temporals(geocat_temporal_start, geocat_temporal_end):
+    if geocat_temporal_start:
+        start_date = map_to_ogdch_datetime(geocat_temporal_start)
+        end_date = start_date
+        if geocat_temporal_end:
+            end_date = map_to_ogdch_datetime(geocat_temporal_end)
+        return [{'start_date': start_date,
+                 'end_date': end_date}]
+    else:
+        return []

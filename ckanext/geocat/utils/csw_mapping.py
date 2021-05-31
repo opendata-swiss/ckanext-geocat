@@ -55,6 +55,7 @@ class GeoMetadataMapping(object):
         dataset_dict['accrual_periodicity'] = _map_dataset_frequency(node=root_node)
         dataset_dict['coverage'] = _map_dataset_coverage()
         dataset_dict['spatial'] = _map_dataset_spatial(node=root_node)
+        dataset_dict['temporals'] = _map_dataset_temporals(node=root_node)
         dataset_dict['owner_org'] = self.organization_slug
         return dataset_dict
 
@@ -200,3 +201,11 @@ def _map_dataset_language(node):
             if ogdch_language:
                 languages.append(ogdch_language)
     return languages
+
+
+def _map_dataset_temporals(node):
+    GMD_TEMPORAL_START = '//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:beginPosition/text()'
+    GMD_TEMPORAL_END = '//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:endPosition/text()'
+    geocat_temporal_start = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TEMPORAL_START)
+    geocat_temporal_end = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TEMPORAL_END)
+    return ogdch_map_utils.map_temporals(geocat_temporal_start, geocat_temporal_end)
