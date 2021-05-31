@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 from ckan.lib.munge import munge_tag
+from ckanext.geocat.utils import xpath_utils  # noqa
 
 DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
 
@@ -130,3 +133,48 @@ def map_temporals(geocat_temporal_start, geocat_temporal_end):
                  'end_date': end_date}]
     else:
         return []
+
+
+def get_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
+    permalink = geocat_perma_link + geocat_id
+    return {'url':permalink, 'label': geocat_perma_label}
+
+
+def get_legal_basis_link(legal_basis_url):
+    LEGAL_BASIS_LABEL = 'legal_basis'
+    return {'url':legal_basis_url, 'label': LEGAL_BASIS_LABEL}
+
+
+def map_rights(geocat_rights_dict):
+    return DEFAULT_RIGHTS
+
+
+def get_relation_protocols():
+    return ['WWW:LINK-1.0-http--link', 'WWW:LINK', 'CHTOPO:specialised-geoportal']
+
+
+def get_landing_page_protocols():
+    return ['WWW:LINK-1.0-http--link', 'WWW:LINK']
+
+
+def map_resource(geocat_resource, issued, modified, rights):
+    resource_dict = {}
+    resource_dict['issued'] = issued
+    resource_dict['modified'] = modified
+    resource_dict['rights'] = rights
+    resource_dict['format'] = geocat_resource.get('format')
+    resource_dict['description'] = geocat_resource.get('description')
+    resource_dict['media_type'] = geocat_resource.get('format')
+    name = geocat_resource.get('name')
+    protocol_name = geocat_resource.get('protocol_name')
+    if name and protocol_name:
+        resource_dict['title'] = protocol_name + " " + name
+    elif protocol_name:
+        resource_dict['title'] = protocol_name
+    else:
+        resource_dict['title'] = name
+    resource_dict['access_url'] = geocat_resource['url']
+    if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
+        resource_dict['download_url'] = geocat_resource['url']
+    resource_dict['language'] = geocat_resource['language']
+    return resource_dict

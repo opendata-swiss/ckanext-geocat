@@ -70,6 +70,8 @@ class GeocatHarvester(HarvesterBase):
         self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
         self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
 
+        self.config['legal_basis_url'] = self.config.get('legal_basis_url', None)
+
         organization_slug = search_utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
         self.config['organization'] = organization_slug
 
@@ -114,6 +116,7 @@ class GeocatHarvester(HarvesterBase):
             organization_slug=self.config['organization'],
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
+            legal_basis_url=self.config['legal_basis_url'],
             valid_identifiers=all_ogdch_identifiers,
         )
 

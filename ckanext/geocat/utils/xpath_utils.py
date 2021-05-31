@@ -32,6 +32,16 @@ gmd_namespaces = {
     'xlink': 'http://www.w3.org/1999/xlink',
 }
 
+DOWNLOAD_PROTOCOL = "WWW:DOWNLOAD"
+OGC_WMTS_PROTOCOL = "OGC:WMTS"
+OGC_WFS_PROTOCOL = "OGC:WFS"
+OGC_WMS_PROTOCOL = "OGC:WMS"
+LINKED_DATA_PROTOCOL = "LINKED:DATA"
+ESRI_REST_PROTOCOL = "ESRI:REST"
+MAP_PROTOCOL = 'MAP:Preview'
+SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL, OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL, ESRI_REST_PROTOCOL, MAP_PROTOCOL]
+SERVICE_FORMAT = 'SERVICE'
+
 
 def get_elem_tree_from_string(xml_string):
     try:
@@ -91,6 +101,25 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
         return value
 
 
+def xpath_get_url_and_languages(node):
+    URL_PATH_LIST = [
+        './/gmd:linkage//che:LocalisedURL[@locale="#DE"]/text()',
+        './/gmd:linkage//che:LocalisedURL[@locale="#FR"]/text()',
+        './/gmd:linkage//che:LocalisedURL[@locale="#EN"]/text()',
+        './/gmd:linkage//che:LocalisedURL[@locale="#IT"]/text()',
+        './/che:LocalisedURL/text()',
+        './/gmd:URL/text()',
+    ]
+    languages = []
+    url = xpath_get_first_of_values_from_path_list(node=node, path_list=URL_PATH_LIST)
+    for locale in LOCALES:
+        value_locale = node.xpath('.//che:LocalisedURL[@locale="#{}"]'.format(locale) + '/text()',  # noqa
+                                  namespaces=gmd_namespaces)
+        if value_locale:
+            languages.append(locale.lower())
+    return url, languages
+
+
 def xpath_get_rights_dict_form_rights_node(node):
     rights_dict = {'en': '', 'it': '', 'de': '', 'fr': '', 'anchor': ''}
     try:
@@ -132,6 +161,44 @@ def xpath_get_url_with_label_from_distribution(node):
         if url_text_node:
             url['label'] = url_text_node[0]
     return url
+
+
+def xpath_get_distribution_from_distribution_node(resource_node, protocol):
+    GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
+    GMD_RESOURCE_DESCRIPTION = './/gmd:description'
+    distribution = {}
+    distribution['name'] = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_NAME)
+    description_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_DESCRIPTION)  # noqa
+    if len(description_node):
+        distribution['description'] = xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
+    normed_protocol, protocol_name = _get_normed_protocol(protocol)
+    distribution['protocol'] = normed_protocol
+    distribution['protocol_name'] = protocol_name
+    if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):
+        distribution['format'] = protocol.strip(DOWNLOAD_PROTOCOL + ':')
+    if normed_protocol in SERVICE_PROTOCOLS:
+        distribution['format'] = SERVICE_FORMAT
+    GMD_URL = './/gmd:linkage'
+    url_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_URL)
+    if url_node:
+        distribution['url'], distribution['language'] = xpath_get_url_and_languages(url_node)
+    return distribution
+
+
+def _get_normed_protocol(protocol):
+    protocol_to_name_mapping = {
+        OGC_WMTS_PROTOCOL: "WMTS (GetCapabilities)",
+        OGC_WMS_PROTOCOL: "WMS (GetCapabilities)",
+        OGC_WFS_PROTOCOL: "WFS (GetCapabilities)",
+        DOWNLOAD_PROTOCOL: "Download",
+        LINKED_DATA_PROTOCOL: "Linked Data (Dienst)",
+        MAP_PROTOCOL: "Map (Preview)",
+        ESRI_REST_PROTOCOL: "ESRI (Rest)"
+    }
+    for normed_protocol in protocol_to_name_mapping.items():
+        if protocol.startswith(normed_protocol):
+            return normed_protocol, protocol_to_name_mapping.get(normed_protocol)
+    return None, None
 
 
 def _clean_string(value):
