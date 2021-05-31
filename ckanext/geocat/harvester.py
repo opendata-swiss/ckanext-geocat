@@ -298,7 +298,6 @@ class GeocatHarvester(HarvesterBase):
                 )
                 pkg_dict['name'] = existing['name']
                 pkg_dict['id'] = existing['id']
-                import pdb; pdb.set_trace()
                 updated_pkg = get_action('package_update')(
                     package_context, pkg_dict)
                 harvest_object.current = True
