@@ -67,7 +67,7 @@ def map_to_ogdch_categories(geocat_categories):
         'health': ['geography', 'health'],
         'structure': ['geography', 'construction'],
         'transportation': ['geography', 'mobility'],
-        'utilitiesCommunication': ['geography', 'territory', 'energy', 'culture'],
+        'utilitiesCommunication': ['geography', 'territory', 'energy', 'culture'],  # noqa
         'utilitiesCommunication_Energy': ['geography', 'energy', 'territory'],
         'utilitiesCommunication_Utilities': ['geography', 'territory'],
         'utilitiesCommunication_Communication': ['geography', 'culture'],
@@ -79,6 +79,4 @@ def map_to_ogdch_categories(geocat_categories):
     for category in geocat_categories:
         ogdch_groups.extend(theme_mapping.get(category))
     ogdch_groups = set(ogdch_groups)
-    if ogdch_groups:
-        self.dataset['groups'] = [{'name': group} for group in ogdch_groups]
-    return ogdch_groups
+    return [{'name': group} for group in ogdch_groups]

@@ -164,10 +164,10 @@ def _map_dataset_keywords(node):
 
 
 def _map_dataset_categories(node):
-    GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'
-    geocat_categories = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=node, path=GMD_THEME)
+    GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'  # noqa
+    geocat_categories = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=node, path=GMD_THEME)  # noqa
     if geocat_categories:
-        return map_to_ogdch_categories(geocat_categories)
+        return ogdch_map_utils.map_to_ogdch_categories(geocat_categories)
     CATEGORIES_EMPTY = []
     return CATEGORIES_EMPTY
 
