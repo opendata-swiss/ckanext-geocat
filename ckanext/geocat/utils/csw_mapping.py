@@ -108,7 +108,6 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(
                 legal_basis_url=legal_basis_url,
             ))
-        dataset_dict['resources'] = []
         return dataset_dict
 
 

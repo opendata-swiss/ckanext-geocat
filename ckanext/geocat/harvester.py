@@ -2,12 +2,11 @@
 
 import traceback
 
+from urlparse import urljoin
 from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
-import ckanext.geocat.metadata as md
 from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
-import ckanext.geocat.xml_loader as loader
 from ckan.logic import get_action, NotFound
 from ckan.logic.schema import default_update_package_schema,\
     default_create_package_schema
@@ -30,6 +29,11 @@ class GeocatConfigError(Exception):
 
 
 class GeocatHarvester(HarvesterBase):
+    '''
+    The harvester for geocat
+    '''
+    HARVEST_USER = 'harvest'
+
     def info(self):
         return {
             'name': 'geocat_harvester',
@@ -72,93 +76,40 @@ class GeocatHarvester(HarvesterBase):
         log.debug('Using config: %r' % self.config)
 
     def gather_stage(self, harvest_job):
-        log.error('In GeocatHarvester gather_stage {}'.format(harvest_job))
+        log.debug('In GeocatHarvesterNG gather_stage')
         self._set_config(harvest_job.source.config, harvest_job.source.id)
 
         csw_url = harvest_job.source.url
         harvest_obj_ids = []
 
-        try:
-            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=csw_url)
-            gathered_geocat_identifiers = csw_data.get_geocat_id_from_csw()
-        except Exception as e:
-            self._save_gather_error(
-                'Unable to get content for URL: %s: %s / %s'
-                % (csw_url, str(e), traceback.format_exc()),
-                harvest_job
-            )
-            return []
-
-        existing_dataset_infos = search_utils.get_dataset_infos_for_organization(
-            organization_name=self.config['organization'],
-            harvest_source_id=harvest_job.source_id,
-        )
-
-        gathered_ogdch_identifiers = \
-            [ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
-                                                  organization_slug=self.config['organization'])  # noqa
-             for geocat_identifier in gathered_geocat_identifiers]
-
-        all_ogdch_identifiers = set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
-
-        packages_to_delete = search_utils.get_packages_to_delete(
-            existing_dataset_infos=existing_dataset_infos,
-            gathered_ogdch_identifiers=gathered_ogdch_identifiers,
-        )
-        packages_that_cannot_be_created = search_utils.get_double_packages(
-            existing_dataset_infos=existing_dataset_infos,
-            gathered_ogdch_identifiers=gathered_ogdch_identifiers,
-        )
-        for identifier, info in packages_that_cannot_be_created:
-            self._save_gather_error(
-                'Unable to create package: %s since a package with this identifier already exists'
-                % (identifier),
-                harvest_job
-            )
+        csw_data = csw_processor.GeocatCatalogueServiceWeb(url=csw_url)
+        gathered_geocat_identifiers = csw_data.get_geocat_id_from_csw()
+        gathered_ogdch_identifier = ['@'.join([identifier, self.config['organization']])
+                                     for identifier in gathered_geocat_identifiers ]
 
         csw_map = csw_mapping.GeoMetadataMapping(
             organization_slug=self.config['organization'],
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
             legal_basis_url=self.config['legal_basis_url'],
-            valid_identifiers=all_ogdch_identifiers,
+            valid_identifiers=[],
         )
 
         for geocat_id in gathered_geocat_identifiers:
-            try:
-                csw_record_as_string = csw_data.get_record_by_id(geocat_id)
-                dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
-                import pdb; pdb.set_trace()
-                obj = HarvestObject(guid=dataset_dict['identifier'], job=harvest_job,
-                                    content=json.dumps(dataset_dict))
-                obj.save()
-                harvest_obj_ids.append(obj.id)
-            except Exception as e:
-                self._save_gather_error(
-                    'Unable to save content for identifier: %s: %s / %s'
-                    % (geocat_id, str(e), traceback.format_exc()),
-                    harvest_job
-                )
-
-        if self.config['delete_missing_datasets']:
-            for package_info in packages_to_delete:
-                obj = HarvestObject(guid=package_info.name, job=harvest_job,
-                                    extras=[HarvestObjectExtra(key='import_action',  # noqa
-                                                               value='delete')])  # noqa
-                obj.save()
-                harvest_obj_ids.append(obj.id)
-
-        log.error("end of fetch")
-        log.error(harvest_obj_ids)
+            print("\n+++++++++++++++++++ processing {}\n".format(geocat_id))
+            csw_record_as_string = csw_data.get_record_by_id(geocat_id)
+            dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
+            obj = HarvestObject(guid=dataset_dict['identifier'], job=harvest_job,
+                                content=json.dumps(dataset_dict))
+            obj.save()
+            harvest_obj_ids.append(obj.id)
         return harvest_obj_ids
 
     def fetch_stage(self, harvest_object):
         # Nothing to do here
-        log.error("in fetch for {}".format(harvest_object.id))
         return True
 
     def import_stage(self, harvest_object):  # noqa
-        log.error("in import for {}".format(harvest_object.id))
         log.debug('In GeocatHarvester import_stage')
 
         if not harvest_object:
@@ -178,7 +129,9 @@ class GeocatHarvester(HarvesterBase):
 
         try:
             pkg_dict = json.loads(harvest_object.content)
+            log.error("imported successfully {}".format(pkg_dict['identifier']))
         except ValueError:
+            log.error("error on import {}".format(harvest_object.id))
             self._save_object_error('Could not parse content for object {0}'.format(harvest_object.id),
                                     harvest_object, 'Import')
             return False
@@ -191,10 +144,7 @@ class GeocatHarvester(HarvesterBase):
         pkg_dict['name'] = self._gen_new_name(flat_title)  # noqa
 
         try:
-            package_context = {
-                'ignore_auth': True,
-                'user': self.config['user'],
-            }
+            package_context = self._create_new_context()
             try:
                 # Change default schema to ignore lists of dicts, which
                 # are stored in the '__junk' field
@@ -216,6 +166,8 @@ class GeocatHarvester(HarvesterBase):
                 harvest_object.save()
                 log.debug("Updated PKG: %s" % updated_pkg)
             except NotFound:
+
+
                 # Change default schema to ignore lists of dicts, which
                 # are stored in the '__junk' field
                 schema = default_create_package_schema()
@@ -238,6 +190,7 @@ class GeocatHarvester(HarvesterBase):
                 model.Session.execute(
                     'SET CONSTRAINTS harvest_object_package_id_fkey DEFERRED')
                 model.Session.flush()
+
                 created_pkg = get_action('package_create')(
                     package_context, pkg_dict)
 
@@ -255,6 +208,7 @@ class GeocatHarvester(HarvesterBase):
             )
             return False
 
+
     def _find_existing_package(self, package_dict):
         package_show_context = {'model': model, 'session': Session,
                                 'ignore_auth': True}
@@ -270,6 +224,16 @@ class GeocatHarvester(HarvesterBase):
         except (KeyError, IndexError, TypeError):
             raise NotFound
 
+
+    def _delete_dataset(self, package_dict):
+        log.debug('deleting dataset %s' % package_dict['id'])
+        context = self._create_new_context()
+        get_action('dataset_purge')(
+            context.copy(),
+            package_dict
+        )
+        return True
+
     def _create_new_context(self):
         # get the site user
         site_user = tk.get_action('get_site_user')(
@@ -281,14 +245,16 @@ class GeocatHarvester(HarvesterBase):
         }
         return context
 
-    def _delete_dataset(self, package_dict):
-        log.debug('deleting dataset %s' % package_dict['id'])
-        context = self._create_new_context()
-        get_action('dataset_purge')(
-            context.copy(),
-            package_dict
+    def _process_csw(self, geocat_id):
+        csw_record_as_string = csw_data.get_record_by_id(geocat_id)
+        csw_map = csw_mapping.GeodataRecordMapping(
+            csw_record_as_string=csw_record_as_string,
+            organization_slug=self.config['organization_slug'],
+            geocat_permalink=self.config['permalink_info'],
+            default_rights = self.config['rights']
         )
-        return True
+        dataset_dict = csw_map.process_geodata()
+        return dataset_dict
 
 
 def _derive_flat_title(title_dict):
