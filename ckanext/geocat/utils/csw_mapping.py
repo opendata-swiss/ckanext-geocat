@@ -43,27 +43,17 @@ class GeoMetadataMapping(object):
             _map_dataset_identifier(
                 node=root_node,
                 organization_slug=self.organization_slug)
-        dataset_dict['title'] = \
-            _map_dataset_title(node=root_node)
-        dataset_dict['decription'] = \
-            _map_dataset_description(node=root_node)
-        dataset_dict['publishers'] = \
-            _map_dataset_publisher(node=root_node)
-        dataset_dict['contact_points'] = \
-            _map_dataset_contact_points(node=root_node)
-        dataset_dict['issued'] = \
-            _map_dataset_issued(node=root_node)
-        dataset_dict['modified'] = \
-            _map_dataset_modified(node=root_node)
-        dataset_dict['keywords'] = \
-            _map_dataset_keywords(node=root_node)
-        dataset_dict['groups'] = \
-            _map_dataset_categories(node=root_node)
+        dataset_dict['title'] = _map_dataset_title(node=root_node)
+        dataset_dict['decription'] = _map_dataset_description(node=root_node)
+        dataset_dict['publishers'] = _map_dataset_publisher(node=root_node)
+        dataset_dict['contact_points'] = _map_dataset_contact_points(node=root_node)
+        dataset_dict['issued'] = _map_dataset_issued(node=root_node)
+        dataset_dict['modified'] = _map_dataset_modified(node=root_node)
+        dataset_dict['keywords'] = _map_dataset_keywords(node=root_node)
+        dataset_dict['groups'] = _map_dataset_categories(node=root_node)
         dataset_dict['accrual_periodicity'] = _map_dataset_frequency(node=root_node)
-        dataset_dict['coverage'] = \
-            _map_dataset_coverage()
-        dataset_dict['spatial'] = \
-            _map_dataset_spatial(node=root_node)
+        dataset_dict['coverage'] = _map_dataset_coverage()
+        dataset_dict['spatial'] = _map_dataset_spatial(node=root_node)
         dataset_dict['owner_org'] = self.organization_slug
         return dataset_dict
 
