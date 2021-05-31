@@ -111,6 +111,16 @@ class GeocatHarvester(HarvesterBase):
             existing_dataset_infos=existing_dataset_infos,
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
+        packages_that_cannot_be_created = search_utils.get_double_packages(
+            existing_dataset_infos=existing_dataset_infos,
+            gathered_ogdch_identifiers=gathered_ogdch_identifiers,
+        )
+        for identifier, info in packages_that_cannot_be_created:
+            self._save_gather_error(
+                'Unable to create package: %s since a package with this identifier already exists'
+                % (identifier),
+                harvest_job
+            )
 
         csw_map = csw_mapping.GeoMetadataMapping(
             organization_slug=self.config['organization'],

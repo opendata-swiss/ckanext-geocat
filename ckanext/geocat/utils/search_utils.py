@@ -34,6 +34,13 @@ def get_packages_to_delete(existing_dataset_infos, gathered_ogdch_identifiers): 
     ]
 
 
+def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
+    return [
+        (identifier, info) for identifier, info in existing_dataset_infos.items()  # noqa
+        if not info.belongs_to_harvester and identifier in gathered_ogdch_identifiers  # noqa
+    ]
+
+
 def get_dataset_infos_for_organization(organization_name, harvest_source_id):
     context = _get_default_context()
     rows = 500
