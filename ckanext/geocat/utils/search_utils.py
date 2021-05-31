@@ -7,7 +7,7 @@ OgdchDatasetInfo = namedtuple('OgdchDatasetInfo', ['name', 'belongs_to_harvester
 
 
 def find_existing_package(dataset_identifier):
-    context = _get_default_context()
+    context = get_default_context()
     user = tk.get_action('get_site_user')({'ignore_auth': True}, {})
     context.update({'user': user['name']})
     param = 'identifier:%s' % dataset_identifier
@@ -19,7 +19,7 @@ def find_existing_package(dataset_identifier):
 
 
 def get_organization_slug_for_harvest_source(harvest_source_id):
-    context = _get_default_context()
+    context = get_default_context()
     try:
         source_dataset = tk.get_action('package_show')(context, {'id': harvest_source_id})  # noqa
         return source_dataset.get('organization').get('name')
@@ -41,8 +41,24 @@ def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # 
     ]
 
 
+def find_package_for_identifier(identifier):
+    context = get_default_context()
+    fq = "identifier:({})".format(identifier)
+    try:
+        result = tk.get_action('package_search')(context,
+                                                 {'fq': fq,
+                                                  'include_private': True})
+        if result.get('count') > 0:
+            pkg = result['results'][0]
+            return OgdchDatasetInfo(name=pkg['name'], package_id=pkg['id'], belongs_to_harvester=True)  # noqa
+        else:
+            return None
+    except Exception as e:
+        print("Error occured while searching for packages with fq: {}, error: {}".format(fq, e))  # noqa
+
+
 def get_dataset_infos_for_organization(organization_name, harvest_source_id):
-    context = _get_default_context()
+    context = get_default_context()
     rows = 500
     page = 0
     result_count = 0
@@ -80,7 +96,7 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
     return ogdch_dataset_infos
 
 
-def _get_default_context():
+def get_default_context():
     return {
         'model': model,
         'session': Session,
