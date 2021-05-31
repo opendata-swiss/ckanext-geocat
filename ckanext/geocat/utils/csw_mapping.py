@@ -59,6 +59,7 @@ class GeoMetadataMapping(object):
             _map_dataset_keywords(node=root_node)
         dataset_dict['groups'] = \
             _map_dataset_categories(node=root_node)
+        dataset_dict['accrual_periodicity'] = _map_dataset_frequency(node=root_node)
         dataset_dict['coverage'] = \
             _map_dataset_coverage()
         dataset_dict['spatial'] = \
@@ -170,6 +171,17 @@ def _map_dataset_categories(node):
         return ogdch_map_utils.map_to_ogdch_categories(geocat_categories)
     CATEGORIES_EMPTY = []
     return CATEGORIES_EMPTY
+
+
+def _map_dataset_frequency(node):
+    GMD_ACRUAL_PERIDICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue'  # noqa
+    geocat_frequency = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_ACRUAL_PERIDICITY)  # noqa
+    if geocat_frequency:
+        accrual_periodicity = ogdch_map_utils.map_frequency(geocat_frequency)
+        if accrual_periodicity:
+            return accrual_periodicity
+    FREQUENCY_EMPTY = ''
+    return FREQUENCY_EMPTY
 
 
 def _map_dataset_coverage():

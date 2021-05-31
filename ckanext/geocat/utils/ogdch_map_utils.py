@@ -82,6 +82,22 @@ def map_to_ogdch_categories(geocat_categories):
     return [{'name': group} for group in ogdch_groups]
 
 
+def map_frequency(geocat_frequency):
+    frequency_mapping = {
+        'continual': 'http://purl.org/cld/freq/continuous',
+        'daily': 'http://purl.org/cld/freq/daily',
+        'weekly': 'http://purl.org/cld/freq/weekly',
+        'fortnightly': 'http://purl.org/cld/freq/biweekly',
+        'monthly': 'http://purl.org/cld/freq/monthly',
+        'quarterly': 'http://purl.org/cld/freq/quarterly',
+        'biannually': 'http://purl.org/cld/freq/semiannual',
+        'annually': 'http://purl.org/cld/freq/annual',
+        'asNeeded': 'http://purl.org/cld/freq/completelyIrregular',
+        'irregular': 'http://purl.org/cld/freq/completelyIrregular',
+    }
+    return frequency_mapping.get(geocat_frequency, '')
+
+
 def map_contact_points(geocat_contact_point):
     contacts = [{'name': geocat_contact_point, 'email': geocat_contact_point}]  # noqa
     return contacts
