@@ -101,3 +101,13 @@ def map_frequency(geocat_frequency):
 def map_contact_points(geocat_contact_point):
     contacts = [{'name': geocat_contact_point, 'email': geocat_contact_point}]  # noqa
     return contacts
+
+
+def map_language(geocat_language):
+    language_mapping = {
+        'ger': 'de',
+        'fra': 'fr',
+        'eng': 'en',
+        'ita': 'it',
+    }
+    return language_mapping.get(geocat_language, '')

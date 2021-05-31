@@ -51,6 +51,7 @@ class GeoMetadataMapping(object):
         dataset_dict['modified'] = _map_dataset_modified(node=root_node)
         dataset_dict['keywords'] = _map_dataset_keywords(node=root_node)
         dataset_dict['groups'] = _map_dataset_categories(node=root_node)
+        dataset_dict['language'] = _map_dataset_language(node=root_node)
         dataset_dict['accrual_periodicity'] = _map_dataset_frequency(node=root_node)
         dataset_dict['coverage'] = _map_dataset_coverage()
         dataset_dict['spatial'] = _map_dataset_spatial(node=root_node)
@@ -186,3 +187,16 @@ def _map_dataset_spatial(node):
         return geocat_spatial
     SPACIAL_EMPTY = ''
     return SPACIAL_EMPTY
+
+
+def _map_dataset_language(node):
+    GMD_LANGUAGE = ['//gmd:identificationInfo//gmd:language/gco:CharacterString/text()',
+                    '//gmd:language/gmd:LanguageCode/@codeListValue']
+    geocat_languages = xpath_utils.xpath_get_all_values_for_node_and_path_list(node=node, path_list=GMD_LANGUAGE)  # noqa
+    languages = []
+    if geocat_languages:
+        for geocat_language in set(geocat_languages):
+            ogdch_language = ogdch_map_utils.map_language(geocat_language)
+            if ogdch_language:
+                languages.append(ogdch_language)
+    return languages
