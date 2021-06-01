@@ -178,15 +178,12 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol, downl
     distribution['protocol_name'] = protocol_name
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
         format = protocol.strip(DOWNLOAD_PROTOCOL + ':')
-        if format in download_formats:
-            distribution['format'] = format
+        distribution['format'] = format
     if normed_protocol in SERVICE_PROTOCOLS:
-        format = SERVICE_FORMAT
-        if format in service_formats:
-            distribution['format'] = format
+        distribution['format'] = SERVICE_FORMAT
     GMD_URL = './/gmd:linkage'
     url_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_URL)  # noqa
-    if url_node:
+    if len(url_node):
         distribution['url'], distribution['language'] = xpath_get_url_and_languages(url_node)  # noqa
     return distribution
 
