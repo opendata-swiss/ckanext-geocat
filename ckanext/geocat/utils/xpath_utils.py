@@ -201,9 +201,9 @@ def _get_normed_protocol(protocol):
         MAP_PROTOCOL: "Map (Preview)",
         ESRI_REST_PROTOCOL: "ESRI (Rest)"
     }
-    for normed_protocol in protocol_to_name_mapping.items():
+    for normed_protocol, protocol_name in protocol_to_name_mapping.items():
         if protocol.startswith(normed_protocol):
-            return normed_protocol, protocol_to_name_mapping.get(normed_protocol)  # noqa
+            return normed_protocol, protocol_name  # noqa
     return None, None
 
 
