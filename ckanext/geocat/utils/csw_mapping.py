@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from ckanext.geocat.utils import ogdch_map_utils, xpath_utils  # noqa
+from rdflib import Literal
+from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, vocabulary_utils  # noqa
+from ckanext.geocat.utils.vocabulary_utils import DCT, SKOS
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 
@@ -38,6 +40,7 @@ class GeoMetadataMapping(object):
         self.organization_slug = organization_slug
         self.legal_basis_url = legal_basis_url
         self.valid_identifiers = valid_identifiers
+        self.terms_of_use_graph = vocabulary_utils.get_terms_of_use()
 
     def get_metadata(self, csw_record_as_string, geocat_id):
         root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
@@ -64,7 +67,7 @@ class GeoMetadataMapping(object):
                                    organization_slug=self.organization_slug,
                                    valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
-        rights = _map_dataset_rights(node=root_node)
+        rights = _map_dataset_rights(node=root_node, terms_of_use=self.terms_of_use_graph)  # noqa
 
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
@@ -282,10 +285,18 @@ def _map_dataset_see_alsos(node, organization_slug, valid_identifiers):
     return []
 
 
-def _map_dataset_rights(node):
+def _map_dataset_rights(node, terms_of_use):
     GMD_RIGHTS = './/gmd:resourceConstraints//gmd:otherConstraints'
     geocat_rights_dict = {}
     rights_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_RIGHTS)  # noqa
     if len(rights_node):
         geocat_rights_dict = xpath_utils.xpath_get_rights_dict_form_rights_node(rights_node)  # noqa
-    return ogdch_map_utils.map_rights(geocat_rights_dict)
+
+    for lang, rights_value in geocat_rights_dict.items():
+        rights_literal = Literal(rights_value, lang=lang)
+        for rights_uri in terms_of_use.subjects(object=rights_literal):
+            for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa
+                ogdch_rights = str(mapping_object)
+                return ogdch_rights
+    DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
+    return DEFAULT_RIGHTS

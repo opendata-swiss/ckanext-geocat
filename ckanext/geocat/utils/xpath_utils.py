@@ -121,11 +121,8 @@ def xpath_get_url_and_languages(node):
 
 
 def xpath_get_rights_dict_form_rights_node(node):
-    rights_dict = {'en': '', 'it': '', 'de': '', 'fr': '', 'anchor': ''}
+    rights_dict = {'en': '', 'it': '', 'de': '', 'fr': ''}
     try:
-        anchor = node.xpath('.//gmx:Anchor/text()', namespaces=gmd_namespaces)
-        if anchor:
-            rights_dict['anchor'] = anchor[0]
         for locale in LOCALES:
             value_locale = node.xpath('.//gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]'.format(locale) + '/text()',  # noqa
                                       namespaces=gmd_namespaces)

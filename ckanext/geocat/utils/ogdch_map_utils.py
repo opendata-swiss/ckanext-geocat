@@ -4,8 +4,6 @@ from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
 
-DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
-
 
 def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
     return '@'.join([geocat_identifier, organization_slug])
@@ -143,10 +141,6 @@ def get_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
 def get_legal_basis_link(legal_basis_url):
     LEGAL_BASIS_LABEL = 'legal_basis'
     return {'url': legal_basis_url, 'label': LEGAL_BASIS_LABEL}
-
-
-def map_rights(geocat_rights_dict):
-    return DEFAULT_RIGHTS
 
 
 def get_relation_protocols():
