@@ -127,15 +127,18 @@ def _map_dataset_identifier(node, organization_slug):
 def _map_dataset_title(node):
     GMD_TITLE = '//gmd:identificationInfo//gmd:citation//gmd:title'
     title_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TITLE)  # noqa
-    if title_node:
+    if title_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(title_node)  # noqa
+    return {'en': '', 'it': '', 'de': '', 'fr': ''}
 
 
 def _map_dataset_description(node):
+    import pdb; pdb.set_trace()
     GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
     description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)  # noqa
     if description_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
+    return {'en': '', 'it': '', 'de': '', 'fr': ''}
 
 
 def _map_dataset_publisher(node):

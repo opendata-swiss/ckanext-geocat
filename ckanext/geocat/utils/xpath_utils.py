@@ -56,7 +56,7 @@ def xpath_get_single_sub_node_for_node_and_path(node, path):
     if results:
         return results[0]
     else:
-        return ''
+        return None
 
 
 def xpath_get_all_sub_nodes_for_node_and_path(node, path):
@@ -64,7 +64,7 @@ def xpath_get_all_sub_nodes_for_node_and_path(node, path):
     if results:
         return results
     else:
-        return []
+        return None
 
 
 def xpath_get_all_values_for_node_and_path_list(node, path_list):
@@ -84,6 +84,7 @@ def xpath_get_first_of_values_from_path_list(node, path_list, get=XPATH_NODE):
         value = node.xpath(path + get_text, namespaces=gmd_namespaces)
         if value:
             return value[0]
+    return None
 
 
 def xpath_get_language_dict_from_geocat_multilanguage_node(node):
@@ -98,7 +99,10 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
     except:
         value = node.xpath('.//gmd:CharacterString/text()',
                            namespaces=gmd_namespaces)
-        return value
+        if value:
+            for locale in LOCALES:
+                language_dict[locale] = value
+    return language_dict
 
 
 def xpath_get_url_and_languages(node):
