@@ -37,7 +37,8 @@ def map_to_ogdch_keywords(geocat_keywords):
     for keyword in geocat_keywords:
         for lang, geocat_keyword in keyword.items():
             if geocat_keyword != 'opendata.swiss' and lang in ['fr', 'de', 'en', 'it']:  # noqa
-                ogdch_keywords[lang].append(munge_tag(geocat_keyword))  # noqa
+                if geocat_keyword:
+                    ogdch_keywords[lang].append(munge_tag(geocat_keyword))  # noqa
     return ogdch_keywords
 
 
