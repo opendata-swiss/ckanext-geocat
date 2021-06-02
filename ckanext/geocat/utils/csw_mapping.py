@@ -133,7 +133,6 @@ def _map_dataset_title(node):
 
 
 def _map_dataset_description(node):
-    import pdb; pdb.set_trace()
     GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
     description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)  # noqa
     if description_node is not None:
