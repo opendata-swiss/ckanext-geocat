@@ -2,7 +2,7 @@
 
 from rdflib import Literal
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, vocabulary_utils  # noqa
-from ckanext.geocat.utils.vocabulary_utils import DCT, SKOS
+from ckanext.geocat.utils.vocabulary_utils import SKOS
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 
