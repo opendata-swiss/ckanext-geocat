@@ -1,9 +1,7 @@
 """Tests for metadata """
-import ckanext.geocat.metadata as metadata
 from ckanext.geocat.utils import csw_mapping
 from nose.tools import *  # noqa
 import os
-import sys
 from datetime import datetime
 import time
 import unittest
@@ -37,7 +35,6 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         for lang in ['de', 'fr', 'it', 'en']:
             self.assertIn(lang, value)
 
-        
     def test_fields(self):
         xml = self._load_xml('complete.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)

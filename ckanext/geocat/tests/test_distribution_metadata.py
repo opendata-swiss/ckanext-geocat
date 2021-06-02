@@ -1,15 +1,10 @@
 """Tests for metadata """
-import ckanext.geocat.metadata as metadata
+from ckanext.geocat.utils import csw_mapping
 from nose.tools import *  # noqa
 import os
-import sys
 from datetime import datetime
 import time
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 __location__ = os.path.realpath(
     os.path.join(
@@ -20,20 +15,30 @@ __location__ = os.path.realpath(
 
 
 class TestGeocatDcatDistributionMetadata(unittest.TestCase):
-    def _load_xml(self, metadata, filename):
+    def setUp(self):
+        self.csw_map = csw_mapping.GeoMetadataMapping(
+            organization_slug="swisstopo",
+            geocat_perma_link="https://perma-link/",
+            geocat_perma_label="some label",
+            legal_basis_url="",
+            valid_identifiers=['8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'],
+        )
+        self.geocat_identifier = '93814e81-2466-4690-b54d-c1d958f1c3b8'
+
+    def _load_xml(self, filename):
         path = os.path.join(__location__, 'fixtures', filename)
         with open(path) as xml:
-            entry = metadata.get_metadata(xml.read())
+            entry = xml.read()
         return entry
 
     def _is_multi_lang(self, value):
         for lang in ['de', 'fr', 'it', 'en']:
             self.assertIn(lang, value)
-
         
     def test_fields(self):
-        dcat = metadata.GeocatDcatDistributionMetadata()
-        distributions = self._load_xml(dcat, 'complete.xml')
+        xml = self._load_xml('complete.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        distributions = dataset.get('resources')
 
         self.assertEquals(6, len(distributions))
 
@@ -65,8 +70,9 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
             self._is_multi_lang(dist.get('description'))
 
     def test_fields_values(self):
-        dcat = metadata.GeocatDcatDistributionMetadata()
-        distributions = self._load_xml(dcat, 'complete.xml')
+        xml = self._load_xml('complete.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        distributions = dataset.get('resources')
 
         download = None
         for dist in distributions:
