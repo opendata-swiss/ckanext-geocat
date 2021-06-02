@@ -121,7 +121,7 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
         self.assertEquals('', download.get('byte_size'))
 
         # media type
-        self.assertEquals('application/zip', download.get('media_type'))
+        self.assertEquals('', download.get('media_type'))
 
         # format
         self.assertEquals('', download.get('format'))
