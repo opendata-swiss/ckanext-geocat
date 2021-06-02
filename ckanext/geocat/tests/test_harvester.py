@@ -11,7 +11,7 @@ import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
 
 from ckanext.geocat.metadata import CswHelper
-from ckanext.harvest.model import HarvestJob
+from ckanext.geocat.csw_processor import GeocatCatalogueServiceWeb
 
 
 eq_ = nose.tools.eq_
@@ -30,36 +30,34 @@ mock_url = "http://mock-geocat.ch"
 # Monkey patch required because of a bug between httpretty and redis.
 # See https://github.com/gabrielfalcao/HTTPretty/issues/113
 
-original_get_id_by_search = CswHelper.get_id_by_search
+original_get_geocat_id_from_csw = GeocatCatalogueServiceWeb.get_geocat_id_from_csw
 
+def _patched_get_geocat_id_from_csw(self):
 
-def _patched_get_id_by_search(self, searchterm='', propertyname='csw:AnyText',
-                              cql=None):
     httpretty.enable()
 
-    for nextrecord in original_get_id_by_search(self, searchterm, propertyname, cql):
-        yield nextrecord
+    ids = original_get_geocat_id_from_csw(self)
 
     httpretty.disable()
 
+    return ids
 
-CswHelper.get_id_by_search = _patched_get_id_by_search
+GeocatCatalogueServiceWeb = _patched_get_geocat_id_from_csw
 
-original_get_by_id = CswHelper.get_by_id
+original_get_record_by_id = GeocatCatalogueServiceWeb.get_record_by_id
 
-def _patched_get_by_id(self, id):
+def _patched_get_record_by_id(self, geocat_id):
     httpretty.enable()
 
-    id = original_get_by_id(self, id)
+    id = original_get_record_by_id(self, geocat_id)
 
     httpretty.disable()
 
     return id
 
-CswHelper.get_by_id = _patched_get_by_id
+GeocatCatalogueServiceWeb.get_record_by_id = _patched_get_record_by_id
 
 # End monkey patch
-
 
 class FunctionalHarvestTest(object):
     @classmethod
