@@ -79,7 +79,7 @@ class GeoMetadataMapping(object):
         relation_protocols = ogdch_map_utils.get_relation_protocols()
 
         resource_nodes = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=root_node, path=GMD_RESOURCES)  # noqa
-        if len(resource_nodes):
+        if resource_nodes is not None:
             for resource_node in resource_nodes:
                 protocol = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_PROTOCOL)  # noqa
                 if protocol in relation_protocols:
@@ -126,14 +126,14 @@ def _map_dataset_identifier(node, organization_slug):
 def _map_dataset_title(node):
     GMD_TITLE = '//gmd:identificationInfo//gmd:citation//gmd:title'
     title_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TITLE)  # noqa
-    if len(title_node):
+    if title_node:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(title_node)  # noqa
 
 
 def _map_dataset_description(node):
     GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
     description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)  # noqa
-    if len(description_node):
+    if description_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
 
 
@@ -147,7 +147,7 @@ def _map_dataset_publisher(node):
         '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName/gco:CharacterString',  # noqa
     ]
     publisher_node = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_PUBLISHER, get=xpath_utils.XPATH_NODE)  # noqa
-    if len(publisher_node):
+    if publisher_node is not None:
         geocat_publisher = xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
         if geocat_publisher:
             return ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
@@ -287,16 +287,15 @@ def _map_dataset_see_alsos(node, organization_slug, valid_identifiers):
 
 def _map_dataset_rights(node, terms_of_use):
     GMD_RIGHTS = './/gmd:resourceConstraints//gmd:otherConstraints'
-    geocat_rights_dict = {}
     rights_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_RIGHTS)  # noqa
-    if len(rights_node):
+    if rights_node is not None:
         geocat_rights_dict = xpath_utils.xpath_get_rights_dict_form_rights_node(rights_node)  # noqa
 
-    for lang, rights_value in geocat_rights_dict.items():
-        rights_literal = Literal(rights_value, lang=lang)
-        for rights_uri in terms_of_use.subjects(object=rights_literal):
-            for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa
-                ogdch_rights = str(mapping_object)
-                return ogdch_rights
+        for lang, rights_value in geocat_rights_dict.items():
+            rights_literal = Literal(rights_value, lang=lang)
+            for rights_uri in terms_of_use.subjects(object=rights_literal):
+                for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa
+                    ogdch_rights = str(mapping_object)
+                    return ogdch_rights
     DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
     return DEFAULT_RIGHTS

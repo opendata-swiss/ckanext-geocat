@@ -166,7 +166,7 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol, downl
     distribution = {}
     distribution['name'] = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_NAME)  # noqa
     description_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_RESOURCE_DESCRIPTION)  # noqa
-    if len(description_node):
+    if description_node is not None:
         distribution['description'] = xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
     else:
         distribution['description'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
@@ -180,7 +180,7 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol, downl
         distribution['format'] = SERVICE_FORMAT
     GMD_URL = './/gmd:linkage'
     url_node = xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_URL)  # noqa
-    if len(url_node):
+    if url_node is not None:
         distribution['url'], distribution['language'] = xpath_get_url_and_languages(url_node)  # noqa
     return distribution
 
