@@ -87,7 +87,8 @@ class GeoMetadataMapping(object):
                         dataset_dict['url'] = xpath_utils.xpath_get_url_with_label_from_distribution(resource_node).get('url')  # noqa
                     else:
                         url_with_label = xpath_utils.xpath_get_url_with_label_from_distribution(resource_node)  # noqa
-                        dataset_dict['relations'].append(url_with_label)
+                        if url_with_label:
+                            dataset_dict['relations'].append(url_with_label)
                 else:
                     geocat_resource = \
                         xpath_utils.xpath_get_distribution_from_distribution_node(  # noqa

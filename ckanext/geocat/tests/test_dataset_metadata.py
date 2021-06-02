@@ -6,11 +6,7 @@ import os
 import sys
 from datetime import datetime
 import time
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 __location__ = os.path.realpath(
     os.path.join(
@@ -64,6 +60,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             'coverage',
             'accrual_periodicity',
             'see_alsos',
+            'owner_org',
+            'resources'
         ]
 
         for field in fields:
@@ -134,7 +132,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # relations
         self.assertTrue(hasattr(dataset['relations'], '__iter__'))
-        self.assertEquals(1, len(dataset['relations']))
+        self.assertEquals(2, len(dataset['relations']))
         for relation in dataset['relations']:
             self.assertIsNotNone(relation['label'])
             self.assertIsNotNone(relation['url'])

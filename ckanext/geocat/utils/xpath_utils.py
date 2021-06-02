@@ -146,13 +146,19 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
 
 
 def xpath_get_url_with_label_from_distribution(node):
-    url = {}
-    url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
-                          namespaces=gmd_namespaces)
+    url_node = node.xpath('.//gmd:linkage/gmd:URL/text()', namespaces=gmd_namespaces)  # noqa
+    if not url_node:
+        for locale in LOCALES:
+            url_node = node.xpath('.//che:LocalisedURL[@locale="#{}"]'.format(locale) + '/text()',  namespaces=gmd_namespaces)  # noqa
+            if url_node:
+                break
+        if not url_node:
+            url_node = node.xpath('.//che:LocalisedURL/text()', namespaces=gmd_namespaces)  # noqa
     if url_node:
-        url = {'label': url_node[0], 'url': url_node[0]}
-    text_node = node.xpath('.//gmd:description',
-                           namespaces=gmd_namespaces)
+        url = {'url': url_node[0], 'label': url_node[0]}
+    else:
+        return None
+    text_node = node.xpath('.//gmd:description', namespaces=gmd_namespaces)
     if text_node:
         url_text_node = xpath_get_one_value_from_geocat_multilanguage_node(text_node[0])  # noqa
         if url_text_node:
