@@ -291,12 +291,12 @@ def _map_dataset_rights(node, terms_of_use):
     rights_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_RIGHTS)  # noqa
     if rights_node is not None:
         geocat_rights_dict = xpath_utils.xpath_get_rights_dict_form_rights_node(rights_node)  # noqa
-
-        for lang, rights_value in geocat_rights_dict.items():
-            rights_literal = Literal(rights_value, lang=lang)
-            for rights_uri in terms_of_use.subjects(object=rights_literal):
-                for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa
-                    ogdch_rights = str(mapping_object)
-                    return ogdch_rights
+        if geocat_rights_dict:
+            for lang, rights_value in geocat_rights_dict.items():
+                rights_literal = Literal(rights_value, lang=lang)
+                for rights_uri in terms_of_use.subjects(object=rights_literal):
+                    for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa
+                        ogdch_rights = str(mapping_object)
+                        return ogdch_rights
     DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
     return DEFAULT_RIGHTS
