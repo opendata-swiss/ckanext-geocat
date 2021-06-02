@@ -159,6 +159,7 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['rights'] = rights
     resource_dict['media_type'] = geocat_resource.get('format', '')
     resource_dict['format'] = ''
+    resource_dict['byte_size'] = ''
     resource_dict['license'] = ''
     resource_dict['identifier'] = ''
     resource_dict['description'] = geocat_resource.get('description')
