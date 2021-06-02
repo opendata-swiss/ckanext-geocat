@@ -23,7 +23,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             geocat_perma_link="https://perma-link/",
             geocat_perma_label="some label",
             legal_basis_url="",
-            valid_identifiers=[],
+            valid_identifiers=['8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'],
         )
         self.geocat_identifier = '93814e81-2466-4690-b54d-c1d958f1c3b8'
 
@@ -202,7 +202,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         # see alsos
         self.assertTrue(hasattr(dataset['see_alsos'], '__iter__'))
         self.assertEquals(1, len(dataset['see_alsos']))
-        self.assertEquals('8454f7d9-e3f2-4cc7-be6d-a82196660ccd', dataset['see_alsos'][0])  # noqa
+        self.assertEquals('8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo', dataset['see_alsos'][0])  # noqa
 
     def test_fields_values_de_only(self):
         xml = self._load_xml('only_de.xml')
