@@ -40,7 +40,7 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
         distributions = dataset.get('resources')
 
-        self.assertEquals(6, len(distributions))
+        self.assertEquals(4, len(distributions))
 
         fields = [
             'identifier',
