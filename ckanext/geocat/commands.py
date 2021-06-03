@@ -41,9 +41,9 @@ class GeocatCommand(CkanCommand):
             'list': self.listCmd,
             'help': self.helpCmd,
         }
-
         try:
             cmd = self.args[0]
+            import pdb;pdb.set_trace()
             options[cmd](*self.args[1:])
         except (KeyError, IndexError):
             self.helpCmd()
@@ -52,8 +52,6 @@ class GeocatCommand(CkanCommand):
         print(self.__doc__)
 
     def listCmd(self, url=None):
-        cqlquery = csw_processor.CQL_QUERY_DEFAUL
-        cqlvalue = csw_processor.CQL_SEARCH_TERM_DEFAUT
         if len(self.args) >= 2:
             url = unicode(self.args[1])
         else:
@@ -61,12 +59,14 @@ class GeocatCommand(CkanCommand):
             self.helpCmd()
             sys.exit(1)
 
+        cqlquery = self.options.get('cql_query', csw_processor.CQL_QUERY_DEFAUL)
+        cqlterm = self.options.get('cql_term', csw_processor.CQL_SEARCH_TERM_DEFAUT)
+
         try:
-            import pdb; pdb.set_trace()
-            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)
+            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url, cqlquery=cqlquery, cqlvalue=cqlterm)  # noqa
             search_result = csw_data.get_geocat_id_from_csw()
             print("Search result for %r" % url)
-            print("CQL query: %s: %s" % (cqlquery, cqlvalue))
+            print("CQL query: %s: %s" % (cqlquery, cqlterm))
             for record_id in search_result:
                 print('geocat_id: %r' % record_id)
         except Exception as e:
