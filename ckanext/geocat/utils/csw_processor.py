@@ -7,6 +7,8 @@ import logging
 log = logging.getLogger(__name__)
 
 CHE_SCHEMA = 'http://www.geocat.ch/2008/che'
+CQL_QUERY_DEFAUL = 'keyword'
+CQL_SEARCH_TERM_DEFAUT = 'opendata.swiss'
 
 
 class GeocatCatalogueServiceWeb(object):
@@ -14,8 +16,8 @@ class GeocatCatalogueServiceWeb(object):
         self.csw = CatalogueServiceWeb(url)
         self.schema = CHE_SCHEMA
 
-    def get_geocat_id_from_csw(self):
-        harvest_query = PropertyIsEqualTo('keyword', 'opendata.swiss')
+    def get_geocat_id_from_csw(self, cqlquery=CQL_QUERY_DEFAUL, cqlvalue=CQL_SEARCH_TERM_DEFAUT):  # noqa
+        harvest_query = PropertyIsEqualTo(cqlquery, cqlvalue)
         nextrecord = 0
         record_ids = []
         while nextrecord is not None:
