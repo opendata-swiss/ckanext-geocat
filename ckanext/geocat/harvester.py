@@ -19,7 +19,6 @@ log = logging.getLogger(__name__)
 
 DEFAULT_PERMA_LINK_URL = 'https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/'  # noqa
 DEFAULT_PERMA_LINK_LABEL = 'geocat.ch Permalink'
-DEFAULT_GEOCAT_PROD_ENV = 'https://www.geocat.ch/geonetwork/srv'
 HARVEST_USER = 'harvest'
 
 
