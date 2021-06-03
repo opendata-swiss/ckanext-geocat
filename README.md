@@ -36,8 +36,6 @@ To install ckanext-geocat:
 
 To configure the harvester you have several harvester config options (in the harvester config JSON):
 
-* `rights`: The terms of use to be associated with all harvested datasets (default: `NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired`)
-* `cql`: The CQL query to be used when requesting the CSW service (default: `keyword = 'opendata.swiss'`)
 * `user`: The user to be used when importing the datasets (default: `harvest`)
 * `organization`: The organization to be associated to all harvested datasets (default: the organization, which owns the harvest source)
 * `delete_missing_datasets`: Boolean flag (true/false) to determine if this harvester should delete existing datasets that are no longer included in
@@ -48,55 +46,14 @@ the harvest-source (default: `false`)
 
 This extension provides a number of CLI commands to query/debug the results of the CSW server.
 
+They give you the power to check on a remote csw source with search paramterers or a specific record id.
+You can either get all remote record ids for a search, or map one remote record to a DCAT dataset.
 
-### `search`
-
-To run an arbitrary query against the defined CSW server use the `search` command:
-
-```
-paster geocat search birds
-```
-
-This command takes an optional second parameter to specifiy the CSW url (defaults to `http://www.geocat.ch/geonetwork/srv/eng/csw`)
-
-### `cql`
-
-To run an arbitrary CQL query against the defined CSW server use the `cql` command:
+Use the command with `help` to check for the available commands and their usage.
 
 ```
-paster geocat cql "csw:AnyText like '%birds%'"
-paster geocat cql "keyword = 'opendata.swiss'" https://www.geocat.ch/geonetwork/srv/eng/csw-ZH
+paster geocat help
 ```
-
-This command takes an optional second parameter to specifiy the CSW url (defaults to `http://www.geocat.ch/geonetwork/srv/eng/csw`)
-
-### `list`
-
-To list all IDs from the defined CSW server use the `list` command:
-
-```
-paster geocat list
-paster geocat list "keyword = 'opendata.swiss'" 
-paster geocat list "keyword = 'opendata.swiss'" https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/
-```
-
-The first parameter is an arbitrary CQL query, if you omit it, the default query is used (`keyword = 'opendata.swiss'`).
-
-This command takes an optional second parameter to specifiy the CSW url (defaults to `http://www.geocat.ch/geonetwork/srv/eng/csw`)
-
-### `dataset`
-
-To get a specific record (by ID), use the `dataset` command.
-Use the `list` command above to get an ID:
-
-```
-paster geocat dataset "1eac72b1-068d-4272-b011-d0010cc4bf676"
-paster geocat dataset "8ae7eeb1-04d4-4c78-93e1-4225412db6a4" https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/
-```
-
-This command takes an optional second parameter to specifiy the CSW url (defaults to `http://www.geocat.ch/geonetwork/srv/eng/csw`)
-
-The output shows the returned XML from the CSW and the parsed dataset and distribution dictionaries.
 
 ## Development Installation
 
@@ -108,16 +65,3 @@ do::
     python setup.py develop
     pip install -r dev-requirements.txt
     pip install -r requirements.txt
-
-
-# Running the Checks
-
-To run the code checks use:
-
-    flake8
-
-# Run the tests
-
-To run the tests use the following command
-
-    nosetests
