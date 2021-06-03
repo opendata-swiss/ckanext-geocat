@@ -10,11 +10,24 @@ class GeocatCommand(CkanCommand):
     '''Command to query geocat
 
     Usage::
-
-            paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ --key=keyword --term=opendata.swiss
-            paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/
-            paster geocat dataset https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ 8ae7eeb1-04d4-4c78-93e1-4225412db6a4
-
+    
+    With this command you can query a remote csw source:
+    
+    'paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/'
+    
+    The 'list'  command will bring back the record ids of the remote source.
+    You can also add query arguments to it: this here for example will search
+    for the keyword 'opendata.swiss' on the remote source:
+    
+    'paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ --key=keyword --term=opendata.swiss'
+    
+    Once you have the record ids, you can map a specific remote record: 
+    
+    'paster geocat dataset https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ 8ae7eeb1-04d4-4c78-93e1-4225412db6a4'
+    
+    The 'dataset' command uses the same mapping as the harvester, except some extras as the geocat-permalink and 
+    some other fields that are taken from the harvester config when harvesting and just get defaults when
+    the command is used. 
     '''  # noqa
     summary = __doc__.split('\n')[0]
     usage = __doc__
