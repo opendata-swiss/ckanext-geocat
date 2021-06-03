@@ -1,10 +1,8 @@
 import sys
 from pprint import pprint
 from ckan.lib.cli import CkanCommand
-import ckanext.geocat.metadata as md
-import ckanext.geocat.xml_loader as loader
 from ckanext.geocat.utils import csw_processor, csw_mapping
-from ckanext.geocat.harvester import DEFAULT_PERMA_LINK_URL, DEFAULT_PERMA_LINK_LABEL
+from ckanext.geocat.harvester import DEFAULT_PERMA_LINK_URL, DEFAULT_PERMA_LINK_LABEL  # noqa
 
 
 class GeocatCommand(CkanCommand):
@@ -20,8 +18,6 @@ class GeocatCommand(CkanCommand):
     '''  # noqa
     summary = __doc__.split('\n')[0]
     usage = __doc__
-    DEFAULT_CSW_SERVER = 'https://geocat-int.dev.bgdi.ch/geonetwork/srv/ger/csw-opendata-testgroup'
-    DEFAULT_CQL = "keyword=opendata.swiss"
 
     def __init__(self, name):
         super(CkanCommand, self).__init__(name)
@@ -43,7 +39,6 @@ class GeocatCommand(CkanCommand):
         }
         try:
             cmd = self.args[0]
-            import pdb;pdb.set_trace()
             options[cmd](*self.args[1:])
         except (KeyError, IndexError):
             self.helpCmd()
@@ -59,8 +54,8 @@ class GeocatCommand(CkanCommand):
             self.helpCmd()
             sys.exit(1)
 
-        cqlquery = self.options.get('cql_query', csw_processor.CQL_QUERY_DEFAUL)
-        cqlterm = self.options.get('cql_term', csw_processor.CQL_SEARCH_TERM_DEFAUT)
+        cqlquery = self.options.get('cql_query', csw_processor.CQL_QUERY_DEFAUL)  # noqa
+        cqlterm = self.options.get('cql_term', csw_processor.CQL_SEARCH_TERM_DEFAUT)  # noqa
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url, cqlquery=cqlquery, cqlvalue=cqlterm)  # noqa
@@ -84,7 +79,6 @@ class GeocatCommand(CkanCommand):
             sys.exit(1)
 
         try:
-            import pdb; pdb.set_trace()
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)
 
             xml = csw_data.get_record_by_id(id)
@@ -97,10 +91,9 @@ class GeocatCommand(CkanCommand):
             )
             dataset = self.csw_map.get_metadata(xml, id)
         except Exception as e:
-            print("Got error %r when searching at remote url %r for record id %r" % (e, url, id))
+            print("Got error %r when searching at remote url %r for record id %r" % (e, url, id))  # noqa
             self.helpCmd()
             sys.exit(1)
 
         print("\nDataset:")
         pprint(dataset)
-
