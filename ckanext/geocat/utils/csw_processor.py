@@ -16,8 +16,8 @@ class GeocatCatalogueServiceWeb(object):
         self.csw = CatalogueServiceWeb(url)
         self.schema = CHE_SCHEMA
 
-    def get_geocat_id_from_csw(self, cqlquery=CQL_QUERY_DEFAUL, cqlvalue=CQL_SEARCH_TERM_DEFAUT):  # noqa
-        harvest_query = PropertyIsEqualTo(cqlquery, cqlvalue)
+    def get_geocat_id_from_csw(self, cqlquery=CQL_QUERY_DEFAUL, cqlterm=CQL_SEARCH_TERM_DEFAUT):  # noqa
+        harvest_query = PropertyIsEqualTo(cqlquery, cqlterm)
         nextrecord = 0
         record_ids = []
         while nextrecord is not None:
