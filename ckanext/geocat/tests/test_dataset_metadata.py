@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 import time
 import unittest
+from pprint import pprint
 
 __location__ = os.path.realpath(
     os.path.join(
@@ -66,13 +67,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # make sure only the defined fields are on the dataset
         self.assertEquals(sorted(fields), sorted(dataset.keys()))
-        print("fields expected {}".format(fields))
-        print("received")
-        from pprint import pprint
-        pprint(dataset)
 
-
-        from pprint import pprint
         for key, value in dataset.iteritems():
             pprint(value) 
             self.assertIn(key, fields)
