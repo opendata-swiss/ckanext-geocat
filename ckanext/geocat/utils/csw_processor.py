@@ -7,8 +7,8 @@ import logging
 log = logging.getLogger(__name__)
 
 CHE_SCHEMA = 'http://www.geocat.ch/2008/che'
-CQL_QUERY_DEFAUL = 'keyword'
-CQL_SEARCH_TERM_DEFAUT = 'opendata.swiss'
+CQL_QUERY_DEFAULT = 'keyword'
+CQL_SEARCH_TERM_DEFAULT = 'opendata.swiss'
 
 
 class GeocatCatalogueServiceWeb(object):
@@ -16,14 +16,18 @@ class GeocatCatalogueServiceWeb(object):
         self.csw = CatalogueServiceWeb(url)
         self.schema = CHE_SCHEMA
 
-    def get_geocat_id_from_csw(self, cqlquery=CQL_QUERY_DEFAUL, cqlterm=CQL_SEARCH_TERM_DEFAUT):  # noqa
+    def get_geocat_id_from_csw(self, cqlquery=CQL_QUERY_DEFAULT,
+                               cqlterm=CQL_SEARCH_TERM_DEFAULT):
         harvest_query = PropertyIsEqualTo(cqlquery, cqlterm)
         nextrecord = 0
         record_ids = []
         while nextrecord is not None:
-            self.csw.getrecords2(constraints=[harvest_query], maxrecords=50, startposition=nextrecord)  # noqa
+            self.csw.getrecords2(constraints=[harvest_query],
+                                 maxrecords=50,
+                                 startposition=nextrecord)
             if (self.csw.response is None or self.csw.results['matches'] == 0):
-                raise CswNotFoundError("No dataset found for harvest query {}".format(harvest_query))  # noqa
+                raise CswNotFoundError("No dataset found for harvest query {}"
+                                       .format(harvest_query))
             if self.csw.results['returned'] > 0:
                 if self.csw.results['nextrecord'] > 0:
                     nextrecord = self.csw.results['nextrecord']
@@ -31,7 +35,6 @@ class GeocatCatalogueServiceWeb(object):
                     nextrecord = None
                 for id in self.csw.records.keys():
                     record_ids.append(id)
-        log.error(record_ids)
         return record_ids
 
     def get_record_by_id(self, geocat_id):
