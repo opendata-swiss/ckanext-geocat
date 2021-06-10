@@ -118,6 +118,7 @@ class GeocatHarvester(HarvesterBase):
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
         for identifier, info in packages_that_cannot_be_created:
+            gathered_ogdch_identifiers.remove(identifier)
             self._save_gather_error(
                 'Unable to create package: %s since a package with this identifier already exists'  # noqa
                 % (identifier),
