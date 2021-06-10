@@ -13,7 +13,10 @@ namespaces = {
   "dc": DCT
 }
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))  # noqa
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(),
+    os.path.dirname(__file__))
+)
 
 
 def get_elem_tree_from_string(xml_string):
