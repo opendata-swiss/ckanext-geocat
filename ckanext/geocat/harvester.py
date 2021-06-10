@@ -61,14 +61,21 @@ class GeocatHarvester(HarvesterBase):
             self.config = {}
 
         self.config['user'] = self.config.get('user', HARVEST_USER)
-        self.config['delete_missing_datasets'] = self.config.get('delete_missing_datasets', False)  # noqa
+        self.config['delete_missing_datasets'] = \
+            self.config.get('delete_missing_datasets', False)
 
-        self.config['geocat_perma_link_label'] = tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)  # noqa
-        self.config['geocat_perma_link_url'] = self.config.get('geocat_perma_link_url', tk.config.get('geocat_perma_link_url', DEFAULT_PERMA_LINK_URL))  # noqa
+        self.config['geocat_perma_link_label'] = \
+            tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)
+        self.config['geocat_perma_link_url'] = \
+            self.config.get('geocat_perma_link_url',
+                            tk.config.get('geocat_perma_link_url',
+                                          DEFAULT_PERMA_LINK_URL))
 
-        self.config['legal_basis_url'] = self.config.get('legal_basis_url', None)  # noqa
+        self.config['legal_basis_url'] = \
+            self.config.get('legal_basis_url', None)
 
-        organization_slug = search_utils.get_organization_slug_for_harvest_source(harvest_source_id)  # noqa
+        organization_slug = \
+            search_utils.get_organization_slug_for_harvest_source(harvest_source_id)
         self.config['organization'] = organization_slug
 
         log.debug('Using config: %r' % self.config)
@@ -91,17 +98,20 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
-        existing_dataset_infos = search_utils.get_dataset_infos_for_organization(  # noqa
-            organization_name=self.config['organization'],
-            harvest_source_id=harvest_job.source_id,
-        )
+        existing_dataset_infos = \
+            search_utils.get_dataset_infos_for_organization(
+                organization_name=self.config['organization'],
+                harvest_source_id=harvest_job.source_id,
+            )
 
         gathered_ogdch_identifiers = \
-            [ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier=geocat_identifier,  # noqa
-                                                  organization_slug=self.config['organization'])  # noqa
+            [ogdch_map_utils.map_geocat_to_ogdch_identifier(
+                geocat_identifier=geocat_identifier,
+                organization_slug=self.config['organization'])
              for geocat_identifier in gathered_geocat_identifiers]
 
-        all_ogdch_identifiers = set(gathered_ogdch_identifiers + existing_dataset_infos.keys())  # noqa
+        all_ogdch_identifiers = \
+            set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
 
         packages_to_delete = search_utils.get_packages_to_delete(
             existing_dataset_infos=existing_dataset_infos,
@@ -140,18 +150,21 @@ class GeocatHarvester(HarvesterBase):
                 harvest_obj.save()
                 harvest_obj_ids.append(harvest_obj.id)
             except Exception as e:
-                self._save_gather_error('Error when processsing dataset: %s %r / %s'  # noqa
-                                        % (ogdch_identifier, e, traceback.format_exc()),  # noqa
-                                        harvest_job)
+                self._save_gather_error(
+                    'Error when processsing dataset: %s %r / %s'
+                    % (ogdch_identifier, e, traceback.format_exc()),
+                       harvest_job)
                 return []
 
         log.debug('IDs: %r' % harvest_obj_ids)
 
         if self.config['delete_missing_datasets']:
             for package_info in packages_to_delete:
-                obj = HarvestObject(guid=package_info.name, job=harvest_job,
-                                    extras=[HarvestObjectExtra(key='import_action',  # noqa
-                                                               value='delete')])  # noqa
+                obj = HarvestObject(
+                    guid=package_info.name,
+                    job=harvest_job,
+                    extras=[HarvestObjectExtra(key='import_action',
+                                               value='delete')])
                 obj.save()
                 harvest_obj_ids.append(obj.id)
 
@@ -159,7 +172,6 @@ class GeocatHarvester(HarvesterBase):
 
     def fetch_stage(self, harvest_object):
         return True
-
 
     def import_stage(self, harvest_object):  # noqa
         log.debug('In GeocatHarvester import_stage')
@@ -172,7 +184,9 @@ class GeocatHarvester(HarvesterBase):
             )
             return False
 
-        import_action = search_utils.get_value_from_object_extra(harvest_object.extras, 'import_action')  # noqa
+        import_action = \
+            search_utils.get_value_from_object_extra(harvest_object.extras,
+                                                     'import_action')
         if import_action and import_action == 'delete':
             log.debug('import action: %s' % import_action)
             harvest_object.current = False
@@ -187,11 +201,14 @@ class GeocatHarvester(HarvesterBase):
         try:
             pkg_dict = json.loads(harvest_object.content)
         except ValueError:
-            self._save_object_error('Could not parse content for object {0}'.format(harvest_object.id),  # noqa
-                                    harvest_object, 'Import')
+            self._save_object_error('Could not parse content for object {0}'
+                                    .format(harvest_object.id),
+                                            harvest_object,
+                                            'Import')
             return False
 
-        pkg_info = search_utils.find_package_for_identifier(harvest_object.guid)  # noqa
+        pkg_info = \
+            search_utils.find_package_for_identifier(harvest_object.guid)
         context = search_utils.get_default_context()
         try:
             if pkg_info:
@@ -202,7 +219,8 @@ class GeocatHarvester(HarvesterBase):
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
                 pkg_dict['id'] = pkg_info.package_id
-                updated_pkg = tk.get_action('package_update')(context, pkg_dict)  # noqa
+                updated_pkg = \
+                    tk.get_action('package_update')(context, pkg_dict)
                 harvest_object.current = True
                 harvest_object.package_id = updated_pkg['id']
                 harvest_object.save()
@@ -210,10 +228,11 @@ class GeocatHarvester(HarvesterBase):
             else:
                 flat_title = _derive_flat_title(pkg_dict['title'])
                 if not flat_title:
-                    self._save_object_error('Unable to derive name from title %s' % pkg_dict['title'],  # noqa
-                                            harvest_object, 'Import')
+                    self._save_object_error(
+                        'Unable to derive name from title %s'
+                        % pkg_dict['title'], harvest_object, 'Import')
                     return False
-                pkg_dict['name'] = self._gen_new_name(flat_title)  # noqa
+                pkg_dict['name'] = self._gen_new_name(flat_title)
                 schema = default_create_package_schema()
                 context['schema'] = schema
                 schema['__junk'] = [ignore]
@@ -233,7 +252,8 @@ class GeocatHarvester(HarvesterBase):
                     'SET CONSTRAINTS harvest_object_package_id_fkey DEFERRED')
                 model.Session.flush()
 
-                created_pkg = tk.get_action('package_create')(context, pkg_dict)  # noqa
+                created_pkg = \
+                    tk.get_action('package_create')(context, pkg_dict)
 
                 log.debug("Created PKG: %s" % created_pkg)
 
@@ -242,7 +262,8 @@ class GeocatHarvester(HarvesterBase):
 
         except Exception as e:
             self._save_object_error(
-                ('Exception in import stage: %r / %s' % (e, traceback.format_exc())), harvest_object)  # noqa
+                ('Exception in import stage: %r / %s'
+                 % (e, traceback.format_exc())), harvest_object)
             return False
 
     def _create_new_context(self):
