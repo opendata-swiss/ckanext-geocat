@@ -3,28 +3,35 @@ import ckan.plugins.toolkit as tk
 from ckan import model
 from ckan.model import Session
 
-OgdchDatasetInfo = namedtuple('OgdchDatasetInfo', ['name', 'belongs_to_harvester', 'package_id'])  # noqa
+OgdchDatasetInfo = namedtuple('OgdchDatasetInfo',
+                              ['name', 'belongs_to_harvester', 'package_id'])
 
 
 def get_organization_slug_for_harvest_source(harvest_source_id):
     context = get_default_context()
     try:
-        source_dataset = tk.get_action('package_show')(context, {'id': harvest_source_id})  # noqa
+        source_dataset = \
+            tk.get_action('package_show')(context, {'id': harvest_source_id})
         return source_dataset.get('organization').get('name')
     except (KeyError, IndexError, TypeError):
         raise tk.ObjectNotFound
 
 
-def get_packages_to_delete(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
+def get_packages_to_delete(existing_dataset_infos,
+                           gathered_ogdch_identifiers):
     return [
-        (identifier, info) for identifier, info in existing_dataset_infos.items()    # noqa
+        (identifier, info)
+        for identifier, info
+        in existing_dataset_infos.items()
         if info.belongs_to_harvester and identifier not in gathered_ogdch_identifiers  # noqa
     ]
 
 
 def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
     return [
-        (identifier, info) for identifier, info in existing_dataset_infos.items()  # noqa
+        (identifier, info)
+        for identifier, info
+        in existing_dataset_infos.items()
         if not info.belongs_to_harvester and identifier in gathered_ogdch_identifiers  # noqa
     ]
 
@@ -38,11 +45,14 @@ def find_package_for_identifier(identifier):
                                                   'include_private': True})
         if result.get('count') > 0:
             pkg = result['results'][0]
-            return OgdchDatasetInfo(name=pkg['name'], package_id=pkg['id'], belongs_to_harvester=True)  # noqa
+            return OgdchDatasetInfo(name=pkg['name'],
+                                    package_id=pkg['id'],
+                                    belongs_to_harvester=True)
         else:
             return None
     except Exception as e:
-        print("Error occured while searching for packages with fq: {}, error: {}".format(fq, e))  # noqa
+        print("Error occured while searching for packages with fq: {}, error: {}"  # noqa
+              .format(fq, e))
 
 
 def get_dataset_infos_for_organization(organization_name, harvest_source_id):
@@ -68,18 +78,22 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
             if datasets_in_result:
                 for dataset in datasets_in_result:
                     extras = dataset.get('extras')
-                    dataset_harvest_source_id = get_value_from_dataset_extras(extras, 'harvest_source_id')  # noqa
+                    dataset_harvest_source_id = \
+                        get_value_from_dataset_extras(extras,
+                                                      'harvest_source_id')
                     if dataset_harvest_source_id and dataset_harvest_source_id == harvest_source_id:  # noqa
                         belongs_to_harvester = True
                     else:
                         belongs_to_harvester = False
-                    ogdch_dataset_infos[dataset['identifier']] = OgdchDatasetInfo(  # noqa
-                        name=dataset['name'],
-                        package_id=dataset['id'],
-                        belongs_to_harvester=belongs_to_harvester)
+                    ogdch_dataset_infos[dataset['identifier']] = \
+                        OgdchDatasetInfo(
+                            name=dataset['name'],
+                            package_id=dataset['id'],
+                            belongs_to_harvester=belongs_to_harvester)
             processed_count += len(datasets_in_result)
         except Exception as e:
-            print("Error occured while searching for packages with fq: {}, error: {}".format(fq, e))  # noqa
+            print("Error occured while searching for packages with fq: {}, error: {}"
+                  .format(fq, e))
             break
     return ogdch_dataset_infos
 
@@ -94,7 +108,9 @@ def get_default_context():
 
 def get_value_from_dataset_extras(extras, key):
     if extras:
-        extras_reduced_to_key = [item.get('value') for item in extras if item.get('key') == key]  # noqa
+        extras_reduced_to_key = [item.get('value')
+                                 for item in extras
+                                 if item.get('key') == key]
         if extras_reduced_to_key:
             return extras_reduced_to_key[0]
     return None
