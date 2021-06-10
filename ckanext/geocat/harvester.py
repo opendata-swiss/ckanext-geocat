@@ -144,8 +144,8 @@ class GeocatHarvester(HarvesterBase):
                 try:
                     harvest_obj = \
                         HarvestObject(guid=ogdch_identifier,
-                        job=harvest_job,
-                        content=json.dumps(dataset_dict))
+                                      job=harvest_job,
+                                      content=json.dumps(dataset_dict))
                     harvest_obj.save()
                     harvest_obj_ids.append(harvest_obj.id)
                 except Exception as e:
