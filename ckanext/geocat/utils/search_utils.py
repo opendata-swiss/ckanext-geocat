@@ -6,18 +6,6 @@ from ckan.model import Session
 OgdchDatasetInfo = namedtuple('OgdchDatasetInfo', ['name', 'belongs_to_harvester', 'package_id'])  # noqa
 
 
-def find_existing_package(dataset_identifier):
-    context = get_default_context()
-    user = tk.get_action('get_site_user')({'ignore_auth': True}, {})
-    context.update({'user': user['name']})
-    param = 'identifier:%s' % dataset_identifier
-    result = tk.get_action('package_search')(context, {'fq': param})  # noqa
-    try:
-        return result['results'][0]
-    except (KeyError, IndexError, TypeError):
-        raise tk.ObjectNotFound
-
-
 def get_organization_slug_for_harvest_source(harvest_source_id):
     context = get_default_context()
     try:
