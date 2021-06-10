@@ -142,9 +142,10 @@ class GeocatHarvester(HarvesterBase):
                 csw_record_as_string = csw_data.get_record_by_id(geocat_id)
                 dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)  # noqa
                 try:
-                    harvest_obj = HarvestObject(guid=ogdch_identifier,
-                                                job=harvest_job,
-                                                content=json.dumps(dataset_dict))
+                    harvest_obj = \
+                        HarvestObject(guid=ogdch_identifier,
+                        job=harvest_job,
+                        content=json.dumps(dataset_dict))
                     harvest_obj.save()
                     harvest_obj_ids.append(harvest_obj.id)
                 except Exception as e:
