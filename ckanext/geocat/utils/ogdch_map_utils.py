@@ -36,9 +36,10 @@ def map_to_ogdch_keywords(geocat_keywords):
     ogdch_keywords = {'fr': [], 'de': [], 'en': [], 'it': []}
     for keyword in geocat_keywords:
         for lang, geocat_keyword in keyword.items():
-            if geocat_keyword != 'opendata.swiss' and lang in ['fr', 'de', 'en', 'it']:  # noqa
+            if geocat_keyword != \
+                    'opendata.swiss' and lang in ['fr', 'de', 'en', 'it']:
                 if geocat_keyword:
-                    ogdch_keywords[lang].append(munge_tag(geocat_keyword))  # noqa
+                    ogdch_keywords[lang].append(munge_tag(geocat_keyword))
     return ogdch_keywords
 
 
@@ -101,7 +102,8 @@ def map_frequency(geocat_frequency):
 
 
 def map_contact_points(geocat_contact_point):
-    contacts = [{'name': geocat_contact_point, 'email': geocat_contact_point}]  # noqa
+    contacts = [{'name': geocat_contact_point,
+                 'email': geocat_contact_point}]
     return contacts
 
 
@@ -116,8 +118,9 @@ def map_language(geocat_language):
 
 
 def map_see_alsos(geocat_see_alsos, organization_slug, valid_identifiers):
-    ogdch_see_alsos = [map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)  # noqa
-                       for geocat_identifier in geocat_see_alsos]
+    ogdch_see_alsos = [
+        map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)
+        for geocat_identifier in geocat_see_alsos]
     return [see_also for see_also in ogdch_see_alsos
             if see_also in valid_identifiers]
 
@@ -145,7 +148,9 @@ def get_legal_basis_link(legal_basis_url):
 
 
 def get_relation_protocols():
-    return ['WWW:LINK-1.0-http--link', 'WWW:LINK', 'CHTOPO:specialised-geoportal']  # noqa
+    return ['WWW:LINK-1.0-http--link',
+            'WWW:LINK',
+            'CHTOPO:specialised-geoportal']
 
 
 def get_landing_page_protocols():
@@ -173,7 +178,8 @@ def map_resource(geocat_resource, issued, modified, rights):
         title = protocol_name
     else:
         title = name
-    resource_dict['title'] = {'de': title, 'fr': title, 'en': title, 'it': title}  # noqa
+    resource_dict['title'] = \
+        {'de': title, 'fr': title, 'en': title, 'it': title}
     resource_dict['url'] = geocat_resource['url']
     if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['download_url'] = geocat_resource['url']
