@@ -1,36 +1,55 @@
 import sys
 from pprint import pprint
-import ckan.lib.cli
-import ckanext.geocat.metadata as md
-import ckanext.geocat.xml_loader as loader
+from ckan.lib.cli import CkanCommand
+from ckanext.geocat.utils import csw_processor, csw_mapping
+from ckanext.geocat.harvester import DEFAULT_PERMA_LINK_URL, DEFAULT_PERMA_LINK_LABEL  # noqa
 
 
-class GeocatCommand(ckan.lib.cli.CkanCommand):
+class GeocatCommand(CkanCommand):
 
     '''Command to query geocat
 
     Usage::
-
-            paster geocat search birds
-            paster geocat cql "csw:AnyText like '%birds%'"
-            paster geocat list "keyword = 'opendata.swiss'" https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/
-            paster geocat dataset "8ae7eeb1-04d4-4c78-93e1-4225412db6a4" https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/
-
+    
+    With this command you can query a remote csw source:
+    
+    'paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/'
+    
+    The 'list'  command will bring back the record ids of the remote source.
+    You can also add query arguments to it: this here for example will search
+    for the keyword 'opendata.swiss' on the remote source:
+    
+    'paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ --key=keyword --term=opendata.swiss'
+    
+    Once you have the record ids, you can map a specific remote record: 
+    
+    'paster geocat dataset https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ 8ae7eeb1-04d4-4c78-93e1-4225412db6a4'
+    
+    The 'dataset' command uses the same mapping as the harvester, except some extras as the geocat-permalink and 
+    some other fields that are taken from the harvester config when harvesting and just get defaults when
+    the command is used. 
     '''  # noqa
     summary = __doc__.split('\n')[0]
     usage = __doc__
-    DEFAULT_CSW_SERVER = 'http://www.geocat.ch/geonetwork/srv/eng/csw'
-    DEFAULT_CQL = "keyword = 'opendata.swiss'"
+
+    def __init__(self, name):
+        super(CkanCommand, self).__init__(name)
+        self.parser.add_option(
+            '--query', action="store", type="string",  dest='cql_query',
+            default=csw_processor.CQL_QUERY_DEFAUL,
+            help='key for cql search')
+        self.parser.add_option(
+            '--term', action="store", type="string",  dest='cql_term',
+            default=csw_processor.CQL_SEARCH_TERM_DEFAUT,
+            help='searchterm for cql search')
 
     def command(self):
+        self._load_config()
         options = {
-            'search': self.searchCmd,
-            'cql': self.cqlCmd,
             'dataset': self.datasetCmd,
             'list': self.listCmd,
             'help': self.helpCmd,
         }
-
         try:
             cmd = self.args[0]
             options[cmd](*self.args[1:])
@@ -38,64 +57,56 @@ class GeocatCommand(ckan.lib.cli.CkanCommand):
             self.helpCmd()
 
     def helpCmd(self):
-        print self.__doc__
+        print(self.__doc__)
 
-    def cqlCmd(self, query=None, csw_url=None):
-        if (query is None):
-            print "Argument 'query' must be set"
+    def listCmd(self, url=None):
+        if len(self.args) >= 2:
+            url = unicode(self.args[1])
+        else:
+            print("Expected remote url")
             self.helpCmd()
             sys.exit(1)
-        if csw_url is None:
-            csw_url = self.DEFAULT_CSW_SERVER
-        csw = md.CswHelper(url=csw_url.rstrip('/'))
-        for xml, value in csw.get_by_search(cql=query):
-            print xml
 
-    def listCmd(self, cql=None, csw_url=None):
-        if cql is None:
-            cql = self.DEFAULT_CQL
-        if csw_url is None:
-            csw_url = self.DEFAULT_CSW_SERVER
+        cqlquery = self.options.get('cql_query', csw_processor.CQL_QUERY_DEFAUL)  # noqa
+        cqlterm = self.options.get('cql_term', csw_processor.CQL_SEARCH_TERM_DEFAUT)  # noqa
 
-        csw = md.CswHelper(url=csw_url.rstrip('/'))
-
-        print "CQL query: %s" % cql
-        for record_id in csw.get_id_by_search(cql=cql):
-            print 'ID: %r' % record_id
-
-    def datasetCmd(self, id=None, csw_url=None):
-        if id is None:
-            print "Argument 'id' must be set"
+        try:
+            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url, cqlquery=cqlquery, cqlvalue=cqlterm)  # noqa
+            search_result = csw_data.get_geocat_id_from_csw()
+            print("Search result for %r" % url)
+            print("CQL query: %s: %s" % (cqlquery, cqlterm))
+            for record_id in search_result:
+                print('geocat_id: %r' % record_id)
+        except Exception as e:
+            print("Got error %r when searching remote url %r" % (e, url))
             self.helpCmd()
             sys.exit(1)
-        if csw_url is None:
-            csw_url = self.DEFAULT_CSW_SERVER
 
-        csw = md.CswHelper(url=csw_url.rstrip('/'))
-        print "ID: %s" % id
-        print ""
-
-        xml = csw.get_by_id(id)
-        print "XML: %s" % xml
-        xml_elem = loader.from_string(xml)
-        dataset_metadata = md.GeocatDcatDatasetMetadata()
-        dist_metadata = md.GeocatDcatDistributionMetadata()
-
-        print ""
-        print "Dataset:"
-        pprint(dataset_metadata.get_metadata(xml_elem))
-
-        print ""
-        print "Distributions:"
-        pprint(dist_metadata.get_metadata(xml_elem))
-
-    def searchCmd(self, query=None, csw_url=None):
-        if (query is None):
-            print "Argument 'query' must be set"
+    def datasetCmd(self, url=None, id=None):
+        if len(self.args) >= 3:
+            url = unicode(self.args[1])
+            id = unicode(self.args[2])
+        else:
+            print("Expected remote url and record id")
             self.helpCmd()
             sys.exit(1)
-        if csw_url is None:
-            csw_url = self.DEFAULT_CSW_SERVER
-        csw = md.CswHelper(url=csw_url.rstrip('/'))
-        for xml, value in csw.get_by_search(query):
-            print xml
+
+        try:
+            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)
+
+            xml = csw_data.get_record_by_id(id)
+            self.csw_map = csw_mapping.GeoMetadataMapping(
+                organization_slug="swisstopo",
+                geocat_perma_link=DEFAULT_PERMA_LINK_URL,
+                geocat_perma_label=DEFAULT_PERMA_LINK_LABEL,
+                legal_basis_url="",
+                valid_identifiers=[],
+            )
+            dataset = self.csw_map.get_metadata(xml, id)
+        except Exception as e:
+            print("Got error %r when searching at remote url %r for record id %r" % (e, url, id))  # noqa
+            self.helpCmd()
+            sys.exit(1)
+
+        print("\nDataset:")
+        pprint(dataset)

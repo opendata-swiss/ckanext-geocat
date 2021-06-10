@@ -1,15 +1,11 @@
 """Tests for metadata """
-import ckanext.geocat.metadata as metadata
+from ckanext.geocat.utils import csw_mapping
 from nose.tools import *  # noqa
 import os
-import sys
 from datetime import datetime
 import time
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
+from pprint import pprint
 
 __location__ = os.path.realpath(
     os.path.join(
@@ -20,23 +16,31 @@ __location__ = os.path.realpath(
 
 
 class TestGeocatDcatDatasetMetadata(unittest.TestCase):
-    def _load_xml(self, metadata, filename):
+    def setUp(self):
+        self.csw_map = csw_mapping.GeoMetadataMapping(
+            organization_slug="swisstopo",
+            geocat_perma_link="https://perma-link/",
+            geocat_perma_label="some label",
+            legal_basis_url="",
+            valid_identifiers=['8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'],
+        )
+        self.geocat_identifier = '93814e81-2466-4690-b54d-c1d958f1c3b8'
+
+    def _load_xml(self, filename):
         path = os.path.join(__location__, 'fixtures', filename)
         with open(path) as xml:
-            entry = metadata.get_metadata(xml.read())
+            entry = xml.read()
         return entry
 
     def _is_multi_lang(self, value):
         for lang in ['de', 'fr', 'it', 'en']:
             self.assertIn(lang, value)
 
-        
     def test_fields(self):
-        dcat = metadata.GeocatDcatDatasetMetadata()
-        dataset = self._load_xml(dcat, 'complete.xml')
+        xml = self._load_xml('complete.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         fields = [
-            'id',
             'identifier',
             'title',
             'description',
@@ -54,6 +58,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             'coverage',
             'accrual_periodicity',
             'see_alsos',
+            'owner_org',
+            'resources'
         ]
 
         for field in fields:
@@ -62,7 +68,6 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         # make sure only the defined fields are on the dataset
         self.assertEquals(sorted(fields), sorted(dataset.keys()))
 
-        from pprint import pprint
         for key, value in dataset.iteritems():
             pprint(value) 
             self.assertIn(key, fields)
@@ -72,14 +77,11 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self._is_multi_lang(dataset.get('description'))
 
     def test_fields_values(self):
-        dcat = metadata.GeocatDcatDatasetMetadata()
-        dataset = self._load_xml(dcat, 'complete.xml')
-
-        # id
-        self.assertEquals('', dataset.get('id'))
+        xml = self._load_xml('complete.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         # identifier
-        self.assertEquals('93814e81-2466-4690-b54d-c1d958f1c3b8', dataset.get('identifier'))
+        self.assertEquals('93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo', dataset.get('identifier'))
 
         # title
         self.assertEquals(u'L\xe4rmbelastung durch Eisenbahnverkehr Nacht', dataset['title']['de'])
@@ -122,7 +124,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # relations
         self.assertTrue(hasattr(dataset['relations'], '__iter__'))
-        self.assertEquals(1, len(dataset['relations']))
+        self.assertEquals(2, len(dataset['relations']))
         for relation in dataset['relations']:
             self.assertIsNotNone(relation['label'])
             self.assertIsNotNone(relation['url'])
@@ -192,17 +194,14 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         # see alsos
         self.assertTrue(hasattr(dataset['see_alsos'], '__iter__'))
         self.assertEquals(1, len(dataset['see_alsos']))
-        self.assertEquals('8454f7d9-e3f2-4cc7-be6d-a82196660ccd', dataset['see_alsos'][0])  # noqa
+        self.assertEquals('8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo', dataset['see_alsos'][0])  # noqa
 
     def test_fields_values_de_only(self):
-        dcat = metadata.GeocatDcatDatasetMetadata()
-        dataset = self._load_xml(dcat, 'only_de.xml')
-
-        # id
-        self.assertEquals('', dataset.get('id'))
+        xml = self._load_xml('only_de.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         # identifier
-        self.assertEquals('93814e81-2466-4690-b54d-c1d958f1c3b8', dataset.get('identifier'))
+        self.assertEquals('93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo', dataset.get('identifier'))
 
         # title
         self.assertEquals(u'L\xe4rmbelastung durch Eisenbahnverkehr Nacht', dataset['title']['de'])
@@ -239,8 +238,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertEquals(set(keywords[lang]), set(dataset['keywords'][lang]))
 
     def test_date_revision(self):
-        dcat = metadata.GeocatDcatDatasetMetadata()
-        dataset = self._load_xml(dcat, 'revision_date.xml')
+        xml = self._load_xml('revision_date.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         revision_string = '2011-12-31'
         r = datetime.strptime(revision_string, '%Y-%m-%d')
@@ -249,8 +248,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(dataset['issued'], dataset['modified'])
 
     def test_date_publication(self):
-        dcat = metadata.GeocatDcatDatasetMetadata()
-        dataset = self._load_xml(dcat, 'publication_date.xml')
+        xml = self._load_xml('publication_date.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         publication_string = '2010-12-30'
         p = datetime.strptime(publication_string, '%Y-%m-%d')
@@ -263,8 +262,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertNotEquals(dataset['issued'], dataset['modified'])
 
     def test_date_issued_before_1900(self):
-        dcat = metadata.GeocatDcatDatasetMetadata()
-        dataset = self._load_xml(dcat, 'publication_date_before_1900.xml')
+        xml = self._load_xml('publication_date_before_1900.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         self.assertEquals(dataset['issued'], -2461622400)
         issued = datetime.fromtimestamp(dataset['issued'])
@@ -275,3 +274,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(modified.date().isoformat(), '1891-12-31')
 
         self.assertNotEquals(dataset['issued'], dataset['modified'])
+
+
+if __name__ == '__main__':
+    unittest.main()
