@@ -33,8 +33,12 @@ gmd_namespaces = {
 
 class GeoMetadataMapping(object):
 
-    def __init__(self, organization_slug, geocat_perma_link, geocat_perma_label,  # noqa
-                 legal_basis_url, valid_identifiers):  # noqa
+    def __init__(self,
+                 organization_slug,
+                 geocat_perma_link,
+                 geocat_perma_label,
+                 legal_basis_url,
+                 valid_identifiers):
         self.geocat_perma_link = geocat_perma_link
         self.geocat_perma_label = geocat_perma_label
         self.organization_slug = organization_slug
@@ -52,13 +56,15 @@ class GeoMetadataMapping(object):
         dataset_dict['title'] = _map_dataset_title(node=root_node)
         dataset_dict['description'] = _map_dataset_description(node=root_node)
         dataset_dict['publishers'] = _map_dataset_publisher(node=root_node)
-        dataset_dict['contact_points'] = _map_dataset_contact_points(node=root_node)  # noqa
+        dataset_dict['contact_points'] = \
+            _map_dataset_contact_points(node=root_node)
         dataset_dict['issued'] = _map_dataset_issued(node=root_node)
         dataset_dict['modified'] = _map_dataset_modified(node=root_node)
         dataset_dict['keywords'] = _map_dataset_keywords(node=root_node)
         dataset_dict['groups'] = _map_dataset_categories(node=root_node)
         dataset_dict['language'] = _map_dataset_language(node=root_node)
-        dataset_dict['accrual_periodicity'] = _map_dataset_frequency(node=root_node)  # noqa
+        dataset_dict['accrual_periodicity'] = \
+            _map_dataset_frequency(node=root_node)
         dataset_dict['coverage'] = _map_dataset_coverage()
         dataset_dict['spatial'] = _map_dataset_spatial(node=root_node)
         dataset_dict['temporals'] = _map_dataset_temporals(node=root_node)
@@ -67,7 +73,9 @@ class GeoMetadataMapping(object):
                                    organization_slug=self.organization_slug,
                                    valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
-        rights = _map_dataset_rights(node=root_node, terms_of_use=self.terms_of_use_graph)  # noqa
+        rights = \
+            _map_dataset_rights(node=root_node,
+                                terms_of_use=self.terms_of_use_graph)
 
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
@@ -78,15 +86,23 @@ class GeoMetadataMapping(object):
         landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
         relation_protocols = ogdch_map_utils.get_relation_protocols()
 
-        resource_nodes = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=root_node, path=GMD_RESOURCES)  # noqa
+        resource_nodes = \
+            xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
+                node=root_node, path=GMD_RESOURCES)
         if resource_nodes is not None:
             for resource_node in resource_nodes:
-                protocol = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=resource_node, path=GMD_PROTOCOL)  # noqa
+                protocol = \
+                    xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+                        node=resource_node, path=GMD_PROTOCOL)
                 if protocol in relation_protocols:
                     if not dataset_dict.get('url') and protocol in landing_page_protocols:  # noqa
-                        dataset_dict['url'] = xpath_utils.xpath_get_url_with_label_from_distribution(resource_node).get('url')  # noqa
+                        dataset_dict['url'] = \
+                            xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
+                                resource_node).get('url')
                     else:
-                        url_with_label = xpath_utils.xpath_get_url_with_label_from_distribution(resource_node)  # noqa
+                        url_with_label = \
+                            xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
+                                resource_node)
                         if url_with_label:
                             dataset_dict['relations'].append(url_with_label)
                 else:
@@ -119,14 +135,19 @@ class GeoMetadataMapping(object):
 
 def _map_dataset_identifier(node, organization_slug):
     GMD_IDENTIFIER = './/gmd:fileIdentifier/gco:CharacterString/text()'
-    geocat_identifier = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_IDENTIFIER)  # noqa
+    geocat_identifier = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node, path=GMD_IDENTIFIER)
     if geocat_identifier:
-        return ogdch_map_utils.map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)  # noqa
+        return ogdch_map_utils.map_geocat_to_ogdch_identifier(
+            geocat_identifier, organization_slug)
 
 
 def _map_dataset_title(node):
     GMD_TITLE = '//gmd:identificationInfo//gmd:citation//gmd:title'
-    title_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TITLE)  # noqa
+    title_node = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node, path=GMD_TITLE)
     if title_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(title_node)  # noqa
     return {'en': '', 'it': '', 'de': '', 'fr': ''}
@@ -134,7 +155,8 @@ def _map_dataset_title(node):
 
 def _map_dataset_description(node):
     GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
-    description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_DESCRIPTION)  # noqa
+    description_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+        node=node, path=GMD_DESCRIPTION)
     if description_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(description_node)  # noqa
     return {'en': '', 'it': '', 'de': '', 'fr': ''}
@@ -149,9 +171,14 @@ def _map_dataset_publisher(node):
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
         '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName/gco:CharacterString',  # noqa
     ]
-    publisher_node = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_PUBLISHER, get=xpath_utils.XPATH_NODE)  # noqa
+    publisher_node = \
+        xpath_utils.xpath_get_first_of_values_from_path_list(
+            node=node,
+            path_list=GMD_PUBLISHER,
+            get=xpath_utils.XPATH_NODE)
     if publisher_node is not None:
-        geocat_publisher = xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
+        geocat_publisher = \
+            xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
         if geocat_publisher:
             return ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
     EMPTY_PUBLISHER = [{'label': ''}]
@@ -167,9 +194,13 @@ def _map_dataset_contact_points(node):
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
         '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
     ]
-    geocat_contact_point = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_CONTACT_POINT, get=xpath_utils.XPATH_TEXT)  # noqa
+    geocat_contact_point = \
+        xpath_utils.xpath_get_first_of_values_from_path_list(
+            node=node,
+            path_list=GMD_CONTACT_POINT,
+            get=xpath_utils.XPATH_TEXT)
     if geocat_contact_point:
-        return ogdch_map_utils.map_contact_points(geocat_contact_point)  # noqa
+        return ogdch_map_utils.map_contact_points(geocat_contact_point)
     EMPTY_CONTACT_POINTS = []
     return EMPTY_CONTACT_POINTS
 
@@ -183,7 +214,11 @@ def _map_dataset_issued(node):
         '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
         '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
         ]
-    geocat_issued = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_ISSUED, get=xpath_utils.XPATH_TEXT)  # noqa
+    geocat_issued = \
+        xpath_utils.xpath_get_first_of_values_from_path_list(
+            node=node,
+            path_list=GMD_ISSUED,
+            get=xpath_utils.XPATH_TEXT)
     if geocat_issued:
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_issued)
     ISSUED_EMPTY = ''
@@ -195,19 +230,21 @@ def _map_dataset_modified(node):
         '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
         '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
     ]
-    geocat_modified = xpath_utils.xpath_get_first_of_values_from_path_list(node=node, path_list=GMD_MODIFIED, get=xpath_utils.XPATH_TEXT)  # noqa
+    geocat_modified = xpath_utils.xpath_get_first_of_values_from_path_list(
+        node=node, path_list=GMD_MODIFIED, get=xpath_utils.XPATH_TEXT)
     if geocat_modified:
-        return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)  # noqa
+        return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)
     MODIFIED_EMPTY = ''
     return MODIFIED_EMPTY
 
 
 def _map_dataset_keywords(node):
     GMD_KEYWORDS = '//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword'  # noqa
-    keyword_nodes = node.xpath(GMD_KEYWORDS, namespaces=gmd_namespaces)  # noqa
+    keyword_nodes = node.xpath(GMD_KEYWORDS, namespaces=gmd_namespaces)
     geocat_keywords = []
     for node in keyword_nodes:
-        keyword_dict = xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(node)  # noqa
+        keyword_dict = \
+            xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(node)  # noqa
         geocat_keywords.append(keyword_dict)
     if geocat_keywords:
         return ogdch_map_utils.map_to_ogdch_keywords(geocat_keywords)
@@ -217,7 +254,10 @@ def _map_dataset_keywords(node):
 
 def _map_dataset_categories(node):
     GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'  # noqa
-    geocat_categories = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=node, path=GMD_THEME)  # noqa
+    geocat_categories = \
+        xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
+            node=node,
+            path=GMD_THEME)
     if geocat_categories:
         return ogdch_map_utils.map_to_ogdch_categories(geocat_categories)
     CATEGORIES_EMPTY = []
@@ -226,7 +266,10 @@ def _map_dataset_categories(node):
 
 def _map_dataset_frequency(node):
     GMD_ACRUAL_PERIDICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue'  # noqa
-    geocat_frequency = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_ACRUAL_PERIDICITY)  # noqa
+    geocat_frequency = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node,
+            path=GMD_ACRUAL_PERIDICITY)
     if geocat_frequency:
         accrual_periodicity = ogdch_map_utils.map_frequency(geocat_frequency)
         if accrual_periodicity:
@@ -242,7 +285,10 @@ def _map_dataset_coverage():
 
 def _map_dataset_spatial(node):
     GMD_SPATIAL = '//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()'  # noqa
-    geocat_spatial = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_SPATIAL)  # noqa
+    geocat_spatial = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node,
+            path=GMD_SPATIAL)
     if geocat_spatial:
         return geocat_spatial
     SPACIAL_EMPTY = ''
@@ -252,7 +298,10 @@ def _map_dataset_spatial(node):
 def _map_dataset_language(node):
     GMD_LANGUAGE = ['//gmd:identificationInfo//gmd:language/gco:CharacterString/text()',  # noqa
                     '//gmd:language/gmd:LanguageCode/@codeListValue']
-    geocat_languages = xpath_utils.xpath_get_all_values_for_node_and_path_list(node=node, path_list=GMD_LANGUAGE)  # noqa
+    geocat_languages = \
+        xpath_utils.xpath_get_all_values_for_node_and_path_list(
+            node=node,
+            path_list=GMD_LANGUAGE)
     languages = []
     if geocat_languages:
         for geocat_language in set(geocat_languages):
@@ -264,35 +313,61 @@ def _map_dataset_language(node):
 
 def _get_download_distribution_formats(node):
     GMD_DOWNLOAD_FORMATS = ['//gmd:distributionInfo//gmd:distributionFormat//gmd:name//gco:CharacterString/text()']  # noqa
-    return xpath_utils.xpath_get_all_values_for_node_and_path_list(node=node, path_list=GMD_DOWNLOAD_FORMATS)  # noqa
+    return \
+        xpath_utils.xpath_get_all_values_for_node_and_path_list(
+            node=node,
+            path_list=GMD_DOWNLOAD_FORMATS)
 
 
 def _get_service_distribution_formats(node):
     GMD_SERVICE_FORMATS = ['//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()']  # noqa
-    return xpath_utils.xpath_get_all_values_for_node_and_path_list(node=node, path_list=GMD_SERVICE_FORMATS)  # noqa
+    return \
+        xpath_utils.xpath_get_all_values_for_node_and_path_list(
+            node=node,
+            path_list=GMD_SERVICE_FORMATS)
 
 
 def _map_dataset_temporals(node):
     GMD_TEMPORAL_START = '//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:beginPosition/text()'  # noqa
     GMD_TEMPORAL_END = '//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:endPosition/text()'  # noqa
-    geocat_temporal_start = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TEMPORAL_START)  # noqa
-    geocat_temporal_end = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_TEMPORAL_END)  # noqa
-    return ogdch_map_utils.map_temporals(geocat_temporal_start, geocat_temporal_end)  # noqa
+    geocat_temporal_start = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node,
+            path=GMD_TEMPORAL_START)
+    geocat_temporal_end = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node,
+            path=GMD_TEMPORAL_END)
+    return \
+        ogdch_map_utils.map_temporals(
+            geocat_temporal_start,
+            geocat_temporal_end)
 
 
 def _map_dataset_see_alsos(node, organization_slug, valid_identifiers):
     GMD_SEE_ALSOS = '//gmd:identificationInfo//gmd:aggregationInfo//gmd:aggregateDataSetIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString/text()'  # noqa
-    geocat_see_alsos = xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(node=node, path=GMD_SEE_ALSOS)  # noqa
+    geocat_see_alsos = \
+        xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
+            node=node,
+            path=GMD_SEE_ALSOS)
     if geocat_see_alsos:
-        return ogdch_map_utils.map_see_alsos(geocat_see_alsos, organization_slug, valid_identifiers)  # noqa
+        return \
+            ogdch_map_utils.map_see_alsos(
+                geocat_see_alsos,
+                organization_slug,
+                valid_identifiers)
     return []
 
 
 def _map_dataset_rights(node, terms_of_use):
     GMD_RIGHTS = './/gmd:resourceConstraints//gmd:otherConstraints'
-    rights_node = xpath_utils.xpath_get_single_sub_node_for_node_and_path(node=node, path=GMD_RIGHTS)  # noqa
+    rights_node = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node=node,
+            path=GMD_RIGHTS)
     if rights_node is not None:
-        geocat_rights_dict = xpath_utils.xpath_get_rights_dict_form_rights_node(rights_node)  # noqa
+        geocat_rights_dict = \
+            xpath_utils.xpath_get_rights_dict_form_rights_node(rights_node)
         if geocat_rights_dict:
             for lang, rights_value in geocat_rights_dict.items():
                 rights_literal = Literal(rights_value, lang=lang)
