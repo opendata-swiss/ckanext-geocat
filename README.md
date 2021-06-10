@@ -56,7 +56,36 @@ This extension provides a number of CLI commands to query/debug the results of t
 They give you the power to check on a remote csw source with search paramterers or a specific record id.
 You can either get all remote record ids for a search, or map one remote record to a DCAT dataset.
 
-Use the command with `help` to check for the available commands and their usage.
+### `list`
+
+To list all IDs from the defined CSW server use the `list` command:
+
+- it expects the url of the remote csw source
+- you can also add a query key and a query term
+- it brings back all records from the remote source; in case query key and term are set
+  it brings back all records where the query key has the given value
+   
+Examples:   
+
+```
+paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/
+paster geocat list https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ --query keyword --term opendata.swiss
+```
+
+### `dataset`
+
+To get a specific record (by ID), use the `dataset` command.
+You can get the ID by first using the `list` command above:
+
+```
+paster geocat dataset https://www.geocat.ch/geonetwork/srv/eng/csw-ZH/ "1eac72b1-068d-4272-b011-d0010cc4bf676"
+```
+
+The output shows the dataset as it would be mapped by the harvester.
+
+### `help`
+
+Use the command with `help` to check get help for the other two commands.
 
 ```
 paster geocat help
