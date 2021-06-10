@@ -92,7 +92,7 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
                             belongs_to_harvester=belongs_to_harvester)
             processed_count += len(datasets_in_result)
         except Exception as e:
-            print("Error occured while searching for packages with fq: {}, error: {}"
+            print("Error occured while searching for packages with fq: {}, error: {}"  # noqa
                   .format(fq, e))
             break
     return ogdch_dataset_infos

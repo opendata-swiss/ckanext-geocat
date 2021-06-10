@@ -65,7 +65,8 @@ class GeocatHarvester(HarvesterBase):
             self.config.get('delete_missing_datasets', False)
 
         self.config['geocat_perma_link_label'] = \
-            tk.config.get('ckanext.geocat.permalink_title', DEFAULT_PERMA_LINK_LABEL)
+            tk.config.get('ckanext.geocat.permalink_title',
+                          DEFAULT_PERMA_LINK_LABEL)
         self.config['geocat_perma_link_url'] = \
             self.config.get('geocat_perma_link_url',
                             tk.config.get('geocat_perma_link_url',
@@ -75,7 +76,8 @@ class GeocatHarvester(HarvesterBase):
             self.config.get('legal_basis_url', None)
 
         organization_slug = \
-            search_utils.get_organization_slug_for_harvest_source(harvest_source_id)
+            search_utils.get_organization_slug_for_harvest_source(
+                harvest_source_id)
         self.config['organization'] = organization_slug
 
         log.debug('Using config: %r' % self.config)
@@ -152,8 +154,7 @@ class GeocatHarvester(HarvesterBase):
             except Exception as e:
                 self._save_gather_error(
                     'Error when processsing dataset: %s %r / %s'
-                    % (ogdch_identifier, e, traceback.format_exc()),
-                       harvest_job)
+                    % (ogdch_identifier, e, traceback.format_exc()), harvest_job)  # noqa
                 return []
 
         log.debug('IDs: %r' % harvest_obj_ids)
@@ -202,9 +203,7 @@ class GeocatHarvester(HarvesterBase):
             pkg_dict = json.loads(harvest_object.content)
         except ValueError:
             self._save_object_error('Could not parse content for object {0}'
-                                    .format(harvest_object.id),
-                                            harvest_object,
-                                            'Import')
+                                    .format(harvest_object.id), harvest_object, 'Import')  # noqa
             return False
 
         pkg_info = \
