@@ -40,6 +40,13 @@ To configure the harvester you have several harvester config options (in the har
 * `organization`: The organization to be associated to all harvested datasets (default: the organization, which owns the harvest source)
 * `delete_missing_datasets`: Boolean flag (true/false) to determine if this harvester should delete existing datasets that are no longer included in
 the harvest-source (default: `false`)
+* `geocat_perma_link_url`: Link back to geocat instance, so that geocat permalinks can be formed: 
+   the default is `https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/` from that the perma link is derived
+   by attaching the identifier. But for a test harvester that link can be differ and may need to point to the
+   geocat test instance instead of the production instance.
+   The geocat permalink is attached to `dct:relation` for the datasets
+* `legal_basis_url`: the link to the legal documents that relate to the publication of the dataset. This is also added
+   to `dct:relation` for all harvested datasets in case it is provided
 
 
 ## CLI Commands
