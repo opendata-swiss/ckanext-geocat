@@ -110,6 +110,7 @@ def map_contact_points(geocat_contact_point):
 def map_language(geocat_language):
     language_mapping = {
         'ger': 'de',
+        'fre': 'fr',
         'fra': 'fr',
         'eng': 'en',
         'ita': 'it',
