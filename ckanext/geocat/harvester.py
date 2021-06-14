@@ -152,7 +152,6 @@ class GeocatHarvester(HarvesterBase):
                     self._save_gather_error(
                         'Error when processsing dataset: %s %r / %s'
                         % (ogdch_identifier, e, traceback.format_exc()), harvest_job)  # noqa
-                    return []
 
         log.debug('IDs: %r' % harvest_obj_ids)
 
