@@ -101,3 +101,13 @@ do::
     python setup.py develop
     pip install -r dev-requirements.txt
     pip install -r requirements.txt
+
+## Analyzing geocat original data
+
+In order to take a look at the geocat original data: 
+
+- follow the permalink of the dataset to geocat
+- get the link to the xml version of the data: this should be similar to `https://www.geocat.ch/geonetwork/srv/ger/xml.metadata.get?uuid=170800fb-e85c-42b7-8c4b-ba33b364b79f`  
+- Go to https://codebeautify.org/Xpath-Tester
+- Load the data in from URL
+- explore with XPath
