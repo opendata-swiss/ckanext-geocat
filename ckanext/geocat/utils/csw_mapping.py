@@ -374,6 +374,7 @@ def _map_dataset_rights(node, terms_of_use):
                 for rights_uri in terms_of_use.subjects(object=rights_literal):
                     for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa
                         ogdch_rights = str(mapping_object)
-                        return ogdch_rights
-    DEFAULT_RIGHTS = 'NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired'  # noqa
+                        if ogdch_rights:
+                            return ogdch_rights
+    DEFAULT_RIGHTS = 'NonCommercialAllowed-CommercialAllowed-ReferenceRequired'  # noqa
     return DEFAULT_RIGHTS
