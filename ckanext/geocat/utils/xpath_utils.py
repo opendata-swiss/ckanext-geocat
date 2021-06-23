@@ -208,7 +208,7 @@ def xpath_get_distribution_from_distribution_node(
     distribution['protocol'] = normed_protocol
     distribution['protocol_name'] = protocol_name
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
-        format = protocol.strip(DOWNLOAD_PROTOCOL + ':')
+        format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         distribution['format'] = format
     if normed_protocol in SERVICE_PROTOCOLS:
         distribution['format'] = SERVICE_FORMAT
