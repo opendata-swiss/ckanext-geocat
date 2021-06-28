@@ -222,6 +222,34 @@ def xpath_get_distribution_from_distribution_node(
     return distribution
 
 
+def xpath_get_geocat_services(node):
+    GMD_SERVICE_NODES = '//gmd:identificationInfo//srv:containsOperations/srv:SV_OperationMetadata[.//srv:operationName//gco:CharacterString/text()]'  # noqa
+    GMD_SERVICE_URLS = [
+        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#DE" and ./text()]/text()',  # noqa
+        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#FR" and ./text()]/text()',  # noqa
+        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#EN" and ./text()]/text()',  # noqa
+        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#IT" and ./text()]/text()',  # noqa
+        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[./text()]/text()',  # noqa
+    ]
+    GMD_MEDIA_TYPE = '//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()'  # noqa
+    service_nodes = \
+        xpath_get_all_sub_nodes_for_node_and_path(
+            node=node, path=GMD_SERVICE_NODES)
+    geocat_services = []
+    if service_nodes:
+        for service_node in service_nodes:
+            geocat_service = {}
+            GMD_SERVICE_TITLE = './/srv:operationName/gco:CharacterString/text()'  # noqa
+            geocat_service['title'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
+                node=service_node, path=GMD_SERVICE_TITLE)
+            geocat_service['url'] = xpath_get_first_of_values_from_path_list(
+                node=service_node, path_list=GMD_SERVICE_URLS)
+            geocat_service['media_type'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
+                node=service_node, path=GMD_MEDIA_TYPE)
+            geocat_services.append(geocat_service)
+    return geocat_services
+
+
 def _get_normed_protocol(protocol):
     protocol_to_name_mapping = {
         OGC_WMTS_PROTOCOL: "WMTS (GetCapabilities)",
