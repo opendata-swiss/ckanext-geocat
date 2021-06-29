@@ -4,6 +4,9 @@ from rdflib import Literal
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, vocabulary_utils  # noqa
 from ckanext.geocat.utils.vocabulary_utils import SKOS
 
+import logging
+log = logging.getLogger(__name__)
+
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 
 gmd_namespaces = {
@@ -120,7 +123,17 @@ class GeoMetadataMapping(object):
                         rights=rights,
                     )
                     dataset_dict['resources'].append(resource)
-
+        geocat_services = xpath_utils.xpath_get_geocat_services(node=root_node)
+        if geocat_services:
+            for geocat_service in geocat_services:
+                ogdch_service = ogdch_map_utils.map_service(
+                                geocat_service=geocat_service,
+                                issued=dataset_dict.get('issued', ''),
+                                modified=dataset_dict.get('modified', ''),
+                                description=dataset_dict['description'],
+                                rights=rights,
+                            )
+                dataset_dict['resources'].append(ogdch_service)
         dataset_dict['relations'].append(ogdch_map_utils.get_permalink(
             geocat_id=geocat_id,
             geocat_perma_link=self.geocat_perma_link,

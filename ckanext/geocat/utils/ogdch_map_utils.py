@@ -160,6 +160,8 @@ def get_landing_page_protocols():
 
 def map_resource(geocat_resource, issued, modified, rights):
     resource_dict = {}
+    title = geocat_resource.get('title', '')
+    resource_dict['title'] = {'fr': title, 'de': title, 'en': title, 'it': title}
     resource_dict['issued'] = issued
     resource_dict['modified'] = modified
     resource_dict['rights'] = rights
@@ -183,3 +185,14 @@ def map_resource(geocat_resource, issued, modified, rights):
         resource_dict['download_url'] = ""
     resource_dict['language'] = geocat_resource['language']
     return resource_dict
+
+
+def map_service(geocat_service, issued, modified, description, rights):
+    return {
+        'description': description,
+        'issued': issued,
+        'modified': modified,
+        'rights': rights,
+        'media_type': geocat_service.get('media_type', ''),
+        'url': geocat_service.get('url', '')
+    }
