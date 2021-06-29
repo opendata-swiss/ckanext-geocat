@@ -232,6 +232,7 @@ def xpath_get_geocat_services(node):
         './/srv:connectPoint//gmd:linkage//che:LocalisedURL[./text()]/text()',  # noqa
     ]
     GMD_MEDIA_TYPE = '//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()'  # noqa
+    GMD_SERVICE_TITLE = './/srv:operationName/gco:CharacterString/text()'  # noqa
     service_nodes = \
         xpath_get_all_sub_nodes_for_node_and_path(
             node=node, path=GMD_SERVICE_NODES)
@@ -239,7 +240,6 @@ def xpath_get_geocat_services(node):
     if service_nodes:
         for service_node in service_nodes:
             geocat_service = {}
-            GMD_SERVICE_TITLE = './/srv:operationName/gco:CharacterString/text()'  # noqa
             geocat_service['title'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_SERVICE_TITLE)
             geocat_service['url'] = xpath_get_first_of_values_from_path_list(

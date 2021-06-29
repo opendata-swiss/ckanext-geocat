@@ -188,11 +188,11 @@ def map_resource(geocat_resource, issued, modified, rights):
 
 
 def map_service(geocat_service, issued, modified, description, rights):
-    resource_dict = {}
-    resource_dict['description'] = description
-    resource_dict['issued'] = issued
-    resource_dict['modified'] = modified
-    resource_dict['rights'] = rights
-    resource_dict['media_type'] = geocat_service.get('media_type', '')
-    resource_dict['url'] = geocat_service.get('url', '')
-    return resource_dict
+    return {
+        'description': description,
+        'issued': issued,
+        'modified': modified,
+        'rights': rights,
+        'media_type': geocat_service.get('media_type', ''),
+        'url': geocat_service.get('url', '')
+    }
