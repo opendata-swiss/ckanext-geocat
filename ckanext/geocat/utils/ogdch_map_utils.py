@@ -80,7 +80,9 @@ def map_to_ogdch_categories(geocat_categories):
     }
     ogdch_groups = []
     for category in geocat_categories:
-        ogdch_groups.extend(theme_mapping.get(category))
+        mapped_category = theme_mapping.get(category)
+        if mapped_category:
+           ogdch_groups.extend(mapped_category)
     ogdch_groups = set(ogdch_groups)
     return [{'name': group} for group in ogdch_groups]
 
