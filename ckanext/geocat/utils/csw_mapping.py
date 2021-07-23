@@ -180,7 +180,7 @@ def _map_dataset_publisher(node):
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',  # noqa
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',  # noqa
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
-        '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName/gco:CharacterString',  # noqa
+        '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName',  # noqa
     ]
     publisher_node = \
         xpath_utils.xpath_get_first_of_values_from_path_list(
