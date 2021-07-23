@@ -188,7 +188,7 @@ def xpath_get_url_with_label_from_distribution(node):
 
 
 def xpath_get_distribution_from_distribution_node(
-        resource_node, protocol, download_formats, service_formats):
+        resource_node, protocol):
     GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
     GMD_RESOURCE_DESCRIPTION = './/gmd:description'
     distribution = {}

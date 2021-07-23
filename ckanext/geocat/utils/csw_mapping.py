@@ -108,13 +108,11 @@ class GeoMetadataMapping(object):
                                 resource_node)
                         if url_with_label:
                             dataset_dict['relations'].append(url_with_label)
-                else:
+                elif protocol:
                     geocat_resource = \
                         xpath_utils.xpath_get_distribution_from_distribution_node(  # noqa
                             resource_node=resource_node,
                             protocol=protocol,
-                            download_formats=download_formats,
-                            service_formats=service_formats,
                         )
                     resource = ogdch_map_utils.map_resource(
                         geocat_resource=geocat_resource,
