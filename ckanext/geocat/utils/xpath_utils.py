@@ -101,7 +101,7 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
                 language_dict[locale.lower()] = _clean_string(value_locale[0])
         return language_dict
     except:
-        value = node.xpath('.//gmd:CharacterString/text()',
+        value = node.xpath('.//gco:CharacterString/text()',
                            namespaces=gmd_namespaces)
         if value:
             for locale in LOCALES:
@@ -147,7 +147,7 @@ def xpath_get_rights_dict_form_rights_node(node):
 
 
 def xpath_get_one_value_from_geocat_multilanguage_node(node):
-    value = node.xpath('.//gmd:CharacterString/text()',
+    value = node.xpath('.//gco:CharacterString/text()',
                        namespaces=gmd_namespaces)
     if value:
         return value
@@ -188,7 +188,7 @@ def xpath_get_url_with_label_from_distribution(node):
 
 
 def xpath_get_distribution_from_distribution_node(
-        resource_node, protocol, download_formats, service_formats):
+        resource_node, protocol):
     GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
     GMD_RESOURCE_DESCRIPTION = './/gmd:description'
     distribution = {}

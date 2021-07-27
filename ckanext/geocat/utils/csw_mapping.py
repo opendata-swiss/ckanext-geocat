@@ -108,13 +108,11 @@ class GeoMetadataMapping(object):
                                 resource_node)
                         if url_with_label:
                             dataset_dict['relations'].append(url_with_label)
-                else:
+                elif protocol:
                     geocat_resource = \
                         xpath_utils.xpath_get_distribution_from_distribution_node(  # noqa
                             resource_node=resource_node,
                             protocol=protocol,
-                            download_formats=download_formats,
-                            service_formats=service_formats,
                         )
                     resource = ogdch_map_utils.map_resource(
                         geocat_resource=geocat_resource,
@@ -182,7 +180,7 @@ def _map_dataset_publisher(node):
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',  # noqa
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',  # noqa
         '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
-        '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName/gco:CharacterString',  # noqa
+        '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName',  # noqa
     ]
     publisher_node = \
         xpath_utils.xpath_get_first_of_values_from_path_list(
