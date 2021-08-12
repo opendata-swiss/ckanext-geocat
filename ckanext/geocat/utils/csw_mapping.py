@@ -121,6 +121,10 @@ class GeoMetadataMapping(object):
                         rights=rights,
                     )
                     dataset_dict['resources'].append(resource)
+                    dataset_dict['language'].append(
+                        [lang for lang in resource.get('language')
+                         if lang not in dataset_dict['language']]
+                    )
         geocat_services = xpath_utils.xpath_get_geocat_services(node=root_node)
         if geocat_services:
             for geocat_service in geocat_services:
