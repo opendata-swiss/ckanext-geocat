@@ -252,9 +252,9 @@ def xpath_get_geocat_services(node):
 
 def _get_normed_protocol(protocol):
     protocol_to_name_mapping = {
-        OGC_WMTS_PROTOCOL: "WMTS (GetCapabilities)",
-        OGC_WMS_PROTOCOL: "WMS (GetCapabilities)",
-        OGC_WFS_PROTOCOL: "WFS (GetCapabilities)",
+        OGC_WMTS_PROTOCOL: "WMTS",
+        OGC_WMS_PROTOCOL: "WMS",
+        OGC_WFS_PROTOCOL: "WFS",
         DOWNLOAD_PROTOCOL: "Download",
         LINKED_DATA_PROTOCOL: "Linked Data (Dienst)",
         MAP_PROTOCOL: "Map (Preview)",

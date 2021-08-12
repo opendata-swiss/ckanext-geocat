@@ -19,21 +19,25 @@ def get_organization_slug_for_harvest_source(harvest_source_id):
 
 def get_packages_to_delete(existing_dataset_infos,
                            gathered_ogdch_identifiers):
-    return [
+    packages_to_delete = [
         (identifier, info)
         for identifier, info
         in existing_dataset_infos.items()
         if info.belongs_to_harvester and identifier not in gathered_ogdch_identifiers  # noqa
     ]
+    import pdb; pdb.set_trace()
+    return packages_to_delete
 
 
-def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
-    return [
-        (identifier, info)
-        for identifier, info
-        in existing_dataset_infos.items()
-        if not info.belongs_to_harvester and identifier in gathered_ogdch_identifiers  # noqa
-    ]
+def get_package_identifiers_to_delete(existing_dataset_infos,
+                                      gathered_ogdch_identifiers):
+
+
+def find_package_name_for_identifier(identifier):
+    package = find_package_for_identifier(identifier=identifier)
+    if package:
+        return package.name
+    return None
 
 
 def find_package_for_identifier(identifier):
@@ -95,6 +99,7 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
             print("Error occured while searching for packages with fq: {}, error: {}"  # noqa
                   .format(fq, e))
             break
+    import pdb; pdb.set_trace()
     return ogdch_dataset_infos
 
 

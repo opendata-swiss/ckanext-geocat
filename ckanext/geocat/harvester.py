@@ -109,6 +109,14 @@ class GeocatHarvester(HarvesterBase):
         all_ogdch_identifiers = \
             set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
 
+        identifiers_to_delete = \
+             [identifier for identifier in existing_dataset_infos.keys()
+              if identifier not in gathered_ogdch_identifiers]
+
+        package_name_gathered = [
+
+        ]
+
         packages_to_delete = search_utils.get_packages_to_delete(
             existing_dataset_infos=existing_dataset_infos,
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
@@ -146,8 +154,9 @@ class GeocatHarvester(HarvesterBase):
 
         if self.config['delete_missing_datasets']:
             for package_info in packages_to_delete:
+                import pdb; pdb.set_trace()
                 obj = HarvestObject(
-                    guid=package_info.name,
+                    guid=package_info.name, #package_info[1].name
                     job=harvest_job,
                     extras=[HarvestObjectExtra(key='import_action',
                                                value='delete')])
