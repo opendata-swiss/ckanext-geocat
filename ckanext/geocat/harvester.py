@@ -147,7 +147,7 @@ class GeocatHarvester(HarvesterBase):
         if self.config['delete_missing_datasets']:
             for package_info in packages_to_delete:
                 obj = HarvestObject(
-                    guid=package_info.name,
+                    guid=package_info[1].name,
                     job=harvest_job,
                     extras=[HarvestObjectExtra(key='import_action',
                                                value='delete')])
