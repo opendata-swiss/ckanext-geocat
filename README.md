@@ -111,3 +111,14 @@ In order to take a look at the geocat original data:
 - Go to https://codebeautify.org/Xpath-Tester
 - Load the data in from URL
 - explore with XPath
+
+## CSW data: check harvest source per API
+
+Sometimes it is useful to directly check the harvest source per API. 
+More documentation is available here: 
+https://geonetwork-opensource.org/manuals/2.10.4/eng/developer/xml_services/csw_services.html.
+
+```
+<harvest-source-url>?service=CSW&version=2.0.2&request=GetRecords
+<harvest-source-url>?service=CSW&version=2.0.2&request=GetRecordById&id=<geocat-id>&elementsetname=full&outputSchema=http://www.isotc211.org/2005/gmd
+``` 
