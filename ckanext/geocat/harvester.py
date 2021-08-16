@@ -128,19 +128,38 @@ class GeocatHarvester(HarvesterBase):
                 geocat_identifier=geocat_id,
                 organization_slug=self.config['organization'])
             if ogdch_identifier in gathered_ogdch_identifiers:
-                csw_record_as_string = csw_data.get_record_by_id(geocat_id)
-                dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)  # noqa
+                try:
+                    csw_record_as_string = csw_data.get_record_by_id(geocat_id)
+                except Exception as e:
+                    self._save_gather_error(
+                        'Error when reading csw record form source: %s / %s'
+                        % (ogdch_identifier, e),
+                        harvest_job)
+                    continue
+
+                try:
+                    dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
+                except Exception as e:
+                    self._save_gather_error(
+                        'Error when mapping csw data to dcat: %s / %s'
+                        % (ogdch_identifier, e),
+                        harvest_job)
+                    continue
+
                 try:
                     harvest_obj = \
                         HarvestObject(guid=ogdch_identifier,
                                       job=harvest_job,
                                       content=json.dumps(dataset_dict))
                     harvest_obj.save()
-                    harvest_obj_ids.append(harvest_obj.id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when processsing dataset: %s %r / %s'
-                        % (ogdch_identifier, e, traceback.format_exc()), harvest_job)  # noqa
+                        'Error when processsing dataset: %s / %s'
+                        % (ogdch_identifier, e),
+                        harvest_job)
+                    continue
+                else:
+                    harvest_obj_ids.append(harvest_obj.id)
 
         log.debug('IDs: %r' % harvest_obj_ids)
 
