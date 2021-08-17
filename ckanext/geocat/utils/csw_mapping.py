@@ -51,7 +51,8 @@ class GeoMetadataMapping(object):
         self.terms_of_use_graph = vocabulary_utils.get_terms_of_use()
         self.default_rights = default_rights
 
-    def get_metadata(self, csw_record_as_string, geocat_id):
+    def get_metadata(self, csw_record_as_string, geocat_id):   # noqa
+        log.debug("processing geocat_id {}".format(geocat_id))
         root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
         dataset_dict = {}
         dataset_dict['identifier'] = \
@@ -87,6 +88,10 @@ class GeoMetadataMapping(object):
         dataset_dict['resources'] = []
         download_formats = _get_download_distribution_formats(node=root_node)
         service_formats = _get_service_distribution_formats(node=root_node)
+        log.debug("The following service formats are detected: {}"
+                  .format(service_formats))
+        log.debug("The following download formats are detected: {}"
+                  .format(download_formats))
         GMD_PROTOCOL = './/gmd:protocol/gco:CharacterString/text()'
         GMD_RESOURCES = '//gmd:distributionInfo/gmd:MD_Distribution//gmd:transferOptions//gmd:CI_OnlineResource'  # noqa
         landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
@@ -148,6 +153,7 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
             ))
+        log.debug(dataset_dict)
         return dataset_dict
 
 
