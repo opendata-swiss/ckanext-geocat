@@ -100,6 +100,7 @@ class GeocatCommand(CkanCommand):
                 geocat_perma_link=DEFAULT_PERMA_LINK_URL,
                 geocat_perma_label=DEFAULT_PERMA_LINK_LABEL,
                 legal_basis_url="",
+                default_rights="",
                 valid_identifiers=[],
             )
             dataset = self.csw_map.get_metadata(xml, id)

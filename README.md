@@ -37,7 +37,9 @@ To install ckanext-geocat:
 To configure the harvester you have several harvester config options (in the harvester config JSON):
 
 * `user`: The user to be used when importing the datasets (default: `harvest`)
-* `organization`: The organization to be associated to all harvested datasets (default: the organization, which owns the harvest source)
+* `rights`: The fall back terms of use to be associated with the harvested datasets if 
+*           terms of use is not specified for them 
+*           (default: `NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired`)
 * `delete_missing_datasets`: Boolean flag (true/false) to determine if this harvester should delete existing datasets that are no longer included in
 the harvest-source (default: `false`)
 * `geocat_perma_link_url`: Link back to geocat instance, so that geocat permalinks can be formed: 

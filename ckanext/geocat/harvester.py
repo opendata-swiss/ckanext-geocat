@@ -6,6 +6,8 @@ from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
+from ckanext.geocat.utils.vocabulary_utils import \
+  (VALID_TERMS_OF_USE, DEFAULT_TERMS_OF_USE)
 from ckan.logic.schema import default_update_package_schema,\
     default_create_package_schema
 from ckan.lib.navl.validators import ignore
@@ -39,13 +41,21 @@ class GeocatHarvester(HarvesterBase):
     def validate_config(self, config):
         if not config:
             return config
+
         try:
             config_obj = json.loads(config)
-            if 'delete_missing_datasets' in config_obj:
-                if not isinstance(config_obj['delete_missing_datasets'], bool):
-                    raise ValueError('delete_missing_dataset must be boolean')
         except Exception as e:
-            raise e
+            raise ValueError('The Configuration could not be parsed. An error {} occured'
+                                 .format(e))
+
+        if 'delete_missing_datasets' in config_obj:
+            if not isinstance(config_obj['delete_missing_datasets'], bool):
+                raise ValueError('delete_missing_dataset must be boolean')
+
+        if 'rights' in config_obj:
+            if not config_obj['rights'] in VALID_TERMS_OF_USE:
+                raise ValueError('{} is not valid as terms of use'
+                                 .format(config_obj['rights']))
         return config
 
     def _set_config(self, config_str, harvest_source_id):
@@ -55,6 +65,9 @@ class GeocatHarvester(HarvesterBase):
             self.config = {}
 
         self.config['user'] = self.config.get('user', HARVEST_USER)
+        self.config['rights'] = self.config.get('rights', DEFAULT_TERMS_OF_USE)
+        if not self.config['rights'] in VALID_TERMS_OF_USE:
+            self.config['rights'] = DEFAULT_TERMS_OF_USE
         self.config['delete_missing_datasets'] = \
             self.config.get('delete_missing_datasets', False)
 
@@ -119,6 +132,7 @@ class GeocatHarvester(HarvesterBase):
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
             legal_basis_url=self.config['legal_basis_url'],
+            default_rights=self.config['rights'],
             valid_identifiers=all_ogdch_identifiers,
         )
 

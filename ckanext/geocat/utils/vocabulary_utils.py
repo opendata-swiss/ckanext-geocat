@@ -5,6 +5,17 @@ from lxml import etree
 
 DCT = Namespace("http://purl.org/dc/terms/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
+TERMS_OF_USE_OPEN = 'NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired' # noqa
+TERMS_OF_USE_BY = 'NonCommercialAllowed-CommercialAllowed-ReferenceRequired' # noqa
+TERMS_OF_USE_ASK = 'NonCommercialAllowed-CommercialWithPermission-ReferenceNotRequired' # noqa
+TERMS_OF_USE_BY_ASK = 'NonCommercialAllowed-CommercialWithPermission-ReferenceRequired' # noqa
+VALID_TERMS_OF_USE = [
+    TERMS_OF_USE_BY,
+    TERMS_OF_USE_ASK,
+    TERMS_OF_USE_BY_ASK,
+    TERMS_OF_USE_OPEN
+]
+DEFAULT_TERMS_OF_USE = TERMS_OF_USE_BY
 
 namespaces = {
   "skos": SKOS,

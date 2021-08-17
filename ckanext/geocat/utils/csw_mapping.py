@@ -41,6 +41,7 @@ class GeoMetadataMapping(object):
                  geocat_perma_link,
                  geocat_perma_label,
                  legal_basis_url,
+                 default_rights,
                  valid_identifiers):
         self.geocat_perma_link = geocat_perma_link
         self.geocat_perma_label = geocat_perma_label
@@ -48,6 +49,7 @@ class GeoMetadataMapping(object):
         self.legal_basis_url = legal_basis_url
         self.valid_identifiers = valid_identifiers
         self.terms_of_use_graph = vocabulary_utils.get_terms_of_use()
+        self.default_rights = default_rights
 
     def get_metadata(self, csw_record_as_string, geocat_id):
         root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
@@ -78,7 +80,8 @@ class GeoMetadataMapping(object):
         dataset_dict['owner_org'] = self.organization_slug
         rights = \
             _map_dataset_rights(node=root_node,
-                                terms_of_use=self.terms_of_use_graph)
+                                terms_of_use=self.terms_of_use_graph,
+                                default_rights=self.default_rights)
 
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
@@ -374,7 +377,7 @@ def _map_dataset_see_alsos(node, organization_slug, valid_identifiers):
     return []
 
 
-def _map_dataset_rights(node, terms_of_use):
+def _map_dataset_rights(node, terms_of_use, default_rights):
     GMD_RIGHTS = './/gmd:resourceConstraints//gmd:otherConstraints'
     rights_node = \
         xpath_utils.xpath_get_single_sub_node_for_node_and_path(
@@ -391,5 +394,4 @@ def _map_dataset_rights(node, terms_of_use):
                         ogdch_rights = str(mapping_object)
                         if ogdch_rights:
                             return ogdch_rights
-    DEFAULT_RIGHTS = 'NonCommercialAllowed-CommercialAllowed-ReferenceRequired'  # noqa
-    return DEFAULT_RIGHTS
+    return default_rights
