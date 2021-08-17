@@ -96,7 +96,6 @@ class GeocatHarvester(HarvesterBase):
         self._set_config(harvest_job.source.config, harvest_job.source.id)
 
         csw_url = harvest_job.source.url
-        harvest_obj_ids = []
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=csw_url)
@@ -138,6 +137,48 @@ class GeocatHarvester(HarvesterBase):
             valid_identifiers=all_ogdch_identifiers,
         )
 
+        harvest_obj_ids = self.map_geocat_dataset(
+            csw_data,
+            csw_map,
+            gathered_geocat_identifiers,
+            gathered_ogdch_identifiers,
+            harvest_job)
+
+        log.debug('IDs: %r' % harvest_obj_ids)
+
+        if self.config['delete_missing_datasets']:
+            delete_harvest_object_ids = \
+                self.delete_geocat_ids(
+                    harvest_job,
+                    harvest_obj_ids,
+                    packages_to_delete
+                )
+            harvest_obj_ids.extend(delete_harvest_object_ids)
+
+        return harvest_obj_ids
+
+    def delete_geocat_ids(self,
+                          harvest_job,
+                          harvest_obj_ids,
+                          packages_to_delete):
+        delete_harvest_obj_ids = []
+        for package_info in packages_to_delete:
+            obj = HarvestObject(
+                guid=package_info[1].name,
+                job=harvest_job,
+                extras=[HarvestObjectExtra(key='import_action',
+                                           value='delete')])
+            obj.save()
+            delete_harvest_obj_ids.append(obj.id)
+        return delete_harvest_obj_ids
+
+    def map_geocat_dataset(self,
+                           csw_data,
+                           csw_map,
+                           gathered_geocat_identifiers,
+                           gathered_ogdch_identifiers,
+                           harvest_job):
+        mapped_harvest_obj_ids = []
         for geocat_id in gathered_geocat_identifiers:
 
             ogdch_identifier = ogdch_map_utils.map_geocat_to_ogdch_identifier(
@@ -176,21 +217,8 @@ class GeocatHarvester(HarvesterBase):
                         harvest_job)
                     continue
                 else:
-                    harvest_obj_ids.append(harvest_obj.id)
-
-        log.debug('IDs: %r' % harvest_obj_ids)
-
-        if self.config['delete_missing_datasets']:
-            for package_info in packages_to_delete:
-                obj = HarvestObject(
-                    guid=package_info[1].name,
-                    job=harvest_job,
-                    extras=[HarvestObjectExtra(key='import_action',
-                                               value='delete')])
-                obj.save()
-                harvest_obj_ids.append(obj.id)
-
-        return harvest_obj_ids
+                    mapped_harvest_obj_ids.append(harvest_obj.id)
+        return mapped_harvest_obj_ids
 
     def fetch_stage(self, harvest_object):
         return True
