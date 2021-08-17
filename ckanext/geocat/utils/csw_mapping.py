@@ -145,6 +145,7 @@ class GeoMetadataMapping(object):
         )
         dataset_dict['url'] = geocat_resources['url']
         dataset_dict['relations'] = geocat_resources['relations']
+        log.error(dataset_dict['relations'])
         dataset_dict['resources'] = geocat_resources['resources']
         dataset_dict['language'].extend(geocat_resources['language'])
         dataset_dict['relations'].append(ogdch_map_utils.get_permalink(
@@ -156,6 +157,7 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
             ))
+        log.error(dataset_dict['relations'])
 
         geocat_services = xpath_utils.xpath_get_geocat_services(node=root_node)
         if geocat_services:
