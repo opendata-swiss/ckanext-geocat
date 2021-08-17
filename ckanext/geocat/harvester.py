@@ -45,8 +45,10 @@ class GeocatHarvester(HarvesterBase):
         try:
             config_obj = json.loads(config)
         except Exception as e:
-            raise ValueError('The Configuration could not be parsed. An error {} occured'
-                                 .format(e))
+            raise ValueError(
+                    'Configuration could not be parsed. An error {} occured'
+                    .format(e)
+                )
 
         if 'delete_missing_datasets' in config_obj:
             if not isinstance(config_obj['delete_missing_datasets'], bool):
@@ -152,7 +154,8 @@ class GeocatHarvester(HarvesterBase):
                     continue
 
                 try:
-                    dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
+                    dataset_dict = csw_map.get_metadata(csw_record_as_string,
+                                                        geocat_id)
                 except Exception as e:
                     self._save_gather_error(
                         'Error when mapping csw data to dcat: %s / %s'

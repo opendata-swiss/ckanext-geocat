@@ -82,7 +82,7 @@ def map_to_ogdch_categories(geocat_categories):
     for category in geocat_categories:
         mapped_category = theme_mapping.get(category)
         if mapped_category:
-           ogdch_groups.extend(mapped_category)
+            ogdch_groups.extend(mapped_category)
     ogdch_groups = set(ogdch_groups)
     return [{'name': group} for group in ogdch_groups]
 
@@ -163,7 +163,8 @@ def get_landing_page_protocols():
 def map_resource(geocat_resource, issued, modified, rights):
     resource_dict = {}
     title = geocat_resource.get('title', '')
-    resource_dict['title'] = {'fr': title, 'de': title, 'en': title, 'it': title}
+    resource_dict['title'] = \
+        {'fr': title, 'de': title, 'en': title, 'it': title}
     resource_dict['issued'] = issued
     resource_dict['modified'] = modified
     resource_dict['rights'] = rights
