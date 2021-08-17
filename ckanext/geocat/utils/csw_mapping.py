@@ -85,8 +85,6 @@ class GeoMetadataMapping(object):
 
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
-        download_formats = _get_download_distribution_formats(node=root_node)
-        service_formats = _get_service_distribution_formats(node=root_node)
         GMD_PROTOCOL = './/gmd:protocol/gco:CharacterString/text()'
         GMD_RESOURCES = '//gmd:distributionInfo/gmd:MD_Distribution//gmd:transferOptions//gmd:CI_OnlineResource'  # noqa
         landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
@@ -327,22 +325,6 @@ def _map_dataset_language(node):
             if ogdch_language:
                 languages.append(ogdch_language)
     return languages
-
-
-def _get_download_distribution_formats(node):
-    GMD_DOWNLOAD_FORMATS = ['//gmd:distributionInfo//gmd:distributionFormat//gmd:name//gco:CharacterString/text()']  # noqa
-    return \
-        xpath_utils.xpath_get_all_values_for_node_and_path_list(
-            node=node,
-            path_list=GMD_DOWNLOAD_FORMATS)
-
-
-def _get_service_distribution_formats(node):
-    GMD_SERVICE_FORMATS = ['//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()']  # noqa
-    return \
-        xpath_utils.xpath_get_all_values_for_node_and_path_list(
-            node=node,
-            path_list=GMD_SERVICE_FORMATS)
 
 
 def _map_dataset_temporals(node):
