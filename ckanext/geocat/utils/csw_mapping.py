@@ -52,6 +52,7 @@ class GeoMetadataMapping(object):
         self.default_rights = default_rights
 
     def get_metadata(self, csw_record_as_string, geocat_id):
+        log.debug("processing geocat_id {}".format(geocat_id))
         root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
         dataset_dict = {}
         dataset_dict['identifier'] = \
@@ -105,6 +106,7 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
             ))
+        log.debug(dataset_dict)
         return dataset_dict
 
     def map_resources(self, dataset_dict, rights, root_node):
