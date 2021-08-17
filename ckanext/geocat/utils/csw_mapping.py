@@ -83,13 +83,37 @@ class GeoMetadataMapping(object):
                                 terms_of_use=self.terms_of_use_graph,
                                 default_rights=self.default_rights)
 
+        self.map_resources(dataset_dict, rights, root_node)
+
+        geocat_services = xpath_utils.xpath_get_geocat_services(node=root_node)
+        if geocat_services:
+            for geocat_service in geocat_services:
+                ogdch_service = ogdch_map_utils.map_service(
+                                geocat_service=geocat_service,
+                                issued=dataset_dict.get('issued', ''),
+                                modified=dataset_dict.get('modified', ''),
+                                description=dataset_dict['description'],
+                                rights=rights,
+                            )
+                dataset_dict['resources'].append(ogdch_service)
+        dataset_dict['relations'].append(ogdch_map_utils.get_permalink(
+            geocat_id=geocat_id,
+            geocat_perma_link=self.geocat_perma_link,
+            geocat_perma_label=self.geocat_perma_label,
+        ))
+        if self.legal_basis_url:
+            dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
+                legal_basis_url=self.legal_basis_url,
+            ))
+        return dataset_dict
+
+    def map_resources(self, dataset_dict, rights, root_node):
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
         GMD_PROTOCOL = './/gmd:protocol/gco:CharacterString/text()'
         GMD_RESOURCES = '//gmd:distributionInfo/gmd:MD_Distribution//gmd:transferOptions//gmd:CI_OnlineResource'  # noqa
         landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
         relation_protocols = ogdch_map_utils.get_relation_protocols()
-
         resource_nodes = \
             xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
                 node=root_node, path=GMD_RESOURCES)
@@ -125,28 +149,6 @@ class GeoMetadataMapping(object):
                     for lang in resource.get('language', []):
                         if lang not in dataset_dict['language']:
                             dataset_dict['language'].append(lang)
-
-        geocat_services = xpath_utils.xpath_get_geocat_services(node=root_node)
-        if geocat_services:
-            for geocat_service in geocat_services:
-                ogdch_service = ogdch_map_utils.map_service(
-                                geocat_service=geocat_service,
-                                issued=dataset_dict.get('issued', ''),
-                                modified=dataset_dict.get('modified', ''),
-                                description=dataset_dict['description'],
-                                rights=rights,
-                            )
-                dataset_dict['resources'].append(ogdch_service)
-        dataset_dict['relations'].append(ogdch_map_utils.get_permalink(
-            geocat_id=geocat_id,
-            geocat_perma_link=self.geocat_perma_link,
-            geocat_perma_label=self.geocat_perma_label,
-        ))
-        if self.legal_basis_url:
-            dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
-                legal_basis_url=self.legal_basis_url,
-            ))
-        return dataset_dict
 
 
 def _map_dataset_identifier(node, organization_slug):
