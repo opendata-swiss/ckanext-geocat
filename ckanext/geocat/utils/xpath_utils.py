@@ -32,6 +32,27 @@ gmd_namespaces = {
     'xlink': 'http://www.w3.org/1999/xlink',
 }
 
+GMD_SERVICE_NODES = '//gmd:identificationInfo//srv:containsOperations/srv:SV_OperationMetadata[.//srv:operationName//gco:CharacterString/text()]'  # noqa
+GMD_SERVICE_URLS = [
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#DE" and ./text()]/text()',  # noqa
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#FR" and ./text()]/text()',  # noqa
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#EN" and ./text()]/text()',  # noqa
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#IT" and ./text()]/text()',  # noqa
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[./text()]/text()',  # noqa
+]
+GMD_MEDIA_TYPE = '//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()'  # noqa
+GMD_SERVICE_TITLE = './/srv:operationName/gco:CharacterString/text()'  # noqa
+URL_PATH_LIST = [
+    './/gmd:linkage//che:LocalisedURL[@locale="#DE"]/text()',
+    './/gmd:linkage//che:LocalisedURL[@locale="#FR"]/text()',
+    './/gmd:linkage//che:LocalisedURL[@locale="#EN"]/text()',
+    './/gmd:linkage//che:LocalisedURL[@locale="#IT"]/text()',
+    './/che:LocalisedURL/text()',
+    './/gmd:URL/text()',
+]
+GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
+GMD_RESOURCE_DESCRIPTION = './/gmd:description'
+
 DOWNLOAD_PROTOCOL = "WWW:DOWNLOAD"
 OGC_WMTS_PROTOCOL = "OGC:WMTS"
 OGC_WFS_PROTOCOL = "OGC:WFS"
@@ -110,14 +131,6 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
 
 
 def xpath_get_url_and_languages(node):
-    URL_PATH_LIST = [
-        './/gmd:linkage//che:LocalisedURL[@locale="#DE"]/text()',
-        './/gmd:linkage//che:LocalisedURL[@locale="#FR"]/text()',
-        './/gmd:linkage//che:LocalisedURL[@locale="#EN"]/text()',
-        './/gmd:linkage//che:LocalisedURL[@locale="#IT"]/text()',
-        './/che:LocalisedURL/text()',
-        './/gmd:URL/text()',
-    ]
     languages = []
     url = xpath_get_first_of_values_from_path_list(
         node=node, path_list=URL_PATH_LIST)
@@ -189,8 +202,6 @@ def xpath_get_url_with_label_from_distribution(node):
 
 def xpath_get_distribution_from_distribution_node(
         resource_node, protocol):
-    GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
-    GMD_RESOURCE_DESCRIPTION = './/gmd:description'
     distribution = {}
     distribution['name'] = \
         xpath_get_single_sub_node_for_node_and_path(
@@ -223,16 +234,6 @@ def xpath_get_distribution_from_distribution_node(
 
 
 def xpath_get_geocat_services(node):
-    GMD_SERVICE_NODES = '//gmd:identificationInfo//srv:containsOperations/srv:SV_OperationMetadata[.//srv:operationName//gco:CharacterString/text()]'  # noqa
-    GMD_SERVICE_URLS = [
-        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#DE" and ./text()]/text()',  # noqa
-        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#FR" and ./text()]/text()',  # noqa
-        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#EN" and ./text()]/text()',  # noqa
-        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#IT" and ./text()]/text()',  # noqa
-        './/srv:connectPoint//gmd:linkage//che:LocalisedURL[./text()]/text()',  # noqa
-    ]
-    GMD_MEDIA_TYPE = '//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()'  # noqa
-    GMD_SERVICE_TITLE = './/srv:operationName/gco:CharacterString/text()'  # noqa
     service_nodes = \
         xpath_get_all_sub_nodes_for_node_and_path(
             node=node, path=GMD_SERVICE_NODES)
