@@ -121,7 +121,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIn(group['name'], groups)
 
         # language
-        self.assertEquals(set(['de']), set(dataset.get('language')))
+        self.assertEquals(set(['de', 'fr', 'it', 'en']), set(dataset.get('language')))
 
         # relations
         self.assertTrue(hasattr(dataset['relations'], '__iter__'))
