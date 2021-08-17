@@ -21,6 +21,7 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
             geocat_perma_link="https://perma-link/",
             geocat_perma_label="some label",
             legal_basis_url="",
+            default_rights="",
             valid_identifiers=['8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'],
         )
         self.geocat_identifier = '93814e81-2466-4690-b54d-c1d958f1c3b8'
