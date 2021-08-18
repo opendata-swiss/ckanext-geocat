@@ -177,9 +177,10 @@ class GeoMetadataMapping(object):
                         node=resource_node, path=GMD_PROTOCOL)
                 if protocol in relation_protocols:
                     if not dataset_dict.get('url') and protocol in landing_page_protocols:  # noqa
-                        dataset_dict['url'] = \
-                            xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
-                                resource_node).get('url')
+                        url = xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
+                            resource_node)
+                        if url:
+                            dataset_dict['url'] = url.get('url')
                     else:
                         url_with_label = \
                             xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
