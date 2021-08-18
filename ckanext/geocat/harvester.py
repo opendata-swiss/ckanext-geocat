@@ -189,8 +189,8 @@ class GeocatHarvester(HarvesterBase):
                     csw_record_as_string = csw_data.get_record_by_id(geocat_id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when reading csw record form source: %s / %s'
-                        % (ogdch_identifier, e),
+                        'Error when reading csw record form source: %s %r / %s'
+                        % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
 
@@ -199,8 +199,8 @@ class GeocatHarvester(HarvesterBase):
                                                         geocat_id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when mapping csw data to dcat: %s / %s'
-                        % (ogdch_identifier, e),
+                        'Error when mapping csw data to dcat: %s %r / %s'
+                        % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
 
@@ -212,8 +212,8 @@ class GeocatHarvester(HarvesterBase):
                     harvest_obj.save()
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when processsing dataset: %s / %s'
-                        % (ogdch_identifier, e),
+                        'Error when processsing dataset: %s %r / %s'
+                        % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
                 else:
