@@ -74,17 +74,9 @@ GMD_MODIFIED = [
 ]
 GMD_KEYWORDS = '//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword'  # noqa
 GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'  # noqa
-GMD_ACRUAL_PERIDICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue'  # noqa
+GMD_ACCRUAL_PERIODICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue'  # noqa
 
-EMPTY_CONTACT_POINTS = []
 EMPTY_PUBLISHER = [{'label': ''}]
-ISSUED_EMPTY = ''
-MODIFIED_EMPTY = ''
-KEYWORDS_EMPTY = []
-CATEGORIES_EMPTY = []
-FREQUENCY_EMPTY = ''
-SPACIAL_EMPTY = ''
-COVERAGE_NOT_IMPLEMENTED = ''
 
 
 class GeoMetadataMapping(object):
@@ -253,7 +245,7 @@ def _map_dataset_contact_points(node):
             get=xpath_utils.XPATH_TEXT)
     if geocat_contact_point:
         return ogdch_map_utils.map_contact_points(geocat_contact_point)
-    return EMPTY_CONTACT_POINTS
+    return []
 
 
 def _map_dataset_issued(node):
@@ -264,7 +256,7 @@ def _map_dataset_issued(node):
             get=xpath_utils.XPATH_TEXT)
     if geocat_issued:
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_issued)
-    return ISSUED_EMPTY
+    return ''
 
 
 def _map_dataset_modified(node):
@@ -272,7 +264,7 @@ def _map_dataset_modified(node):
         node=node, path_list=GMD_MODIFIED, get=xpath_utils.XPATH_TEXT)
     if geocat_modified:
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)
-    return MODIFIED_EMPTY
+    return ''
 
 
 def _map_dataset_keywords(node):
@@ -284,7 +276,7 @@ def _map_dataset_keywords(node):
         geocat_keywords.append(keyword_dict)
     if geocat_keywords:
         return ogdch_map_utils.map_to_ogdch_keywords(geocat_keywords)
-    return KEYWORDS_EMPTY
+    return []
 
 
 def _map_dataset_categories(node):
@@ -294,23 +286,23 @@ def _map_dataset_categories(node):
             path=GMD_THEME)
     if geocat_categories:
         return ogdch_map_utils.map_to_ogdch_categories(geocat_categories)
-    return CATEGORIES_EMPTY
+    return []
 
 
 def _map_dataset_frequency(node):
     geocat_frequency = \
         xpath_utils.xpath_get_single_sub_node_for_node_and_path(
             node=node,
-            path=GMD_ACRUAL_PERIDICITY)
+            path=GMD_ACCRUAL_PERIODICITY)
     if geocat_frequency:
         accrual_periodicity = ogdch_map_utils.map_frequency(geocat_frequency)
         if accrual_periodicity:
             return accrual_periodicity
-    return FREQUENCY_EMPTY
+    return ''
 
 
 def _map_dataset_coverage():
-    return COVERAGE_NOT_IMPLEMENTED
+    return ''
 
 
 def _map_dataset_spatial(node):
@@ -320,7 +312,7 @@ def _map_dataset_spatial(node):
             path=GMD_SPATIAL)
     if geocat_spatial:
         return geocat_spatial
-    return SPACIAL_EMPTY
+    return ''
 
 
 def _map_dataset_language(node):
