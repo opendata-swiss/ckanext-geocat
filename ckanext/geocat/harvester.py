@@ -6,6 +6,8 @@ from ckan.lib.helpers import json
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
+from ckanext.geocat.utils.vocabulary_utils import \
+  (VALID_TERMS_OF_USE, DEFAULT_TERMS_OF_USE)
 from ckan.logic.schema import default_update_package_schema,\
     default_create_package_schema
 from ckan.lib.navl.validators import ignore
@@ -39,13 +41,23 @@ class GeocatHarvester(HarvesterBase):
     def validate_config(self, config):
         if not config:
             return config
+
         try:
             config_obj = json.loads(config)
-            if 'delete_missing_datasets' in config_obj:
-                if not isinstance(config_obj['delete_missing_datasets'], bool):
-                    raise ValueError('delete_missing_dataset must be boolean')
         except Exception as e:
-            raise e
+            raise ValueError(
+                    'Configuration could not be parsed. An error {} occured'
+                    .format(e)
+                )
+
+        if 'delete_missing_datasets' in config_obj:
+            if not isinstance(config_obj['delete_missing_datasets'], bool):
+                raise ValueError('delete_missing_dataset must be boolean')
+
+        if 'rights' in config_obj:
+            if not config_obj['rights'] in VALID_TERMS_OF_USE:
+                raise ValueError('{} is not valid as terms of use'
+                                 .format(config_obj['rights']))
         return config
 
     def _set_config(self, config_str, harvest_source_id):
@@ -55,6 +67,9 @@ class GeocatHarvester(HarvesterBase):
             self.config = {}
 
         self.config['user'] = self.config.get('user', HARVEST_USER)
+        self.config['rights'] = self.config.get('rights', DEFAULT_TERMS_OF_USE)
+        if not self.config['rights'] in VALID_TERMS_OF_USE:
+            self.config['rights'] = DEFAULT_TERMS_OF_USE
         self.config['delete_missing_datasets'] = \
             self.config.get('delete_missing_datasets', False)
 
@@ -81,7 +96,6 @@ class GeocatHarvester(HarvesterBase):
         self._set_config(harvest_job.source.config, harvest_job.source.id)
 
         csw_url = harvest_job.source.url
-        harvest_obj_ids = []
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=csw_url)
@@ -119,9 +133,52 @@ class GeocatHarvester(HarvesterBase):
             geocat_perma_link=self.config['geocat_perma_link_url'],
             geocat_perma_label=self.config['geocat_perma_link_label'],
             legal_basis_url=self.config['legal_basis_url'],
+            default_rights=self.config['rights'],
             valid_identifiers=all_ogdch_identifiers,
         )
 
+        harvest_obj_ids = self.map_geocat_dataset(
+            csw_data,
+            csw_map,
+            gathered_geocat_identifiers,
+            gathered_ogdch_identifiers,
+            harvest_job)
+
+        log.debug('IDs: %r' % harvest_obj_ids)
+
+        if self.config['delete_missing_datasets']:
+            delete_harvest_object_ids = \
+                self.delete_geocat_ids(
+                    harvest_job,
+                    harvest_obj_ids,
+                    packages_to_delete
+                )
+            harvest_obj_ids.extend(delete_harvest_object_ids)
+
+        return harvest_obj_ids
+
+    def delete_geocat_ids(self,
+                          harvest_job,
+                          harvest_obj_ids,
+                          packages_to_delete):
+        delete_harvest_obj_ids = []
+        for package_info in packages_to_delete:
+            obj = HarvestObject(
+                guid=package_info[1].name,
+                job=harvest_job,
+                extras=[HarvestObjectExtra(key='import_action',
+                                           value='delete')])
+            obj.save()
+            delete_harvest_obj_ids.append(obj.id)
+        return delete_harvest_obj_ids
+
+    def map_geocat_dataset(self,
+                           csw_data,
+                           csw_map,
+                           gathered_geocat_identifiers,
+                           gathered_ogdch_identifiers,
+                           harvest_job):
+        mapped_harvest_obj_ids = []
         for geocat_id in gathered_geocat_identifiers:
 
             ogdch_identifier = ogdch_map_utils.map_geocat_to_ogdch_identifier(
@@ -132,17 +189,18 @@ class GeocatHarvester(HarvesterBase):
                     csw_record_as_string = csw_data.get_record_by_id(geocat_id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when reading csw record form source: %s / %s'
-                        % (ogdch_identifier, e),
+                        'Error when reading csw record form source: %s %r / %s'
+                        % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
 
                 try:
-                    dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
+                    dataset_dict = csw_map.get_metadata(csw_record_as_string,
+                                                        geocat_id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when mapping csw data to dcat: %s / %s'
-                        % (ogdch_identifier, e),
+                        'Error when mapping csw data to dcat: %s %r / %s'
+                        % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
 
@@ -154,26 +212,13 @@ class GeocatHarvester(HarvesterBase):
                     harvest_obj.save()
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when processsing dataset: %s / %s'
-                        % (ogdch_identifier, e),
+                        'Error when processsing dataset: %s %r / %s'
+                        % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
                 else:
-                    harvest_obj_ids.append(harvest_obj.id)
-
-        log.debug('IDs: %r' % harvest_obj_ids)
-
-        if self.config['delete_missing_datasets']:
-            for package_info in packages_to_delete:
-                obj = HarvestObject(
-                    guid=package_info[1].name,
-                    job=harvest_job,
-                    extras=[HarvestObjectExtra(key='import_action',
-                                               value='delete')])
-                obj.save()
-                harvest_obj_ids.append(obj.id)
-
-        return harvest_obj_ids
+                    mapped_harvest_obj_ids.append(harvest_obj.id)
+        return mapped_harvest_obj_ids
 
     def fetch_stage(self, harvest_object):
         return True

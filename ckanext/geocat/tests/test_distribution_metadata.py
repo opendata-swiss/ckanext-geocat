@@ -21,6 +21,7 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
             geocat_perma_link="https://perma-link/",
             geocat_perma_label="some label",
             legal_basis_url="",
+            default_rights="",
             valid_identifiers=['8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'],
         )
         self.geocat_identifier = '93814e81-2466-4690-b54d-c1d958f1c3b8'
@@ -43,7 +44,6 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
         self.assertEquals(4, len(distributions))
 
         fields = [
-            'identifier',
             'title',
             'description',
             'issued',
@@ -51,12 +51,9 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
             'language',
             'url',
             'download_url',
-            'license',
-            'byte_size',
             'media_type',
             'rights',
             'format',
-            'coverage',
         ]
         for dist in distributions:
             for field in fields:
@@ -81,9 +78,6 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
                 break
 
         self.assertIsNotNone(download)
-
-        # identifier
-        self.assertEquals('', download.get('identifier'))
 
         # title
         self.assertEquals('Download', download['title']['de'])
@@ -114,17 +108,8 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
         # rights
         self.assertEquals('NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired', download.get('rights')) 
 
-        # license
-        self.assertEquals('', download.get('license'))
-
-        # byte size
-        self.assertEquals('', download.get('byte_size'))
-
         # media type
         self.assertEquals('', download.get('media_type'))
 
         # format
         self.assertEquals('', download.get('format'))
-
-        # coverage
-        self.assertEquals('', download.get('coverage'))
