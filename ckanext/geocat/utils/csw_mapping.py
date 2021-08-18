@@ -165,8 +165,6 @@ class GeoMetadataMapping(object):
     def map_resources(self, dataset_dict, rights, root_node):
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
-        GMD_PROTOCOL = './/gmd:protocol/gco:CharacterString/text()'
-        GMD_RESOURCES = '//gmd:distributionInfo/gmd:MD_Distribution//gmd:transferOptions//gmd:CI_OnlineResource'  # noqa
         landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
         relation_protocols = ogdch_map_utils.get_relation_protocols()
         resource_nodes = \
