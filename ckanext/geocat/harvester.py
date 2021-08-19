@@ -257,7 +257,10 @@ class GeocatHarvester(HarvesterBase):
 
         pkg_info = \
             search_utils.find_package_for_identifier(harvest_object.guid)
-        context = search_utils.get_default_context()
+        context = {
+            'ignore_auth': True,
+            'user': self.config['user'],
+        }
         try:
             if pkg_info:
                 # Change default schema to ignore lists of dicts, which
