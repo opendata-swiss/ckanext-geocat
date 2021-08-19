@@ -36,7 +36,6 @@ To install ckanext-geocat:
 
 To configure the harvester you have several harvester config options (in the harvester config JSON):
 
-* `user`: The user to be used when importing the datasets (default: `harvest`)
 * `rights`: The fall back terms of use to be associated with the harvested datasets if 
 *           terms of use is not specified for them 
 *           (default: `NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired`)
