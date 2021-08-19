@@ -66,7 +66,6 @@ class GeocatHarvester(HarvesterBase):
         else:
             self.config = {}
 
-        self.config['user'] = self.config.get('user', HARVEST_USER)
         self.config['rights'] = self.config.get('rights', DEFAULT_TERMS_OF_USE)
         if not self.config['rights'] in VALID_TERMS_OF_USE:
             self.config['rights'] = DEFAULT_TERMS_OF_USE
@@ -224,6 +223,7 @@ class GeocatHarvester(HarvesterBase):
         return True
 
     def import_stage(self, harvest_object):  # noqa
+
         log.debug('In GeocatHarvester import_stage')
 
         if not harvest_object:
@@ -259,7 +259,7 @@ class GeocatHarvester(HarvesterBase):
             search_utils.find_package_for_identifier(harvest_object.guid)
         context = {
             'ignore_auth': True,
-            'user': self.config['user'],
+            'user': HARVEST_USER,
         }
         try:
             if pkg_info:
