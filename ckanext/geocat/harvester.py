@@ -270,6 +270,7 @@ class GeocatHarvester(HarvesterBase):
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
                 pkg_dict['id'] = pkg_info.package_id
+                search_utils.map_resources_to_ids(pkg_dict, pkg_info)
                 updated_pkg = \
                     tk.get_action('package_update')(context, pkg_dict)
                 harvest_object.current = True
