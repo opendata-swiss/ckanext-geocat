@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
@@ -22,7 +23,7 @@ def map_to_ogdch_publishers(geocat_publisher, organization_slug):
         'name': geocat_publisher[0],
         'url': _get_organization_url(organization_slug)
     }
-    return dataset_publisher
+    return json.dumps(dataset_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
