@@ -97,8 +97,8 @@ def map_frequency(geocat_frequency):
         'quarterly': 'http://purl.org/cld/freq/quarterly',
         'biannually': 'http://purl.org/cld/freq/semiannual',
         'annually': 'http://purl.org/cld/freq/annual',
-        'asNeeded': 'http://purl.org/cld/freq/completelyIrregular',
-        'irregular': 'http://purl.org/cld/freq/completelyIrregular',
+        'asNeeded': 'http://purl.org/cld/freq/irregular',
+        'irregular': 'http://purl.org/cld/freq/irregular',
     }
     return frequency_mapping.get(geocat_frequency, '')
 
