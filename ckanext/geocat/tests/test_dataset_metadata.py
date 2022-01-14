@@ -2,6 +2,7 @@
 from ckanext.geocat.utils import csw_mapping
 from nose.tools import *  # noqa
 import os
+import json
 from datetime import datetime
 import time
 import unittest
