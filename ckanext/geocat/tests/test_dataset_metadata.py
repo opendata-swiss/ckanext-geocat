@@ -102,8 +102,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(int(time.mktime(d.timetuple())), dataset['issued'])
         self.assertEquals(int(time.mktime(d.timetuple())), dataset['modified'])
 
-        # publishers
-        self.assertTrue(isinstance( dataset['publisher'], dict))
+        # publisher
+        publisher = json.loads(dataset['publisher'])
+        self.assertTrue(isinstance(publisher, dict))
         self.assertEquals(u'Bundesamt f\xfcr Umwelt', publisher['name'])
         self.assertEquals(u'http://organization/swisstopo', publisher['url'])
 
