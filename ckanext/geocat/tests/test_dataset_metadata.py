@@ -107,7 +107,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         publisher = json.loads(dataset['publisher'])
         self.assertTrue(isinstance(publisher, dict))
         self.assertEquals(u'Bundesamt f\xfcr Umwelt', publisher['name'])
-        self.assertEquals(u'https://organization/swisstopo', publisher['url'])
+        self.assertEquals(u'https://opendata.swiss/organization/swisstopo', publisher['url'])
 
         # contact points
         self.assertTrue(hasattr(dataset['contact_points'], '__iter__'))
