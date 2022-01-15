@@ -2,6 +2,7 @@
 from ckanext.geocat.utils import csw_mapping
 from nose.tools import *  # noqa
 import os
+import json
 from datetime import datetime
 import time
 import unittest
@@ -47,7 +48,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             'description',
             'issued',
             'modified',
-            'publishers',
+            'publisher',
             'contact_points',
             'groups',
             'language',
@@ -64,7 +65,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         ]
 
         for field in fields:
-	    self.assertIn(field, dataset)
+            self.assertIn(field, dataset)
 
         # make sure only the defined fields are on the dataset
         self.assertEquals(sorted(fields), sorted(dataset.keys()))
@@ -102,11 +103,11 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(int(time.mktime(d.timetuple())), dataset['issued'])
         self.assertEquals(int(time.mktime(d.timetuple())), dataset['modified'])
 
-        # publishers
-        self.assertTrue(hasattr(dataset['publishers'], '__iter__'))
-        self.assertEquals(1, len(dataset['publishers']))
-        for publisher in dataset['publishers']:
-            self.assertEquals(u'Bundesamt f\xfcr Umwelt', publisher['label'])
+        # publisher
+        publisher = json.loads(dataset['publisher'])
+        self.assertTrue(isinstance(publisher, dict))
+        self.assertEquals(u'Bundesamt f\xfcr Umwelt', publisher['name'])
+        self.assertEquals(u'https://opendata.swiss/organization/swisstopo', publisher['url'])
 
         # contact points
         self.assertTrue(hasattr(dataset['contact_points'], '__iter__'))
