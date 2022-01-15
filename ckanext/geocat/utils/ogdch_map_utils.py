@@ -1,19 +1,29 @@
 # -*- coding: utf-8 -*-
 
+import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
+
+ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
+
+
+def _get_organization_url(organization_name):
+    return ORGANIZATION_URI_BASE + organization_name
 
 
 def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
     return '@'.join([geocat_identifier, organization_slug])
 
 
-def map_to_ogdch_publishers(geocat_publisher):
-    dataset_publishers = []
-    for publisher in geocat_publisher:
-        dataset_publishers.append({'label': publisher})
-    return dataset_publishers
+def map_to_ogdch_publishers(geocat_publisher, organization_slug):
+    if not geocat_publisher:
+        return
+    dataset_publisher = {
+        'name': geocat_publisher[0],
+        'url': _get_organization_url(organization_slug)
+    }
+    return json.dumps(dataset_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
