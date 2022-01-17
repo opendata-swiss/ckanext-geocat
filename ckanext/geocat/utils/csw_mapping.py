@@ -235,8 +235,8 @@ def _map_dataset_publisher(node, organization_slug):
         geocat_publisher = \
             xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
         if geocat_publisher:
-            return ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher,
-                                                           organization_slug)
+            return ogdch_map_utils.map_to_ogdch_publisher(geocat_publisher,
+                                                          organization_slug)
     return EMPTY_PUBLISHER
 
 

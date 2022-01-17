@@ -16,7 +16,7 @@ def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
     return '@'.join([geocat_identifier, organization_slug])
 
 
-def map_to_ogdch_publishers(geocat_publisher, organization_slug):
+def map_to_ogdch_publisher(geocat_publisher, organization_slug):
     if not geocat_publisher:
         return
     dataset_publisher = {
