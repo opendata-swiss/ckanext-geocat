@@ -1008,6 +1008,49 @@
               <gmd:linkage xsi:type="che:PT_FreeURL_PropertyType">
                 <che:PT_FreeURL>
                   <che:URLGroup>
+                    <che:LocalisedURL locale="#DE">https://opendata.swiss/perma/6518b96f-bbe4-4c65-ab58-74e008d1d6f1@bundesamt-fur-statistik-bfs</che:LocalisedURL>
+                  </che:URLGroup>
+                  <che:URLGroup>
+                    <che:LocalisedURL locale="#IT">https://opendata.swiss/perma/6518b96f-bbe4-4c65-ab58-74e008d1d6f1@bundesamt-fur-statistik-bfs</che:LocalisedURL>
+                  </che:URLGroup>
+                  <che:URLGroup>
+                    <che:LocalisedURL locale="#FR">https://opendata.swiss/perma/6518b96f-bbe4-4c65-ab58-74e008d1d6f1@bundesamt-fur-statistik-bfs</che:LocalisedURL>
+                  </che:URLGroup>
+                  <che:URLGroup>
+                    <che:LocalisedURL locale="#EN">https://opendata.swiss/perma/6518b96f-bbe4-4c65-ab58-74e008d1d6f1@bundesamt-fur-statistik-bfs</che:LocalisedURL>
+                  </che:URLGroup>
+                </che:PT_FreeURL>
+              </gmd:linkage>
+              <gmd:protocol>
+                <gco:CharacterString>OPENDATA:SWISS</gco:CharacterString>
+              </gmd:protocol>
+              <gmd:description xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>Permalink to dataset on opendata.swiss</gco:CharacterString>
+                <gmd:PT_FreeText>
+                  <gmd:textGroup>
+                    <gmd:LocalisedCharacterString locale="#DE">Permalink to dataset on opendata.swiss</gmd:LocalisedCharacterString>
+                  </gmd:textGroup>
+                  <gmd:textGroup>
+                    <gmd:LocalisedCharacterString locale="#FR">Permalink to dataset on opendata.swiss</gmd:LocalisedCharacterString>
+                  </gmd:textGroup>
+                  <gmd:textGroup>
+                    <gmd:LocalisedCharacterString locale="#EN">Permalink to dataset on opendata.swiss</gmd:LocalisedCharacterString>
+                  </gmd:textGroup>
+                  <gmd:textGroup>
+                    <gmd:LocalisedCharacterString locale="#IT">Permalink to dataset on opendata.swiss</gmd:LocalisedCharacterString>
+                  </gmd:textGroup>
+                </gmd:PT_FreeText>
+              </gmd:description>
+              <gmd:function>
+                <gmd:CI_OnLineFunctionCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="information" />
+              </gmd:function>
+            </gmd:CI_OnlineResource>
+          </gmd:onLine>
+          <gmd:onLine>
+            <gmd:CI_OnlineResource>
+              <gmd:linkage xsi:type="che:PT_FreeURL_PropertyType">
+                <che:PT_FreeURL>
+                  <che:URLGroup>
                     <che:LocalisedURL locale="#DE">http://data.geo.admin.ch/ch.bafu.laerm-bahnlaerm_nacht/data.zip</che:LocalisedURL>
                   </che:URLGroup>
                 </che:PT_FreeURL>
