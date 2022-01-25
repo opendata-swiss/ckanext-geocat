@@ -129,8 +129,21 @@ class GeoMetadataMapping(object):
                                 terms_of_use=self.terms_of_use_graph,
                                 default_rights=self.default_rights)
 
-        self.map_resources(dataset_dict, rights, root_node)
+        # Map resource nodes as resources
+        dataset_dict['relations'] = []
+        dataset_dict['resources'] = []
+        resource_nodes = \
+            xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
+                node=root_node, path=GMD_RESOURCES)
+        if resource_nodes is not None:
+            for resource_node in resource_nodes:
+                self._map_resource_onto_dataset(
+                    dataset_dict,
+                    resource_node,
+                    rights
+                )
 
+        # Map geocat services as resources
         geocat_services = xpath_utils.xpath_get_geocat_services(node=root_node)
         if geocat_services:
             for geocat_service in geocat_services:
@@ -142,11 +155,15 @@ class GeoMetadataMapping(object):
                                 rights=rights,
                             )
                 dataset_dict['resources'].append(ogdch_service)
+
+        # Map geocat permalink as relation
         dataset_dict['relations'].append(ogdch_map_utils.get_permalink(
             geocat_id=geocat_id,
             geocat_perma_link=self.geocat_perma_link,
             geocat_perma_label=self.geocat_perma_label,
         ))
+
+        # Map legal basis link as relation
         if self.legal_basis_url:
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
@@ -154,50 +171,43 @@ class GeoMetadataMapping(object):
         log.debug(dataset_dict)
         return dataset_dict
 
-    def map_resources(self, dataset_dict, rights, root_node):
-        dataset_dict['relations'] = []
-        dataset_dict['resources'] = []
-        landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
-        relation_protocols = ogdch_map_utils.get_relation_protocols()
-        excluded_protocols = ogdch_map_utils.get_excluded_protocols()
-        resource_nodes = \
-            xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
-                node=root_node, path=GMD_RESOURCES)
-        if resource_nodes is not None:
-            for resource_node in resource_nodes:
-                protocol = \
-                    xpath_utils.xpath_get_single_sub_node_for_node_and_path(
-                        node=resource_node, path=GMD_PROTOCOL)
-                if protocol in excluded_protocols:
-                    continue
-                if protocol in relation_protocols:
-                    if not dataset_dict.get('url') and protocol in landing_page_protocols:  # noqa
-                        url = xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
-                            resource_node)
-                        if url:
-                            dataset_dict['url'] = url.get('url')
-                    else:
-                        url_with_label = \
-                            xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
-                                resource_node)
-                        if url_with_label:
-                            dataset_dict['relations'].append(url_with_label)
-                elif protocol:
-                    geocat_resource = \
-                        xpath_utils.xpath_get_distribution_from_distribution_node(  # noqa
-                            resource_node=resource_node,
-                            protocol=protocol,
-                        )
-                    resource = ogdch_map_utils.map_resource(
-                        geocat_resource=geocat_resource,
-                        issued=dataset_dict['issued'],
-                        modified=dataset_dict['modified'],
-                        rights=rights,
-                    )
-                    dataset_dict['resources'].append(resource)
-                    for lang in resource.get('language', []):
-                        if lang not in dataset_dict['language']:
-                            dataset_dict['language'].append(lang)
+    def _map_resource_onto_dataset(self, dataset_dict, resource_node, rights):
+        protocol = \
+            xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+                node=resource_node, path=GMD_PROTOCOL)
+
+        if protocol in ogdch_map_utils.get_excluded_protocols():
+            return
+
+        if protocol in ogdch_map_utils.get_landing_page_protocols() \
+                and not dataset_dict.get('url'):
+            url = xpath_utils.xpath_get_url_with_label_from_distribution(
+                resource_node)
+            if url:
+                dataset_dict['url'] = url.get('url')
+
+        if protocol in ogdch_map_utils.get_relation_protocols():
+            url_with_label = \
+                xpath_utils.xpath_get_url_with_label_from_distribution(
+                    resource_node)
+            if url_with_label:
+                dataset_dict['relations'].append(url_with_label)
+        elif protocol:
+            geocat_resource = \
+                xpath_utils.xpath_get_distribution_from_distribution_node(
+                    resource_node=resource_node,
+                    protocol=protocol,
+                )
+            resource = ogdch_map_utils.map_resource(
+                geocat_resource=geocat_resource,
+                issued=dataset_dict['issued'],
+                modified=dataset_dict['modified'],
+                rights=rights,
+            )
+            dataset_dict['resources'].append(resource)
+            for lang in resource.get('language', []):
+                if lang not in dataset_dict['language']:
+                    dataset_dict['language'].append(lang)
 
 
 def _map_dataset_identifier(node, organization_slug):
