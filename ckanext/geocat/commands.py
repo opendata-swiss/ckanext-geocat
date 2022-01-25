@@ -36,11 +36,11 @@ class GeocatCommand(CkanCommand):
         super(CkanCommand, self).__init__(name)
         self.parser.add_option(
             '--query', action="store", type="string",  dest='cql_query',
-            default=csw_processor.CQL_QUERY_DEFAUL,
+            default=csw_processor.CQL_QUERY_DEFAULT,
             help='key for cql search')
         self.parser.add_option(
             '--term', action="store", type="string",  dest='cql_term',
-            default=csw_processor.CQL_SEARCH_TERM_DEFAUT,
+            default=csw_processor.CQL_SEARCH_TERM_DEFAULT,
             help='searchterm for cql search')
 
     def command(self):
@@ -67,8 +67,8 @@ class GeocatCommand(CkanCommand):
             self.helpCmd()
             sys.exit(1)
 
-        cqlquery = self.options.get('cql_query', csw_processor.CQL_QUERY_DEFAUL)  # noqa
-        cqlterm = self.options.get('cql_term', csw_processor.CQL_SEARCH_TERM_DEFAUT)  # noqa
+        cqlquery = self.options.get('cql_query', csw_processor.CQL_QUERY_DEFAULT)  # noqa
+        cqlterm = self.options.get('cql_term', csw_processor.CQL_SEARCH_TERM_DEFAULT)  # noqa
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url, cqlquery=cqlquery, cqlvalue=cqlterm)  # noqa
