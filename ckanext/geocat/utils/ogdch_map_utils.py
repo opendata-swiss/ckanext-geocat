@@ -150,18 +150,27 @@ def get_legal_basis_link(legal_basis_url):
     return {'url': legal_basis_url, 'label': LEGAL_BASIS_LABEL}
 
 
-def get_relation_protocols():
-    return ['WWW:LINK-1.0-http--link',
-            'WWW:LINK',
-            'CHTOPO:specialised-geoportal']
+def get_landing_page_protocols():
+    """If a resource node with one of these protocols has a url, and the
+    dataset does not have a url, map the resource node's url onto the dataset.
+
+    If the dataset already has a url, then the url is added to the dataset's
+    relations instead.
+    """
+    return ['WWW:LINK-1.0-http--link', 'WWW:LINK']
+
+
+def get_additonal_relation_protocols():
+    """If a resource node with one of these protocols has a url, then the url
+    is added to the dataset's relations.
+
+    The url from the resource node cannot be mapped as the dataset's url.
+    """
+    return ['CHTOPO:specialised-geoportal']
 
 
 def get_excluded_protocols():
     return ['OPENDATA:SWISS']
-
-
-def get_landing_page_protocols():
-    return ['WWW:LINK-1.0-http--link', 'WWW:LINK']
 
 
 def map_resource(geocat_resource, issued, modified, rights):

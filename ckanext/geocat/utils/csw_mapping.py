@@ -176,23 +176,26 @@ class GeoMetadataMapping(object):
             xpath_utils.xpath_get_single_sub_node_for_node_and_path(
                 node=resource_node, path=GMD_PROTOCOL)
 
-        if protocol in ogdch_map_utils.get_excluded_protocols():
+        if not protocol\
+                or protocol in ogdch_map_utils.get_excluded_protocols():
             return
 
-        if protocol in ogdch_map_utils.get_landing_page_protocols() \
-                and not dataset_dict.get('url'):
-            url = xpath_utils.xpath_get_url_with_label_from_distribution(
-                resource_node)
-            if url:
-                dataset_dict['url'] = url.get('url')
-
-        if protocol in ogdch_map_utils.get_relation_protocols():
+        if protocol in ogdch_map_utils.get_landing_page_protocols():
+            url_with_label = \
+                xpath_utils.xpath_get_url_with_label_from_distribution(
+                    resource_node)
+            if url_with_label:
+                if not dataset_dict.get('url'):
+                    dataset_dict['url'] = url_with_label.get('url')
+                else:
+                    dataset_dict['relations'].append(url_with_label)
+        elif protocol in ogdch_map_utils.get_additonal_relation_protocols():
             url_with_label = \
                 xpath_utils.xpath_get_url_with_label_from_distribution(
                     resource_node)
             if url_with_label:
                 dataset_dict['relations'].append(url_with_label)
-        elif protocol:
+        else:
             geocat_resource = \
                 xpath_utils.xpath_get_distribution_from_distribution_node(
                     resource_node=resource_node,
