@@ -156,6 +156,10 @@ def get_relation_protocols():
             'CHTOPO:specialised-geoportal']
 
 
+def get_excluded_protocols():
+    return ['OPENDATA:SWISS']
+
+
 def get_landing_page_protocols():
     return ['WWW:LINK-1.0-http--link', 'WWW:LINK']
 

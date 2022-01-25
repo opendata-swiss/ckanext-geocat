@@ -159,6 +159,7 @@ class GeoMetadataMapping(object):
         dataset_dict['resources'] = []
         landing_page_protocols = ogdch_map_utils.get_landing_page_protocols()
         relation_protocols = ogdch_map_utils.get_relation_protocols()
+        excluded_protocols = ogdch_map_utils.get_excluded_protocols()
         resource_nodes = \
             xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
                 node=root_node, path=GMD_RESOURCES)
@@ -167,6 +168,8 @@ class GeoMetadataMapping(object):
                 protocol = \
                     xpath_utils.xpath_get_single_sub_node_for_node_and_path(
                         node=resource_node, path=GMD_PROTOCOL)
+                if protocol in excluded_protocols:
+                    continue
                 if protocol in relation_protocols:
                     if not dataset_dict.get('url') and protocol in landing_page_protocols:  # noqa
                         url = xpath_utils.xpath_get_url_with_label_from_distribution(  # noqa
