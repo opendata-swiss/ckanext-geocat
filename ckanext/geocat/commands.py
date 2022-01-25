@@ -72,8 +72,9 @@ class GeocatCommand(CkanCommand):
             or csw_processor.CQL_SEARCH_TERM_DEFAULT
 
         try:
-            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url, cqlquery=cqlquery, cqlvalue=cqlterm)  # noqa
-            search_result = csw_data.get_geocat_id_from_csw()
+            csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)
+            search_result = csw_data.get_geocat_id_from_csw(
+                cqlquery=cqlquery, cqlterm=cqlterm)
             print("Search result for %r" % url)
             print("CQL query: %s: %s" % (cqlquery, cqlterm))
             for record_id in search_result:
