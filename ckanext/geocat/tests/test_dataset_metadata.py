@@ -64,13 +64,13 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         ]
 
         for field in fields:
-	    self.assertIn(field, dataset)
+            self.assertIn(field, dataset)
 
         # make sure only the defined fields are on the dataset
         self.assertEquals(sorted(fields), sorted(dataset.keys()))
 
         for key, value in dataset.iteritems():
-            pprint(value) 
+            pprint(value)
             self.assertIn(key, fields)
 
         # check multilang fields
@@ -128,6 +128,17 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(2, len(dataset['relations']))
         for relation in dataset['relations']:
             self.assertIsNotNone(relation['label'])
+            self.assertIsNotNone(relation['url'])
+
+        # resources
+        self.assertTrue(hasattr(dataset['resources'], '__iter__'))
+        self.assertEquals(4, len(dataset['resources']))
+        for relation in dataset['resources']:
+            self.assertIsNotNone(relation['title'])
+            self.assertIsNotNone(relation['description'])
+            # Node with protocol OPENDATA:SWISS should not be mapped
+            self.assertNotEquals(
+                relation['description'], 'Permalink to dataset on opendata.swiss')
             self.assertIsNotNone(relation['url'])
 
         # temporals

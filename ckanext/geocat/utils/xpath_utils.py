@@ -186,10 +186,11 @@ def xpath_get_url_with_label_from_distribution(node):
         if not url_node:
             url_node = node.xpath('.//che:LocalisedURL/text()',
                                   namespaces=gmd_namespaces)
-    if url_node:
-        url = {'url': url_node[0], 'label': url_node[0]}
-    else:
-        return None
+        if not url_node:
+            return None
+
+    url = {'url': url_node[0], 'label': url_node[0]}
+
     text_node = node.xpath('.//gmd:description',
                            namespaces=gmd_namespaces)
     if text_node:
