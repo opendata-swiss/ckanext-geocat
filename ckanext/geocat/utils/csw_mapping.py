@@ -76,7 +76,7 @@ GMD_KEYWORDS = '//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword' 
 GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'  # noqa
 GMD_ACCRUAL_PERIODICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue'  # noqa
 
-EMPTY_PUBLISHER = [{'label': ''}]
+EMPTY_PUBLISHER = {'url': '', 'name': ''}
 
 
 class GeoMetadataMapping(object):
@@ -106,7 +106,9 @@ class GeoMetadataMapping(object):
                 organization_slug=self.organization_slug)
         dataset_dict['title'] = _map_dataset_title(node=root_node)
         dataset_dict['description'] = _map_dataset_description(node=root_node)
-        dataset_dict['publishers'] = _map_dataset_publisher(node=root_node)
+        dataset_dict['publisher'] = _map_dataset_publisher(
+            node=root_node,
+            organization_slug=self.organization_slug)
         dataset_dict['contact_points'] = \
             _map_dataset_contact_points(node=root_node)
         dataset_dict['issued'] = _map_dataset_issued(node=root_node)
@@ -239,7 +241,7 @@ def _map_dataset_description(node):
     return {'en': '', 'it': '', 'de': '', 'fr': ''}
 
 
-def _map_dataset_publisher(node):
+def _map_dataset_publisher(node, organization_slug):
     publisher_node = \
         xpath_utils.xpath_get_first_of_values_from_path_list(
             node=node,
@@ -249,7 +251,8 @@ def _map_dataset_publisher(node):
         geocat_publisher = \
             xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
         if geocat_publisher:
-            return ogdch_map_utils.map_to_ogdch_publishers(geocat_publisher)
+            return ogdch_map_utils.map_to_ogdch_publisher(geocat_publisher,
+                                                          organization_slug)
     return EMPTY_PUBLISHER
 
 

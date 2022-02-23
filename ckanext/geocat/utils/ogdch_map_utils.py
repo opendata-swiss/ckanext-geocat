@@ -1,19 +1,29 @@
 # -*- coding: utf-8 -*-
 
+import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
+
+ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
+
+
+def _get_organization_url(organization_name):
+    return ORGANIZATION_URI_BASE + organization_name
 
 
 def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
     return '@'.join([geocat_identifier, organization_slug])
 
 
-def map_to_ogdch_publishers(geocat_publisher):
-    dataset_publishers = []
-    for publisher in geocat_publisher:
-        dataset_publishers.append({'label': publisher})
-    return dataset_publishers
+def map_to_ogdch_publisher(geocat_publisher, organization_slug):
+    if not geocat_publisher:
+        return
+    dataset_publisher = {
+        'name': geocat_publisher[0],
+        'url': _get_organization_url(organization_slug)
+    }
+    return json.dumps(dataset_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
@@ -89,16 +99,26 @@ def map_to_ogdch_categories(geocat_categories):
 
 def map_frequency(geocat_frequency):
     frequency_mapping = {
-        'continual': 'http://purl.org/cld/freq/continuous',
-        'daily': 'http://purl.org/cld/freq/daily',
-        'weekly': 'http://purl.org/cld/freq/weekly',
-        'fortnightly': 'http://purl.org/cld/freq/biweekly',
-        'monthly': 'http://purl.org/cld/freq/monthly',
-        'quarterly': 'http://purl.org/cld/freq/quarterly',
-        'biannually': 'http://purl.org/cld/freq/semiannual',
-        'annually': 'http://purl.org/cld/freq/annual',
-        'asNeeded': 'http://purl.org/cld/freq/irregular',
-        'irregular': 'http://purl.org/cld/freq/irregular',
+        'continual':
+        'http://publications.europa.eu/resource/authority/frequency/CONT',
+        'daily':
+        'http://publications.europa.eu/resource/authority/frequency/DAILY',
+        'weekly':
+        'http://publications.europa.eu/resource/authority/frequency/WEEKLY',
+        'fortnightly':
+        'http://publications.europa.eu/resource/authority/frequency/BIWEEKLY',
+        'monthly':
+        'http://publications.europa.eu/resource/authority/frequency/MONTHLY',
+        'quarterly':
+        'http://publications.europa.eu/resource/authority/frequency/QUARTERLY',
+        'biannually':
+        'http://publications.europa.eu/resource/authority/frequency/ANNUAL_2',
+        'annually':
+        'http://publications.europa.eu/resource/authority/frequency/ANNUAL',
+        'asNeeded':
+        'http://publications.europa.eu/resource/authority/frequency/IRREG',
+        'irregular':
+        'http://publications.europa.eu/resource/authority/frequency/IRREG',
     }
     return frequency_mapping.get(geocat_frequency, '')
 
