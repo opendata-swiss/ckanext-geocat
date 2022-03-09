@@ -10,8 +10,7 @@ import ckantoolkit.tests.helpers as h
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
 
-from ckanext.geocat.metadata import CswHelper
-from ckanext.geocat.csw_processor import GeocatCatalogueServiceWeb
+from ckanext.geocat.utils.csw_processor import GeocatCatalogueServiceWeb
 
 
 eq_ = nose.tools.eq_
