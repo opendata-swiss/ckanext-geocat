@@ -41,7 +41,7 @@ def _patched_get_geocat_id_from_csw(self):
 
     return ids
 
-GeocatCatalogueServiceWeb = _patched_get_geocat_id_from_csw
+GeocatCatalogueServiceWeb.get_geocat_id_from_csw = _patched_get_geocat_id_from_csw
 
 original_get_record_by_id = GeocatCatalogueServiceWeb.get_record_by_id
 
