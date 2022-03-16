@@ -209,13 +209,13 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         with (httpretty.enabled(allow_net_connect=True)):
             httpretty.register_uri(httpretty.GET, mock_url, responses=responses)
 
-    # @httpretty.httprettized
-    # def test_harvest_create_simple(self):
-    #     self._test_harvest_create('response_all_results.xml',
-    #                               [
-    #                                   'result_1.xml',
-    #                                   'result_2.xml',
-    #                               ], 2, 2)
+    @httpretty.httprettized
+    def test_harvest_create_simple(self):
+        self._test_harvest_create('response_all_results.xml',
+                                  [
+                                      'result_1.xml',
+                                      'result_2.xml',
+                                  ], 2, 2)
 
     @httpretty.httprettized
     def test_harvest_deleted_dataset(self):
