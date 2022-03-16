@@ -53,6 +53,7 @@ class FunctionalHarvestTest(object):
 
     def teardown(self):
         h.reset_db()
+        queue.purge_queues()
 
     def _get_or_create_harvest_source(self, **kwargs):
         source_dict = {
