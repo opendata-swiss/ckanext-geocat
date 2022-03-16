@@ -140,6 +140,9 @@ class FunctionalHarvestTest(object):
             reply = self.fetch_consumer.basic_get(
                 queue='ckan.harvest.fetch.test')
 
+            # Make sure something was sent to the fetch queue
+            assert reply[2], 'Empty fetch queue, the gather stage failed'
+
             # Send the item to the fetch callback, which will call the
             # harvester fetch_stage and import_stage
             queue.fetch_callback(self.fetch_consumer, *reply)
