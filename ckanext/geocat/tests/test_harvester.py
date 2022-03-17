@@ -171,8 +171,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
             responses.append({'text': result})
 
-        adapter = Adapter()
-        adapter.register_uri('POST', mock_record_url, responses)
+        mocker.get(mock_record_url, responses)
 
     def test_harvest_create_simple(self):
         self._test_harvest_create('response_all_results.xml',
