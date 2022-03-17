@@ -25,7 +25,7 @@ class GeocatCatalogueServiceWeb(object):
             self.csw.getrecords2(constraints=[harvest_query],
                                  maxrecords=50,
                                  startposition=nextrecord)
-            if (self.csw.response is None or self.csw.results['matches'] == 0):
+            if self.csw.response is None or self.csw.results['matches'] == 0:
                 raise CswNotFoundError("No dataset found for harvest query {}"
                                        .format(harvest_query))
             if self.csw.results['returned'] > 0:

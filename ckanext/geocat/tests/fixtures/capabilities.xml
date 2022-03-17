@@ -25,7 +25,7 @@
     </ows:ServiceIdentification>
     <ows:ServiceProvider>
         <ows:ProviderName />
-        <ows:ProviderSite xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork" />
+        <ows:ProviderSite xlink:href="http://mock-geocat.ch/geonetwork" />
         <ows:ServiceContact>
             <ows:IndividualName />
             <ows:PositionName />
@@ -52,8 +52,8 @@
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
                 </ows:HTTP>
             </ows:DCP>
             <ows:Parameter name="sections">
@@ -70,8 +70,8 @@
         <ows:Operation name="DescribeRecord">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
                 </ows:HTTP>
             </ows:DCP>
             <ows:Parameter name="outputFormat">
@@ -95,16 +95,16 @@
         <ows:Operation name="GetDomain">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
                 </ows:HTTP>
             </ows:DCP>
         </ows:Operation>
         <ows:Operation name="GetRecords">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
                 </ows:HTTP>
             </ows:DCP>
             <!-- FIXME : Gets it from enum or conf -->
@@ -194,8 +194,8 @@
         <ows:Operation name="GetRecordById">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM" />
                 </ows:HTTP>
             </ows:DCP>
             <ows:Parameter xmlns:gm03="http://www.geocat.ch/2008/gm03_2" xmlns:che="http://www.geocat.ch/2008/che" xmlns:dcat="http://www.w3.org/ns/dcat#" xmlns:gmd="http://www.isotc211.org/2005/gmd" name="outputSchema">
@@ -226,16 +226,16 @@
         <ows:Operation name="Transaction">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-publication" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-publication" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-publication" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-publication" />
                 </ows:HTTP>
             </ows:DCP>
         </ows:Operation>
         <ows:Operation name="Harvest">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-publication" />
-                    <ows:Post xlink:href="https://geocat-int.dev.bgdi.ch/geonetwork/srv/eng/csw-publication" />
+                    <ows:Get xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-publication" />
+                    <ows:Post xlink:href="http://mock-geocat.ch/geonetwork/srv/eng/csw-publication" />
                 </ows:HTTP>
             </ows:DCP>
             <ows:Parameter name="ResourceType">

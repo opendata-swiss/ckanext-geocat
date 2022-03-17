@@ -4,6 +4,9 @@ from ckan import model
 from ckan.model import Session
 import json
 
+import logging
+log = logging.getLogger(__name__)
+
 OgdchDatasetInfo = namedtuple('OgdchDatasetInfo',
                               ['name', 'belongs_to_harvester', 'package_id'])
 

@@ -188,7 +188,7 @@ class GeocatHarvester(HarvesterBase):
                     csw_record_as_string = csw_data.get_record_by_id(geocat_id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when reading csw record form source: %s %r / %s'
+                        'Error when reading csw record from source: %s %r / %s'
                         % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue

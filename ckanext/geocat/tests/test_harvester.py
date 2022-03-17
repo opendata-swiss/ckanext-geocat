@@ -9,7 +9,8 @@ import ckantoolkit.tests.helpers as h
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
 
-from requests_mock import Adapter
+import logging
+log = logging.getLogger(__name__)
 
 eq_ = nose.tools.eq_
 assert_true = nose.tools.assert_true
@@ -23,6 +24,7 @@ __location__ = os.path.realpath(
 )
 
 mock_url = "http://mock-geocat.ch"
+mock_record_url = "http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM"
 mock_capabilities_url = "http://mock-geocat.ch/?version=2.0.2&request=GetCapabilities&service=CSW"
 
 
@@ -159,7 +161,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         with open(path) as xml:
             all_results = unicode(xml.read(), 'utf-8')
 
-        mocker.post(mock_url, text=all_results)
+        mocker.post(mock_record_url, text=all_results)
 
         responses = []
         for filename in single_results_filenames:
@@ -170,7 +172,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
             responses.append({'text': result})
 
         adapter = Adapter()
-        adapter.register_uri('GET', mock_url, responses)
+        adapter.register_uri('POST', mock_record_url, responses)
 
     def test_harvest_create_simple(self):
         self._test_harvest_create('response_all_results.xml',
