@@ -3,13 +3,12 @@
 import traceback
 
 from ckan.lib.helpers import json
+from ckan.lib.plugins import lookup_package_plugin
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
 from ckanext.geocat.utils.vocabulary_utils import \
   (VALID_TERMS_OF_USE, DEFAULT_TERMS_OF_USE)
-from ckan.logic.schema import default_update_package_schema,\
-    default_create_package_schema
 from ckan.lib.navl.validators import ignore
 import ckan.plugins.toolkit as tk
 from ckan import model
@@ -261,11 +260,13 @@ class GeocatHarvester(HarvesterBase):
             'ignore_auth': True,
             'user': HARVEST_USER,
         }
+
+        package_plugin = lookup_package_plugin('dataset')
         try:
             if pkg_info:
                 # Change default schema to ignore lists of dicts, which
                 # are stored in the '__junk' field
-                schema = default_update_package_schema()
+                schema = package_plugin.update_package_schema()
                 context['schema'] = schema
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
@@ -285,7 +286,7 @@ class GeocatHarvester(HarvesterBase):
                         % pkg_dict['title'], harvest_object, 'Import')
                     return False
                 pkg_dict['name'] = self._gen_new_name(flat_title)
-                schema = default_create_package_schema()
+                schema = package_plugin.create_package_schema()
                 context['schema'] = schema
                 schema['__junk'] = [ignore]
                 log.debug("No package found, create a new one!")

@@ -67,6 +67,25 @@ pip install -r pip-requirements.txt
 paster harvester initdb -c ../ckan/test-core.ini
 cd -
 
+echo "Installing ckanext-scheming and its requirements..."
+git clone https://github.com/ckan/ckanext-scheming
+cd ckanext-scheming
+python setup.py develop
+cd -
+
+echo "Installing ckanext-fluent and its requirements..."
+git clone https://github.com/ckan/ckanext-fluent
+cd ckanext-fluent
+python setup.py develop
+cd -
+
+echo "Installing ckanext-switzerland-ng and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
+cd ckanext-switzerland-ng
+python setup.py develop
+pip install -r requirements.txt
+cd -
+
 echo "Installing ckanext-geocat and its requirements..."
 pip install -r requirements.txt
 pip install -r dev-requirements.txt
