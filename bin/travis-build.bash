@@ -88,6 +88,9 @@ cd ckanext-fluent
 python setup.py develop
 cd -
 
+# temporary to see if it fixes installation
+pip install ckanext-showcase
+
 echo "Installing ckanext-switzerland-ng and its requirements..."
 git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
 cd ckanext-switzerland-ng
