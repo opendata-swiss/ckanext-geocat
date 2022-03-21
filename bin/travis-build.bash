@@ -67,6 +67,8 @@ pip install -r pip-requirements.txt
 paster harvester initdb -c ../ckan/test-core.ini
 cd -
 
+pip install ckanapi==3.5
+
 echo "Installing ckanext-scheming and its requirements..."
 git clone https://github.com/ckan/ckanext-scheming
 cd ckanext-scheming
