@@ -67,11 +67,18 @@ pip install -r pip-requirements.txt
 paster harvester initdb -c ../ckan/test-core.ini
 cd -
 
-pip install ckanapi==3.5
+# The version of setuptools in CKAN (36.1) falls over when installing
+# dependencies for ckanext-scheming on Travis, specifically ckantoolkit.
+# A newer setuptools version works, possibly because in versions >42,
+# pip is used to install dependencies listed in install_requires in
+# setup.py.
+echo "Upgrading setuptools..."
+pip install --upgrade setuptools
 
 echo "Installing ckanext-scheming and its requirements..."
-git clone https://github.com/ckan/ckanext-scheming
+git clone https://github.com/opendata-swiss/ckanext-scheming.git
 cd ckanext-scheming
+git checkout repair-pyyaml-dependency
 python setup.py develop
 cd -
 
