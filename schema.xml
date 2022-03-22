@@ -111,6 +111,9 @@ schema. In this case the version should be set to the next CKAN version number.
     <field name="groups" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="organization" type="string" indexed="true" stored="true" multiValued="false"/>
 
+    <!-- Field copied from ckanext-switzerland-ng schema so that it is available for tests  -->
+    <field name="identifier" type="string" indexed="true" stored="true"/>
+
     <field name="capacity" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="permission_labels" type="string" indexed="true" stored="false" multiValued="true"/>
 
