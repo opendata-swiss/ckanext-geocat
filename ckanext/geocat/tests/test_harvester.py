@@ -2,9 +2,12 @@
 import json
 import nose
 import os
+
+import requests
 import requests_mock
 
 import ckantoolkit.tests.helpers as h
+from ckantoolkit import config
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
@@ -26,6 +29,7 @@ __location__ = os.path.realpath(
 mock_url = "http://mock-geocat.ch"
 mock_record_url = "http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM"
 mock_capabilities_url = "http://mock-geocat.ch/?version=2.0.2&request=GetCapabilities&service=CSW"
+clear_solr_url = 'http://solr:8983/solr/ckan/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true'
 
 
 class FunctionalHarvestTest(object):
@@ -40,6 +44,7 @@ class FunctionalHarvestTest(object):
         harvest_model.setup()
 
         queue.purge_queues()
+        requests.get(clear_solr_url)
 
         user_dict = h.call_action('user_create', name='testuser',
                                   email='testuser@example.com', password='password')
@@ -56,6 +61,7 @@ class FunctionalHarvestTest(object):
     def teardown(self):
         h.reset_db()
         queue.purge_queues()
+        requests.get(clear_solr_url)
 
     def _get_or_create_harvest_source(self, **kwargs):
         source_dict = {
