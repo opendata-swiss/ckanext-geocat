@@ -201,8 +201,10 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         # Import again, this time with only one dataset
         results = self._test_harvest_create('response_just_one_result.xml',
-                                            ['result_1.xml'], 3, 1,
+                                            ['result_1.xml'], 2, 1,
                                             config=test_config_deleted)
+        assert results['results'][0]['name'] == 'larmbelastung-durch-eisenbahnverkehr-nacht'
+
         self._run_jobs()
 
         # Get the harvest source with the updated status
