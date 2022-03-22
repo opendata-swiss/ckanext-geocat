@@ -179,12 +179,12 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         mocker.get(mock_record_url, responses)
 
-    # def test_harvest_create_simple(self):
-    #     self._test_harvest_create('response_all_results.xml',
-    #                               [
-    #                                   'result_1.xml',
-    #                                   'result_2.xml',
-    #                               ], 2, 2)
+    def test_harvest_create_simple(self):
+        self._test_harvest_create('response_all_results.xml',
+                                  [
+                                      'result_1.xml',
+                                      'result_2.xml',
+                                  ], 2, 2)
 
     def test_harvest_deleted_dataset(self):
         test_config_deleted = json.dumps({'delete_missing_datasets': True})
