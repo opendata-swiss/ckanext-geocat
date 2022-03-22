@@ -7,7 +7,7 @@ import requests
 import requests_mock
 
 import ckantoolkit.tests.helpers as h
-from ckantoolkit import config
+from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
@@ -29,7 +29,7 @@ __location__ = os.path.realpath(
 mock_url = "http://mock-geocat.ch"
 mock_record_url = "http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM"
 mock_capabilities_url = "http://mock-geocat.ch/?version=2.0.2&request=GetCapabilities&service=CSW"
-clear_solr_url = 'http://solr:8983/solr/ckan/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true'
+clear_solr_url = config.get('solr_url') + '/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true'
 
 
 class FunctionalHarvestTest(object):
