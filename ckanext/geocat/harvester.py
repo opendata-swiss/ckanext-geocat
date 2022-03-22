@@ -233,9 +233,16 @@ class GeocatHarvester(HarvesterBase):
             )
             return False
 
-        import_action = \
-            search_utils.get_value_from_object_extra(harvest_object.extras,
-                                                     'import_action')
+        try:
+            import_action = search_utils.get_value_from_object_extra(
+                harvest_object.extras,
+                'import_action')
+        except Exception as e:
+            self._save_object_error(
+                ('Exception in import stage: %r / %s'
+                 % (e, traceback.format_exc())), harvest_object)
+            return False
+
         if import_action and import_action == 'delete':
             log.debug('import action: %s' % import_action)
             harvest_object.current = False
