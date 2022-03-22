@@ -85,7 +85,8 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
                 dataset_harvest_source_id = \
                     get_value_from_dataset_extras(extras,
                                                   'harvest_source_id')
-                if dataset_harvest_source_id and dataset_harvest_source_id == harvest_source_id:  # noqa
+                if dataset_harvest_source_id \
+                        and dataset_harvest_source_id == harvest_source_id:
                     belongs_to_harvester = True
                 else:
                     belongs_to_harvester = False

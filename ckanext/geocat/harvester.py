@@ -258,7 +258,9 @@ class GeocatHarvester(HarvesterBase):
             pkg_dict = json.loads(harvest_object.content)
         except ValueError:
             self._save_object_error('Could not parse content for object {0}'
-                                    .format(harvest_object.id), harvest_object, 'Import')  # noqa
+                                    .format(harvest_object.id),
+                                    harvest_object,
+                                    'Import')
             return False
 
         pkg_info = \
@@ -357,4 +359,8 @@ class GeocatConfigError(Exception):
 
 def _derive_flat_title(title_dict):
     """localizes language dict if no language is specified"""
-    return title_dict.get('de') or title_dict.get('fr') or title_dict.get('en') or title_dict.get('it') or ""  # noqa
+    return title_dict.get('de')\
+        or title_dict.get('fr') \
+        or title_dict.get('en') \
+        or title_dict.get('it') \
+        or ""
