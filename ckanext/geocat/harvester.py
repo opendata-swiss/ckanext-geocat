@@ -106,11 +106,23 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
-        existing_dataset_infos = \
-            search_utils.get_dataset_infos_for_organization(
-                organization_name=self.config['organization'],
-                harvest_source_id=harvest_job.source_id,
+        try:
+            existing_dataset_infos = \
+                search_utils.get_dataset_infos_for_organization(
+                    organization_name=self.config['organization'],
+                    harvest_source_id=harvest_job.source_id,
+                )
+        except Exception as e:
+            self._save_gather_error(
+                'Exception getting dataset info for organization: %s: %s / %s'
+                % (
+                    self.config['organization'],
+                    str(e),
+                    traceback.format_exc()
+                ),
+                harvest_job
             )
+            return []
 
         gathered_ogdch_identifiers = \
             [ogdch_map_utils.map_geocat_to_ogdch_identifier(
@@ -233,15 +245,9 @@ class GeocatHarvester(HarvesterBase):
             )
             return False
 
-        try:
-            import_action = search_utils.get_value_from_object_extra(
-                harvest_object.extras,
-                'import_action')
-        except Exception as e:
-            self._save_object_error(
-                ('Exception in import stage: %r / %s'
-                 % (e, traceback.format_exc())), harvest_object)
-            return False
+        import_action = search_utils.get_value_from_object_extra(
+            harvest_object.extras,
+            'import_action')
 
         if import_action and import_action == 'delete':
             log.debug('import action: %s' % import_action)
