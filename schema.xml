@@ -111,9 +111,6 @@ schema. In this case the version should be set to the next CKAN version number.
     <field name="groups" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="organization" type="string" indexed="true" stored="true" multiValued="false"/>
 
-    <!-- Field copied from ckanext-switzerland-ng schema so that it is available for tests  -->
-    <field name="identifier" type="string" indexed="true" stored="true"/>
-
     <field name="capacity" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="permission_labels" type="string" indexed="true" stored="false" multiValued="true"/>
 
@@ -154,6 +151,60 @@ schema. In this case the version should be set to the next CKAN version number.
     <field name="validated_data_dict" type="string" indexed="false" stored="true" />
 
     <field name="_version_" type="string" indexed="true" stored="true"/>
+
+    <!-- Field copied from ckanext-switzerland-ng schema so that it is available for tests  -->
+    <field name="identifier" type="string" indexed="true" stored="true"/>
+
+    <!-- Copy multi-valued fields from ckanext-switzerland-ng schema,
+         so indexing won't fail -->
+
+    <field name="contact_points" type="textgen" indexed="true" stored="true" multiValued="true"/>
+    <field name="see_alsos" type="string" indexed="true" stored="true" multiValued="true"/>
+
+    <field name="res_name" type="textgen" indexed="true" stored="true" multiValued="true" />
+    <field name="res_name_en" type="textgen" indexed="true" stored="true" multiValued="true" />
+    <field name="res_name_fr" type="textgen" indexed="true" stored="true" multiValued="true" />
+    <field name="res_name_de" type="textgen" indexed="true" stored="true" multiValued="true" />
+    <field name="res_name_it" type="textgen" indexed="true" stored="true" multiValued="true" />
+    <field name="res_description" type="textgen" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_description_en" type="text_en" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_description_fr" type="text_fr" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_description_de" type="text_de" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_description_it" type="text_it" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_format" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_rights" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_url" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_type" type="string" indexed="true" stored="true" multiValued="true"/>
+
+    <!-- Fields for suggestion context -->
+    <field name="suggest_context" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_groups" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_tags" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_res_rights" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_res_format" type="string" indexed="true" stored="true" multiValued="true"/>
+
+    <!-- Multilingual -->
+    <field name="text_en" type="text_en" indexed="true" stored="false" multiValued="true"/>
+    <field name="keywords_en" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="groups_en" type="text_en" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_en" type="suggestText" indexed="true" stored="true" multiValued="true"/>
+
+    <field name="text_fr" type="text_fr" indexed="true" stored="false" multiValued="true"/>
+    <field name="keywords_fr" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="groups_fr" type="text_fr" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_fr" type="suggestText" indexed="true" stored="true" multiValued="true"/>
+
+    <field name="text_de" type="text_de" indexed="true" stored="false" multiValued="true"/>
+    <field name="keywords_de" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="groups_de" type="text_de" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_de" type="suggestText" indexed="true" stored="true" multiValued="true"/>
+
+    <field name="text_it" type="text_it" indexed="true" stored="false" multiValued="true"/>
+    <field name="keywords_it" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="groups_it" type="text_it" indexed="true" stored="true" multiValued="true"/>
+    <field name="suggest_it" type="suggestText" indexed="true" stored="true" multiValued="true"/>
+
+    <!-- End copied multi-valued fields from ckanext-switzerland-ng -->
 
     <dynamicField name="*_date" type="date" indexed="true" stored="true" multiValued="false"/>
 
