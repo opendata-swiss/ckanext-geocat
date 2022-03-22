@@ -4,6 +4,10 @@ from ckan import model
 from ckan.model import Session
 import json
 
+import logging
+
+log = logging.getLogger(__name__)
+
 OgdchDatasetInfo = namedtuple('OgdchDatasetInfo',
                               ['name', 'belongs_to_harvester', 'package_id'])
 
@@ -65,37 +69,42 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
     processed_count = 0
     ogdch_dataset_infos = {}
     while page == 0 or processed_count < result_count:
-        try:
-            page = page + 1
-            start = (page - 1) * rows
-            result = tk.get_action('package_search')(context,
-                                                     {'fq': fq,
-                                                      'rows': rows,
-                                                      'start': start,
-                                                      'include_private': True})
-            if not result_count:
-                result_count = result['count']
-            datasets_in_result = result.get('results')
-            if datasets_in_result:
-                for dataset in datasets_in_result:
-                    extras = dataset.get('extras')
-                    dataset_harvest_source_id = \
-                        get_value_from_dataset_extras(extras,
-                                                      'harvest_source_id')
-                    if dataset_harvest_source_id and dataset_harvest_source_id == harvest_source_id:  # noqa
-                        belongs_to_harvester = True
-                    else:
-                        belongs_to_harvester = False
-                    ogdch_dataset_infos[dataset['identifier']] = \
-                        OgdchDatasetInfo(
-                            name=dataset['name'],
-                            package_id=dataset['id'],
-                            belongs_to_harvester=belongs_to_harvester)
-            processed_count += len(datasets_in_result)
-        except Exception as e:
-            print("Error occured while searching for packages with fq: {}, error: {}"  # noqa
-                  .format(fq, e))
-            break
+        page = page + 1
+        start = (page - 1) * rows
+        result = tk.get_action('package_search')(context,
+                                                 {'fq': fq,
+                                                  'rows': rows,
+                                                  'start': start,
+                                                  'include_private': True})
+        if not result_count:
+            result_count = result['count']
+        datasets_in_result = result.get('results', [])
+        for dataset in datasets_in_result:
+            try:
+                extras = dataset.get('extras')
+                dataset_harvest_source_id = \
+                    get_value_from_dataset_extras(extras,
+                                                  'harvest_source_id')
+                if dataset_harvest_source_id \
+                        and dataset_harvest_source_id == harvest_source_id:
+                    belongs_to_harvester = True
+                else:
+                    belongs_to_harvester = False
+                ogdch_dataset_infos[dataset['identifier']] = \
+                    OgdchDatasetInfo(
+                        name=dataset['name'],
+                        package_id=dataset['id'],
+                        belongs_to_harvester=belongs_to_harvester)
+            except KeyError as e:
+                package_id = dataset.get('id') \
+                             or dataset.get('name') \
+                             or dataset.get('identifier', '')
+                log.warn(
+                    "KeyError occured while searching with fq {}. "
+                    "Package {} is missing field {}"
+                    .format(fq, package_id, e)
+                )
+        processed_count += len(datasets_in_result)
     return ogdch_dataset_infos
 
 

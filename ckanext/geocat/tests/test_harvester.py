@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
-
-import httpretty
 import json
 import nose
 import os
 
+import requests
+import requests_mock
+
 import ckantoolkit.tests.helpers as h
+from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
 
-from ckanext.geocat.metadata import CswHelper
-from ckanext.geocat.csw_processor import GeocatCatalogueServiceWeb
-
+import logging
+log = logging.getLogger(__name__)
 
 eq_ = nose.tools.eq_
 assert_true = nose.tools.assert_true
@@ -26,38 +27,10 @@ __location__ = os.path.realpath(
 )
 
 mock_url = "http://mock-geocat.ch"
+mock_record_url = "http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM"
+mock_capabilities_url = "http://mock-geocat.ch/?version=2.0.2&request=GetCapabilities&service=CSW"
+clear_solr_url = config.get('solr_url') + '/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true'
 
-# Monkey patch required because of a bug between httpretty and redis.
-# See https://github.com/gabrielfalcao/HTTPretty/issues/113
-
-original_get_geocat_id_from_csw = GeocatCatalogueServiceWeb.get_geocat_id_from_csw
-
-def _patched_get_geocat_id_from_csw(self):
-
-    httpretty.enable()
-
-    ids = original_get_geocat_id_from_csw(self)
-
-    httpretty.disable()
-
-    return ids
-
-GeocatCatalogueServiceWeb = _patched_get_geocat_id_from_csw
-
-original_get_record_by_id = GeocatCatalogueServiceWeb.get_record_by_id
-
-def _patched_get_record_by_id(self, geocat_id):
-    httpretty.enable()
-
-    id = original_get_record_by_id(self, geocat_id)
-
-    httpretty.disable()
-
-    return id
-
-GeocatCatalogueServiceWeb.get_record_by_id = _patched_get_record_by_id
-
-# End monkey patch
 
 class FunctionalHarvestTest(object):
     @classmethod
@@ -71,6 +44,7 @@ class FunctionalHarvestTest(object):
         harvest_model.setup()
 
         queue.purge_queues()
+        requests.get(clear_solr_url)
 
         user_dict = h.call_action('user_create', name='testuser',
                                   email='testuser@example.com', password='password')
@@ -86,6 +60,8 @@ class FunctionalHarvestTest(object):
 
     def teardown(self):
         h.reset_db()
+        queue.purge_queues()
+        requests.get(clear_solr_url)
 
     def _get_or_create_harvest_source(self, **kwargs):
         source_dict = {
@@ -141,6 +117,9 @@ class FunctionalHarvestTest(object):
             reply = self.fetch_consumer.basic_get(
                 queue='ckan.harvest.fetch.test')
 
+            # Make sure something was sent to the fetch queue
+            assert reply[2], 'Empty fetch queue, the gather stage failed'
+
             # Send the item to the fetch callback, which will call the
             # harvester fetch_stage and import_stage
             queue.fetch_callback(self.fetch_consumer, *reply)
@@ -160,10 +139,11 @@ class FunctionalHarvestTest(object):
 
 
 class TestGeocatHarvestFunctional(FunctionalHarvestTest):
+    @requests_mock.Mocker(real_http=True)
     def _test_harvest_create(self, all_results_filename,
                              single_results_filenames, num_objects,
-                             expected_packages, **kwargs):
-        self._mock_csw_results(all_results_filename, single_results_filenames)
+                             expected_packages, mocker, **kwargs):
+        self._mock_csw_results(all_results_filename, single_results_filenames, mocker)
 
         harvest_source = self._get_or_create_harvest_source(**kwargs)
 
@@ -176,21 +156,28 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         return results
 
-    def _mock_csw_results(self, all_results_filename, single_results_filenames):
+    def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
+        path = os.path.join(__location__, 'fixtures', 'capabilities.xml')
+        with open(path) as xml:
+            capabilities = unicode(xml.read(), 'utf-8')
+
+        mocker.get(mock_capabilities_url, text=capabilities)
+
         path = os.path.join(__location__, 'fixtures', all_results_filename)
         with open(path) as xml:
-            all_results = xml.read()
+            all_results = unicode(xml.read(), 'utf-8')
 
-        httpretty.register_uri(httpretty.POST, mock_url, body=all_results)
+        mocker.post(mock_record_url, text=all_results)
 
         responses = []
         for filename in single_results_filenames:
             path = os.path.join(__location__, 'fixtures', filename)
             with open(path) as xml:
-                result = xml.read()
-            responses.append(httpretty.Response(result))
+                result = unicode(xml.read(), 'utf-8')
 
-        httpretty.register_uri(httpretty.GET, mock_url, responses=responses)
+            responses.append({'text': result})
+
+        mocker.get(mock_record_url, responses)
 
     def test_harvest_create_simple(self):
         self._test_harvest_create('response_all_results.xml',
@@ -203,7 +190,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         test_config_deleted = json.dumps({'delete_missing_datasets': True})
 
         # Import two datasets
-        self._test_harvest_create('response_all_results.xml',
+        results = self._test_harvest_create('response_all_results.xml',
                                   [
                                       'result_1.xml',
                                       'result_2.xml',
@@ -214,8 +201,10 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         # Import again, this time with only one dataset
         results = self._test_harvest_create('response_just_one_result.xml',
-                                            ['result_1.xml'], 3, 1,
+                                            ['result_1.xml'], 2, 1,
                                             config=test_config_deleted)
+        assert results['results'][0]['name'] == 'larmbelastung-durch-eisenbahnverkehr-nacht'
+
         self._run_jobs()
 
         # Get the harvest source with the updated status

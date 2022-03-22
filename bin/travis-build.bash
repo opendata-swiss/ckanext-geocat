@@ -47,7 +47,7 @@ cd -
 
 echo "Setting up Solr..."
 printf "NO_START=0\nJETTY_HOST=127.0.0.1\nJETTY_PORT=8983\nJAVA_HOME=$JAVA_HOME" | sudo tee /etc/default/jetty
-sudo cp ckan/ckan/config/solr/schema.xml /etc/solr/conf/schema.xml
+sudo cp schema.xml /etc/solr/conf/schema.xml
 sudo service jetty restart
 
 echo "Creating the PostgreSQL user and database..."
@@ -66,6 +66,85 @@ python setup.py develop
 pip install -r pip-requirements.txt
 paster harvester initdb -c ../ckan/test-core.ini
 cd -
+
+# Begin installation of ckanext-switzerland-ng and its requirements.
+# This is necessary so that the geocat harvester can save datasets using the
+# correct schema, defined in ckanext.switzerland:dcat-ap-switzerland_scheming.json.
+# We have to install the whole ckanext, as the schema relies on custom
+# validators. Hopefully we can untangle this later to avoid all this installing.
+
+# The version of setuptools in CKAN (36.1) falls over when installing
+# dependencies for ckanext-scheming on Travis, specifically ckantoolkit.
+# A newer setuptools version works, possibly because in versions >42,
+# pip is used to install dependencies listed in install_requires in
+# setup.py.
+echo "Upgrading setuptools..."
+pip install --upgrade setuptools
+
+echo "Installing ckanext-scheming and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-scheming.git
+cd ckanext-scheming
+git checkout repair-pyyaml-dependency
+python setup.py develop
+cd -
+
+echo "Installing ckanext-fluent and its requirements..."
+git clone https://github.com/ckan/ckanext-fluent
+cd ckanext-fluent
+python setup.py develop
+cd -
+
+echo "Installing ckanext-hierarchy and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-hierarchy
+cd ckanext-hierarchy
+python setup.py develop
+cd -
+
+echo "Installing ckanext-dcat and its requirements..."
+git clone https://github.com/ckan/ckanext-dcat
+cd ckanext-dcat
+python setup.py develop
+pip install -r requirements.txt
+pip install -r dev-requirements.txt
+cd -
+
+echo "Installing ckanext-dcatapchharvest and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-dcatapchharvest
+cd ckanext-dcatapchharvest
+python setup.py develop
+pip install -r requirements.txt
+pip install -r dev-requirements.txt
+cd -
+
+echo "Installing ckanext-harvester_dashboard and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-harvester_dashboard
+cd ckanext-harvester_dashboard
+python setup.py develop
+pip install -r requirements.txt
+cd -
+
+echo "Installing ckanext-xloader and its requirements..."
+git clone https://github.com/ckan/ckanext-xloader
+cd ckanext-xloader
+python setup.py develop
+pip install -r requirements.txt
+cd -
+
+echo "Installing ckanext-showcase..."
+git clone https://github.com/ckan/ckanext-showcase
+cd ckanext-showcase
+python setup.py develop
+cd -
+
+echo "Installing ckanext-switzerland and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
+cd ckanext-switzerland-ng
+python setup.py develop
+pip install -r requirements.txt
+pip install -r dev-requirements.txt
+cd -
+
+# End installation of ckanext-switzlerland et al.
 
 echo "Installing ckanext-geocat and its requirements..."
 pip install -r requirements.txt

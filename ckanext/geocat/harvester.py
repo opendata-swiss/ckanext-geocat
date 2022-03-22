@@ -3,13 +3,12 @@
 import traceback
 
 from ckan.lib.helpers import json
+from ckan.lib.plugins import lookup_package_plugin
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
 from ckanext.geocat.utils.vocabulary_utils import \
   (VALID_TERMS_OF_USE, DEFAULT_TERMS_OF_USE)
-from ckan.logic.schema import default_update_package_schema,\
-    default_create_package_schema
 from ckan.lib.navl.validators import ignore
 import ckan.plugins.toolkit as tk
 from ckan import model
@@ -107,11 +106,23 @@ class GeocatHarvester(HarvesterBase):
             )
             return []
 
-        existing_dataset_infos = \
-            search_utils.get_dataset_infos_for_organization(
-                organization_name=self.config['organization'],
-                harvest_source_id=harvest_job.source_id,
+        try:
+            existing_dataset_infos = \
+                search_utils.get_dataset_infos_for_organization(
+                    organization_name=self.config['organization'],
+                    harvest_source_id=harvest_job.source_id,
+                )
+        except Exception as e:
+            self._save_gather_error(
+                'Exception getting dataset info for organization: %s: %s / %s'
+                % (
+                    self.config['organization'],
+                    str(e),
+                    traceback.format_exc()
+                ),
+                harvest_job
             )
+            return []
 
         gathered_ogdch_identifiers = \
             [ogdch_map_utils.map_geocat_to_ogdch_identifier(
@@ -188,7 +199,7 @@ class GeocatHarvester(HarvesterBase):
                     csw_record_as_string = csw_data.get_record_by_id(geocat_id)
                 except Exception as e:
                     self._save_gather_error(
-                        'Error when reading csw record form source: %s %r / %s'
+                        'Error when reading csw record from source: %s %r / %s'
                         % (ogdch_identifier, e, traceback.format_exc()),
                         harvest_job)
                     continue
@@ -234,9 +245,10 @@ class GeocatHarvester(HarvesterBase):
             )
             return False
 
-        import_action = \
-            search_utils.get_value_from_object_extra(harvest_object.extras,
-                                                     'import_action')
+        import_action = search_utils.get_value_from_object_extra(
+            harvest_object.extras,
+            'import_action')
+
         if import_action and import_action == 'delete':
             log.debug('import action: %s' % import_action)
             harvest_object.current = False
@@ -252,7 +264,9 @@ class GeocatHarvester(HarvesterBase):
             pkg_dict = json.loads(harvest_object.content)
         except ValueError:
             self._save_object_error('Could not parse content for object {0}'
-                                    .format(harvest_object.id), harvest_object, 'Import')  # noqa
+                                    .format(harvest_object.id),
+                                    harvest_object,
+                                    'Import')
             return False
 
         pkg_info = \
@@ -261,11 +275,13 @@ class GeocatHarvester(HarvesterBase):
             'ignore_auth': True,
             'user': HARVEST_USER,
         }
+
+        package_plugin = lookup_package_plugin('dataset')
         try:
             if pkg_info:
                 # Change default schema to ignore lists of dicts, which
                 # are stored in the '__junk' field
-                schema = default_update_package_schema()
+                schema = package_plugin.update_package_schema()
                 context['schema'] = schema
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
@@ -285,7 +301,7 @@ class GeocatHarvester(HarvesterBase):
                         % pkg_dict['title'], harvest_object, 'Import')
                     return False
                 pkg_dict['name'] = self._gen_new_name(flat_title)
-                schema = default_create_package_schema()
+                schema = package_plugin.create_package_schema()
                 context['schema'] = schema
                 schema['__junk'] = [ignore]
                 log.debug("No package found, create a new one!")
@@ -349,4 +365,8 @@ class GeocatConfigError(Exception):
 
 def _derive_flat_title(title_dict):
     """localizes language dict if no language is specified"""
-    return title_dict.get('de') or title_dict.get('fr') or title_dict.get('en') or title_dict.get('it') or ""  # noqa
+    return title_dict.get('de')\
+        or title_dict.get('fr') \
+        or title_dict.get('en') \
+        or title_dict.get('it') \
+        or ""
