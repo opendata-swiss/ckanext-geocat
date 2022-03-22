@@ -88,15 +88,10 @@ cd ckanext-fluent
 python setup.py develop
 cd -
 
-# temporary to see if it fixes installation
-pip install ckanext-showcase
-
-echo "Installing ckanext-switzerland-ng and its requirements..."
+echo "Cloning ckanext-switzerland-ng and copying schema..."
 git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
-cd ckanext-switzerland-ng
-python setup.py develop
-pip install -r requirements.txt
-cd -
+cp ckanext-switzerland-ng/ckanext/switzerland/dcat-ap-switzerland_scheming.json ckanext/geocat
+cp ckanext-switzerland-ng/ckanext/switzerland/presets.json ckanext/geocat
 
 echo "Installing ckanext-geocat and its requirements..."
 pip install -r requirements.txt
