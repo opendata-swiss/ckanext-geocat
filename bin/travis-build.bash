@@ -45,9 +45,12 @@ pip install -r requirements.txt
 pip install -r dev-requirements.txt
 cd -
 
+echo "Cloning ckanext-switzerland-ng to use the Solr schema..."
+git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
+
 echo "Setting up Solr..."
 printf "NO_START=0\nJETTY_HOST=127.0.0.1\nJETTY_PORT=8983\nJAVA_HOME=$JAVA_HOME" | sudo tee /etc/default/jetty
-sudo cp ckan/ckan/config/solr/schema.xml /etc/solr/conf/schema.xml
+sudo cp ckanext-switzerland-ng/solr/schema.xml /etc/solr/conf/schema.xml
 sudo service jetty restart
 
 echo "Creating the PostgreSQL user and database..."
@@ -137,7 +140,6 @@ python setup.py develop
 cd -
 
 echo "Installing ckanext-switzerland and its requirements..."
-git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
 cd ckanext-switzerland-ng
 python setup.py develop
 pip install -r requirements.txt
