@@ -29,7 +29,7 @@
   skos:prefLabel "Opendata BY: Open use. Must provide the source."@en ,
                  "Opendata BY: Utilisation libre. Obligation d’indiquer la source."@fr ,
                  "Opendata BY: Freie Nutzung. Quellenangabe ist Pflicht."@de ,
-                 "Opendata BY: Libero utilizzo. Indicazione della fonte obbligatoria. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati"@it ;
+                 "Opendata BY: Libero utilizzo. Indicazione della fonte obbligatoria."@it ;
   skos:altLabel "Freie Nutzung. Quellenangabe ist Pflicht."@de,
                 "Utilisation libre. Obligation d’indiquer la source."@fr ;
   skos:mappingRelation "NonCommercialAllowed-CommercialAllowed-ReferenceRequired" .
