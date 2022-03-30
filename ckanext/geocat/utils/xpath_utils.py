@@ -222,8 +222,13 @@ def xpath_get_distribution_from_distribution_node(
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
         format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         distribution['format'] = format
-    if normed_protocol in SERVICE_PROTOCOLS:
-        distribution['format'] = SERVICE_FORMAT
+        distribution['media_type'] = media_type
+    service_protocols_without_ld = filter(
+        lambda i: i != LINKED_DATA_PROTOCOL, SERVICE_PROTOCOLS)
+    if normed_protocol in service_protocols_without_ld:
+        format = re.findall(r'(?<=:).*$', normed_protocol)
+        distribution['format'] = format[0]
+        distribution['media_type'] = ""
     GMD_URL = './/gmd:linkage'
     url_node = \
         xpath_get_single_sub_node_for_node_and_path(
