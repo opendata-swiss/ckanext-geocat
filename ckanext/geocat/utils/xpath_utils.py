@@ -224,7 +224,7 @@ def xpath_get_distribution_from_distribution_node(
         media_type = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         distribution['format'] = format
         distribution['media_type'] = media_type
-    resource_formats= filter(
+    resource_formats = filter(
         lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL],
         SERVICE_PROTOCOLS)
     if normed_protocol in resource_formats:
