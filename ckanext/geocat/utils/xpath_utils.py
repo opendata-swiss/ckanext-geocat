@@ -3,10 +3,10 @@
 import re
 from lxml import etree
 
+
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 XPATH_NODE = 'node'
 XPATH_TEXT = 'text'
-
 
 gmd_namespaces = {
     'atom': 'http://www.w3.org/2005/Atom',
@@ -221,9 +221,16 @@ def xpath_get_distribution_from_distribution_node(
     distribution['protocol_name'] = protocol_name
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
         format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
+        media_type = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         distribution['format'] = format
-    if normed_protocol in SERVICE_PROTOCOLS:
-        distribution['format'] = SERVICE_FORMAT
+        distribution['media_type'] = media_type
+    resource_formats = filter(
+        lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL],
+        SERVICE_PROTOCOLS)
+    if normed_protocol in resource_formats:
+        format = re.findall(r'(?<=:).*$', normed_protocol)[0]
+        distribution['format'] = format
+        distribution['media_type'] = ""
     GMD_URL = './/gmd:linkage'
     url_node = \
         xpath_get_single_sub_node_for_node_and_path(
