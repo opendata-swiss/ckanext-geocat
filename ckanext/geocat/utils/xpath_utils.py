@@ -8,7 +8,6 @@ LOCALES = ['DE', 'FR', 'EN', 'IT']
 XPATH_NODE = 'node'
 XPATH_TEXT = 'text'
 
-
 gmd_namespaces = {
     'atom': 'http://www.w3.org/2005/Atom',
     'che': 'http://www.geocat.ch/2008/che',
@@ -226,8 +225,8 @@ def xpath_get_distribution_from_distribution_node(
         distribution['format'] = format
         distribution['media_type'] = media_type
     resource_formats= filter(
-        lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL]
-        , SERVICE_PROTOCOLS)
+        lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL],
+        SERVICE_PROTOCOLS)
     if normed_protocol in resource_formats:
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
