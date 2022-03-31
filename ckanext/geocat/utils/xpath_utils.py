@@ -3,6 +3,7 @@
 import re
 from lxml import etree
 
+
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 XPATH_NODE = 'node'
 XPATH_TEXT = 'text'
@@ -221,13 +222,15 @@ def xpath_get_distribution_from_distribution_node(
     distribution['protocol_name'] = protocol_name
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
         format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
+        media_type = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         distribution['format'] = format
         distribution['media_type'] = media_type
-    service_protocols_without_ld = filter(
-        lambda i: i != LINKED_DATA_PROTOCOL, SERVICE_PROTOCOLS)
-    if normed_protocol in service_protocols_without_ld:
-        format = re.findall(r'(?<=:).*$', normed_protocol)
-        distribution['format'] = format[0]
+    resource_formats= filter(
+        lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL]
+        , SERVICE_PROTOCOLS)
+    if normed_protocol in resource_formats:
+        format = re.findall(r'(?<=:).*$', normed_protocol)[0]
+        distribution['format'] = format
         distribution['media_type'] = ""
     GMD_URL = './/gmd:linkage'
     url_node = \
