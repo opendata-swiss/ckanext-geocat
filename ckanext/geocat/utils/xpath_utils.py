@@ -205,8 +205,8 @@ def xpath_get_distribution_from_distribution_node(
         resource_node, protocol):
     distribution = {}
     distribution['name'] = \
-        xpath_get_single_sub_node_for_node_and_path(
-            node=resource_node, path=GMD_RESOURCE_NAME)
+        xpath_get_language_dict_from_geocat_multilanguage_node(
+            resource_node)
     description_node = \
         xpath_get_single_sub_node_for_node_and_path(
             node=resource_node, path=GMD_RESOURCE_DESCRIPTION)
