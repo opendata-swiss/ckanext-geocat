@@ -119,6 +119,10 @@ def map_frequency(geocat_frequency):
         'http://publications.europa.eu/resource/authority/frequency/IRREG',
         'irregular':
         'http://publications.europa.eu/resource/authority/frequency/IRREG',
+        'notPlanned':
+        'http://publications.europa.eu/resource/authority/frequency/NEVER',
+        'unknown':
+        'http://publications.europa.eu/resource/authority/frequency/UNKNOWN',
     }
     return frequency_mapping.get(geocat_frequency, '')
 
