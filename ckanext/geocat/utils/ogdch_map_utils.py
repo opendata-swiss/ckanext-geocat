@@ -193,10 +193,6 @@ def get_additonal_relation_protocols():
     return ['CHTOPO:specialised-geoportal']
 
 
-def get_excluded_protocols():
-    return ['OPENDATA:SWISS']
-
-
 def map_resource(geocat_resource, issued, modified, rights):
     resource_dict = {}
     title = geocat_resource.get('title', '')
