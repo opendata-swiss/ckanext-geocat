@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from rdflib import Literal
-from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, vocabulary_utils  # noqa
-from ckanext.geocat.utils.vocabulary_utils import SKOS
+from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
+from ckanext.geocat.utils.mapping_utils import SKOS
 
 import logging
 log = logging.getLogger(__name__)
@@ -93,7 +93,8 @@ class GeoMetadataMapping(object):
         self.organization_slug = organization_slug
         self.legal_basis_url = legal_basis_url
         self.valid_identifiers = valid_identifiers
-        self.terms_of_use_graph = vocabulary_utils.get_terms_of_use()
+        self.terms_of_use_graph = mapping_utils.get_terms_of_use()
+        self.excluded_protocols = mapping_utils.get_excluded_protocols()
         self.default_rights = default_rights
 
     def get_metadata(self, csw_record_as_string, geocat_id):
@@ -179,7 +180,7 @@ class GeoMetadataMapping(object):
                 node=resource_node, path=GMD_PROTOCOL)
 
         if not protocol\
-                or protocol in ogdch_map_utils.get_excluded_protocols():
+                or protocol in self.excluded_protocols:
             return
 
         if protocol in ogdch_map_utils.get_landing_page_protocols():
