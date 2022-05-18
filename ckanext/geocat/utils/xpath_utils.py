@@ -173,7 +173,7 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
             return value_locale
 
 
-def xpath_get_url_with_label_from_distribution(node):
+def xpath_get_url_with_label(node, label_xpath='.//gmd:description'):
     url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
                           namespaces=gmd_namespaces)
     if not url_node:
@@ -191,7 +191,7 @@ def xpath_get_url_with_label_from_distribution(node):
 
     url = {'url': url_node[0], 'label': url_node[0]}
 
-    text_node = node.xpath('.//gmd:description',
+    text_node = node.xpath(label_xpath,
                            namespaces=gmd_namespaces)
     if text_node:
         url_text_node = \
