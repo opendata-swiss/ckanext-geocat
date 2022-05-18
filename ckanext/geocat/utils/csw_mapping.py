@@ -249,8 +249,10 @@ def _map_dataset_publisher(node, organization_slug):
             path_list=GMD_PUBLISHER,
             get=xpath_utils.XPATH_NODE)
     if publisher_node is not None:
-        publisher = xpath_utils.xpath_get_url_with_label(publisher_node,
-                                                         label_xpath='//gmd:organisationName')
+        publisher = xpath_utils.xpath_get_url_with_label(
+            publisher_node,
+            label_xpath='//gmd:organisationName'
+        )
         geocat_publisher = {
            'name': publisher.get('label'),
            'url': publisher.get('url', organization_slug)
