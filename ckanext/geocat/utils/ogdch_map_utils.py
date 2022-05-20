@@ -4,7 +4,8 @@ import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
-
+import logging
+log = logging.getLogger(__name__)
 ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
 
 
@@ -210,25 +211,24 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['media_type'] = geocat_resource.get('media_type', '')
     name = geocat_resource.get('name')
     protocol_name = geocat_resource.get('protocol_name')
-    if name and protocol_name:
+    if name and protocol_name.startswith("Map"):
         resource_dict['title'] = \
-            {'de': geocat_resource['name']['de'],
-             'fr': geocat_resource['name']['fr'],
-             'en': geocat_resource['name']['en'],
-             'it': geocat_resource['name']['it']}
+            {'de': "Map " + geocat_resource['name']['de'],
+             'fr': "Map " + geocat_resource['name']['fr'],
+             'en': "Map " + geocat_resource['name']['en'],
+             'it': "Map " + geocat_resource['name']['it']}
     elif protocol_name:
         resource_dict['title'] = \
-            {'de': protocol_name,
-             'fr': protocol_name,
-             'en': protocol_name,
-             'it': protocol_name}
+            {'de': title,
+             'fr': title,
+             'en': title,
+             'it': title}
     else:
         resource_dict['title'] = \
             {'de': geocat_resource['name']['de'],
              'fr': geocat_resource['name']['fr'],
              'en': geocat_resource['name']['en'],
              'it': geocat_resource['name']['it']}
-
     resource_dict['url'] = geocat_resource['url']
     if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['download_url'] = geocat_resource['url']
