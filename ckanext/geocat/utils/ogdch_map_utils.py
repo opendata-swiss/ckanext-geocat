@@ -4,8 +4,7 @@ import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
-import logging
-log = logging.getLogger(__name__)
+
 ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
 
 
