@@ -7,7 +7,7 @@ from ckan.lib.plugins import lookup_package_plugin
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.geocat.utils import search_utils, csw_processor, ogdch_map_utils, csw_mapping  # noqa
-from ckanext.geocat.utils.vocabulary_utils import \
+from ckanext.geocat.utils.mapping_utils import \
   (VALID_TERMS_OF_USE, DEFAULT_TERMS_OF_USE)
 from ckan.lib.navl.validators import ignore
 import ckan.plugins.toolkit as tk
