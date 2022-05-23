@@ -53,12 +53,12 @@ GMD_LANGUAGE = ['//gmd:identificationInfo//gmd:language/gco:CharacterString/text
                 '//gmd:language/gmd:LanguageCode/@codeListValue']
 GMD_SPATIAL = '//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()'  # noqa
 GMD_PUBLISHER = [
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
-    '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]',  # noqa
+    '//gmd:contact//che:CHE_CI_ResponsibleParty',  # noqa
 ]
 GMD_CONTACT_POINT = [
     '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
@@ -185,7 +185,7 @@ class GeoMetadataMapping(object):
 
         if protocol in ogdch_map_utils.get_landing_page_protocols():
             url_with_label = \
-                xpath_utils.xpath_get_url_with_label_from_distribution(
+                xpath_utils.xpath_get_url_with_label(
                     resource_node)
             if url_with_label:
                 if not dataset_dict.get('url'):
@@ -194,7 +194,7 @@ class GeoMetadataMapping(object):
                     dataset_dict['relations'].append(url_with_label)
         elif protocol in ogdch_map_utils.get_additonal_relation_protocols():
             url_with_label = \
-                xpath_utils.xpath_get_url_with_label_from_distribution(
+                xpath_utils.xpath_get_url_with_label(
                     resource_node)
             if url_with_label:
                 dataset_dict['relations'].append(url_with_label)
@@ -249,11 +249,15 @@ def _map_dataset_publisher(node, organization_slug):
             path_list=GMD_PUBLISHER,
             get=xpath_utils.XPATH_NODE)
     if publisher_node is not None:
-        geocat_publisher = \
-            xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(publisher_node)  # noqa
-        if geocat_publisher:
-            return ogdch_map_utils.map_to_ogdch_publisher(geocat_publisher,
-                                                          organization_slug)
+        publisher = xpath_utils.xpath_get_url_with_label(
+            publisher_node,
+            label_xpath='//gmd:organisationName'
+        )
+        geocat_publisher = {
+           'name': publisher.get('label'),
+           'url': publisher.get('url', organization_slug)
+        }
+        return ogdch_map_utils. map_to_ogdch_publisher(geocat_publisher)
     return EMPTY_PUBLISHER
 
 
