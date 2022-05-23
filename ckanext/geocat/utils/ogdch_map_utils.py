@@ -212,10 +212,10 @@ def map_resource(geocat_resource, issued, modified, rights):
     protocol_name = geocat_resource.get('protocol_name')
     if name and protocol_name.startswith("Map"):
         resource_dict['title'] = \
-            {'de': "Map " + geocat_resource['name']['de'],
-             'fr': "Map " + geocat_resource['name']['fr'],
-             'en': "Map " + geocat_resource['name']['en'],
-             'it': "Map " + geocat_resource['name']['it']}
+            {'de': protocol_name + geocat_resource['name']['de'],
+             'fr': protocol_name + geocat_resource['name']['fr'],
+             'en': protocol_name + geocat_resource['name']['en'],
+             'it': protocol_name + geocat_resource['name']['it']}
     elif protocol_name:
         resource_dict['title'] = \
             {'de': title,
