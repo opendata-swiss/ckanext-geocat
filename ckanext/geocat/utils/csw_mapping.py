@@ -105,7 +105,6 @@ class GeoMetadataMapping(object):
                 node=root_node,
                 organization_slug=self.organization_slug)
         dataset_dict['title'] = _map_dataset_title(node=root_node)
-        log.error(dataset_dict.get('title'))
         dataset_dict['description'] = _map_dataset_description(node=root_node)
         dataset_dict['publisher'] = _map_dataset_publisher(
             node=root_node,
