@@ -16,10 +16,14 @@ def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
     return '@'.join([geocat_identifier, organization_slug])
 
 
-def map_to_ogdch_publisher(geocat_publisher):
+def map_to_ogdch_publisher(geocat_publisher, organization_slug):
     if not geocat_publisher:
         return
-    return json.dumps(geocat_publisher)
+    ogdch_publisher = {
+        'name': geocat_publisher.get('name'),
+        'url': geocat_publisher.get('url', _get_organization_url(organization_slug)),
+    }
+    return json.dumps(ogdch_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
@@ -202,12 +206,12 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['media_type'] = geocat_resource.get('media_type', '')
     name = geocat_resource.get('name')
     protocol_name = geocat_resource.get('protocol_name')
-    if name and protocol_name.startswith("Map"):
+    if name and protocol_name and protocol_name.startswith("Map"):
         resource_dict['title'] = \
-            {'de': protocol_name + geocat_resource['name']['de'],
-             'fr': protocol_name + geocat_resource['name']['fr'],
-             'en': protocol_name + geocat_resource['name']['en'],
-             'it': protocol_name + geocat_resource['name']['it']}
+            {'de': protocol_name + " " + geocat_resource['name']['de'],
+             'fr': protocol_name + " " + geocat_resource['name']['fr'],
+             'en': protocol_name + " " + geocat_resource['name']['en'],
+             'it': protocol_name + " " + geocat_resource['name']['it']}
     elif protocol_name:
         resource_dict['title'] = \
             {'de': title,

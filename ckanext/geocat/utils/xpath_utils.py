@@ -103,6 +103,7 @@ def xpath_get_first_of_values_from_path_list(node, path_list, get=XPATH_NODE):
     get_text = ''
     if get == XPATH_TEXT:
         get_text = '/text()'
+
     for path in path_list:
         value = node.xpath(path + get_text, namespaces=gmd_namespaces)
         if value:
@@ -173,7 +174,8 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
             return value_locale
 
 
-def xpath_get_url_with_label(node, label_xpath='.//gmd:description'):
+def xpath_get_url_with_label(node):
+    label_xpath = './/gmd:description'
     url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
                           namespaces=gmd_namespaces)
     if not url_node:
@@ -199,6 +201,22 @@ def xpath_get_url_with_label(node, label_xpath='.//gmd:description'):
         if url_text_node:
             url['label'] = url_text_node[0]
     return url
+
+
+def xpath_get_publisher_name_and_url(node):
+    geocat_publisher = {}
+    name_node = node.xpath('//gmd:organisationName',
+                           namespaces=gmd_namespaces)
+    if name_node:
+        geocat_publisher_name = \
+            xpath_get_one_value_from_geocat_multilanguage_node(name_node[0])
+        if geocat_publisher_name:
+            geocat_publisher['name'] = geocat_publisher_name[0]
+    url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
+                          namespaces=gmd_namespaces)
+    if url_node:
+        geocat_publisher['url'] = url_node[0]
+    return geocat_publisher
 
 
 def xpath_get_distribution_from_distribution_node(

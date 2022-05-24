@@ -106,6 +106,9 @@ class GeoMetadataMapping(object):
                 node=root_node,
                 organization_slug=self.organization_slug)
         dataset_dict['title'] = _map_dataset_title(node=root_node)
+        log.error("-----------------------------------")
+        log.error(dataset_dict['title'])
+        log.error("-----------------------------------")
         dataset_dict['description'] = _map_dataset_description(node=root_node)
         dataset_dict['publisher'] = _map_dataset_publisher(
             node=root_node,
@@ -249,15 +252,13 @@ def _map_dataset_publisher(node, organization_slug):
             path_list=GMD_PUBLISHER,
             get=xpath_utils.XPATH_NODE)
     if publisher_node is not None:
-        publisher = xpath_utils.xpath_get_url_with_label(
+        geocat_publisher = xpath_utils.xpath_get_publisher_name_and_url(
             publisher_node,
-            label_xpath='//gmd:organisationName'
         )
-        geocat_publisher = {
-           'name': publisher.get('label'),
-           'url': publisher.get('url', organization_slug)
-        }
-        return ogdch_map_utils. map_to_ogdch_publisher(geocat_publisher)
+        return ogdch_map_utils.map_to_ogdch_publisher(
+            geocat_publisher,
+            organization_slug
+        )
     return EMPTY_PUBLISHER
 
 
