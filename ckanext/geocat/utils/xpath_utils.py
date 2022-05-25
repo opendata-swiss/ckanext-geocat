@@ -103,12 +103,11 @@ def xpath_get_first_of_values_from_path_list(node, path_list, get=XPATH_NODE):
     get_text = ''
     if get == XPATH_TEXT:
         get_text = '/text()'
-
     for path in path_list:
         value = node.xpath(path + get_text, namespaces=gmd_namespaces)
         if value:
-            return value[0]
-    return None
+            return value[0], path
+    return None, None
 
 
 def xpath_get_language_dict_from_geocat_multilanguage_node(node):
@@ -133,7 +132,7 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
 
 def xpath_get_url_and_languages(node):
     languages = []
-    url = xpath_get_first_of_values_from_path_list(
+    url, _ = xpath_get_first_of_values_from_path_list(
         node=node, path_list=URL_PATH_LIST)
     for locale in LOCALES:
         value_locale = \
@@ -203,20 +202,12 @@ def xpath_get_url_with_label(node):
     return url
 
 
-def xpath_get_publisher_name_and_url(node):
-    geocat_publisher = {}
-    name_node = node.xpath('//gmd:organisationName',
-                           namespaces=gmd_namespaces)
-    if name_node:
-        geocat_publisher_name = \
-            xpath_get_one_value_from_geocat_multilanguage_node(name_node[0])
-        if geocat_publisher_name:
-            geocat_publisher['name'] = geocat_publisher_name[0]
+def xpath_get_url_from_node(node):
     url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
                           namespaces=gmd_namespaces)
     if url_node:
-        geocat_publisher['url'] = url_node[0]
-    return geocat_publisher
+        return url_node[0]
+    return None
 
 
 def xpath_get_distribution_from_distribution_node(
@@ -269,8 +260,10 @@ def xpath_get_geocat_services(node):
             geocat_service = {}
             geocat_service['title'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_SERVICE_TITLE)
-            geocat_service['url'] = xpath_get_first_of_values_from_path_list(
-                node=service_node, path_list=GMD_SERVICE_URLS)
+            geocat_service['url'], _ = \
+                xpath_get_first_of_values_from_path_list(
+                    node=service_node, path_list=GMD_SERVICE_URLS
+                )
             geocat_service['media_type'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_MEDIA_TYPE)
             geocat_services.append(geocat_service)

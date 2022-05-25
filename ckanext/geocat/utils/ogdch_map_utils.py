@@ -21,7 +21,8 @@ def map_to_ogdch_publisher(geocat_publisher, organization_slug):
         return
     ogdch_publisher = {
         'name': geocat_publisher.get('name'),
-        'url': geocat_publisher.get('url', _get_organization_url(organization_slug)),
+        'url': geocat_publisher.get('url',
+                                    _get_organization_url(organization_slug)),
     }
     return json.dumps(ogdch_publisher)
 
