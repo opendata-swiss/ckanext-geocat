@@ -53,12 +53,12 @@ GMD_LANGUAGE = ['//gmd:identificationInfo//gmd:language/gco:CharacterString/text
                 '//gmd:language/gmd:LanguageCode/@codeListValue']
 GMD_SPATIAL = '//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()'  # noqa
 GMD_PUBLISHER = [
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]',  # noqa
-    '//gmd:contact//che:CHE_CI_ResponsibleParty',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:organisationName',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:organisationName',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
+    '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName',  # noqa
 ]
 GMD_CONTACT_POINT = [
     '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
@@ -68,6 +68,7 @@ GMD_CONTACT_POINT = [
     '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
     '//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
 ]
+GMD_PUBLISHER_NAME = '//gmd:organisationName'
 GMD_MODIFIED = [
     '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
     '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
@@ -243,26 +244,39 @@ def _map_dataset_description(node):
 
 
 def _map_dataset_publisher(node, organization_slug):
-    publisher_node = \
+    publisher_name_node, publisher_name_path = \
         xpath_utils.xpath_get_first_of_values_from_path_list(
             node=node,
             path_list=GMD_PUBLISHER,
             get=xpath_utils.XPATH_NODE)
-    if publisher_node is not None:
-        publisher = xpath_utils.xpath_get_url_with_label(
-            publisher_node,
-            label_xpath='//gmd:organisationName'
+    if publisher_name_node is None:
+        return EMPTY_PUBLISHER
+    publisher_name = \
+        xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(
+            publisher_name_node
         )
-        geocat_publisher = {
-           'name': publisher.get('label'),
-           'url': publisher.get('url', organization_slug)
-        }
-        return ogdch_map_utils. map_to_ogdch_publisher(geocat_publisher)
-    return EMPTY_PUBLISHER
+    if isinstance(publisher_name, list):
+        publisher_name = publisher_name[0]
+    if not publisher_name:
+        return EMPTY_PUBLISHER
+    geocat_publisher = {'name': publisher_name}
+    publisher_url_path = publisher_name_path.replace(GMD_PUBLISHER_NAME, '')
+    publisher_url_node = \
+        xpath_utils.xpath_get_single_sub_node_for_node_and_path(
+            node,
+            publisher_url_path
+        )
+    publisher_url = xpath_utils.xpath_get_url_from_node(publisher_url_node)
+    if publisher_url:
+        geocat_publisher['url'] = publisher_url
+    return ogdch_map_utils.map_to_ogdch_publisher(
+        geocat_publisher,
+        organization_slug
+    )
 
 
 def _map_dataset_contact_points(node):
-    geocat_contact_point = \
+    geocat_contact_point, _ = \
         xpath_utils.xpath_get_first_of_values_from_path_list(
             node=node,
             path_list=GMD_CONTACT_POINT,
@@ -273,7 +287,7 @@ def _map_dataset_contact_points(node):
 
 
 def _map_dataset_issued(node):
-    geocat_issued = \
+    geocat_issued, _ = \
         xpath_utils.xpath_get_first_of_values_from_path_list(
             node=node,
             path_list=GMD_ISSUED,
@@ -284,7 +298,7 @@ def _map_dataset_issued(node):
 
 
 def _map_dataset_modified(node):
-    geocat_modified = xpath_utils.xpath_get_first_of_values_from_path_list(
+    geocat_modified, _ = xpath_utils.xpath_get_first_of_values_from_path_list(
         node=node, path_list=GMD_MODIFIED, get=xpath_utils.XPATH_TEXT)
     if geocat_modified:
         return ogdch_map_utils.map_to_ogdch_datetime(geocat_modified)
