@@ -16,10 +16,15 @@ def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
     return '@'.join([geocat_identifier, organization_slug])
 
 
-def map_to_ogdch_publisher(geocat_publisher):
+def map_to_ogdch_publisher(geocat_publisher, organization_slug):
     if not geocat_publisher:
         return
-    return json.dumps(geocat_publisher)
+    ogdch_publisher = {
+        'name': geocat_publisher.get('name'),
+        'url': geocat_publisher.get('url',
+                                    _get_organization_url(organization_slug)),
+    }
+    return json.dumps(ogdch_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
