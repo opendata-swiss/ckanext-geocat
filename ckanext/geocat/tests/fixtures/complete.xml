@@ -495,7 +495,6 @@
               <gmd:onlineResource>
                 <gmd:CI_OnlineResource>
                   <gmd:linkage xsi:type="che:PT_FreeURL_PropertyType">
-                    <gmd:URL>http://www.bafu.admin.ch/abteilung-laerm-nis</gmd:URL>
                     <che:PT_FreeURL>
                       <che:URLGroup>
                         <che:LocalisedURL locale="#EN">http://www.bafu.admin.ch/noise-nir-division</che:LocalisedURL>
