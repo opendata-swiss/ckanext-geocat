@@ -207,18 +207,7 @@ def xpath_get_url_from_node(node):
                           namespaces=gmd_namespaces)
     if url_node:
         return url_node[0]
-    if not url_node:
-        for locale in LOCALES:
-            url_node = node.xpath('.//che:LocalisedURL[@locale="#{}"]'
-                                  .format(locale) + '/text()',
-                                  namespaces=gmd_namespaces)
-            if url_node:
-                break
-        if not url_node:
-            url_node = node.xpath('.//che:LocalisedURL/text()',
-                                  namespaces=gmd_namespaces)
-        if not url_node:
-            return None
+    return None
 
 
 def xpath_get_distribution_from_distribution_node(
