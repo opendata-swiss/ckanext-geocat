@@ -32,6 +32,7 @@ gmd_namespaces = {
     'xlink': 'http://www.w3.org/1999/xlink',
 }
 
+GMD_URL_LABEL = './/gmd:description'
 GMD_SERVICE_NODES = '//gmd:identificationInfo//srv:containsOperations/srv:SV_OperationMetadata[.//srv:operationName//gco:CharacterString/text()]'  # noqa
 GMD_SERVICE_URLS = [
     './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#DE" and ./text()]/text()',  # noqa
@@ -174,25 +175,9 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
 
 
 def xpath_get_url_with_label(node):
-    label_xpath = './/gmd:description'
-    url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
-                          namespaces=gmd_namespaces)
-    if not url_node:
-        for locale in LOCALES:
-            url_node = node.xpath('.//che:LocalisedURL[@locale="#{}"]'
-                                  .format(locale) + '/text()',
-                                  namespaces=gmd_namespaces)
-            if url_node:
-                break
-        if not url_node:
-            url_node = node.xpath('.//che:LocalisedURL/text()',
-                                  namespaces=gmd_namespaces)
-        if not url_node:
-            return None
-
-    url = {'url': url_node[0], 'label': url_node[0]}
-
-    text_node = node.xpath(label_xpath,
+    url = xpath_get_url_from_node(node)
+    url = {'url': url, 'label': url}
+    text_node = node.xpath(GMD_URL_LABEL,
                            namespaces=gmd_namespaces)
     if text_node:
         url_text_node = \
@@ -204,6 +189,16 @@ def xpath_get_url_with_label(node):
 
 def xpath_get_url_from_node(node):
     url_node = node.xpath('.//gmd:linkage/gmd:URL/text()',
+                          namespaces=gmd_namespaces)
+    if url_node:
+        return url_node[0]
+    for locale in LOCALES:
+        url_node = node.xpath('.//che:LocalisedURL[@locale="#{}"]'
+                              .format(locale) + '/text()',
+                              namespaces=gmd_namespaces)
+        if url_node:
+            return url_node[0]
+    url_node = node.xpath('.//che:LocalisedURL/text()',
                           namespaces=gmd_namespaces)
     if url_node:
         return url_node[0]
