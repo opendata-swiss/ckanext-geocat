@@ -207,13 +207,15 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['media_type'] = geocat_resource.get('media_type', '')
     name = geocat_resource.get('name')
     protocol_name = geocat_resource.get('protocol_name')
-    if name and protocol_name.startswith("Map"):
+    if name and protocol_name and protocol_name.startswith("Map"):
         resource_dict['title'] = \
-            {'de': protocol_name + geocat_resource['name']['de'],
-             'fr': protocol_name + geocat_resource['name']['fr'],
-             'en': protocol_name + geocat_resource['name']['en'],
-             'it': protocol_name + geocat_resource['name']['it']}
-    elif protocol_name:
+            {'de': protocol_name + " " + geocat_resource['name']['de'],
+             'fr': protocol_name + " " + geocat_resource['name']['fr'],
+             'en': protocol_name + " " + _remove_duplicate_term_in_name(
+                 geocat_resource['name']['en'], "Preview"
+             ),
+             'it': protocol_name + " " + geocat_resource['name']['it'], }
+    elif protocol_name and not name:
         resource_dict['title'] = \
             {'de': title,
              'fr': title,
@@ -232,6 +234,12 @@ def map_resource(geocat_resource, issued, modified, rights):
         resource_dict['download_url'] = ""
     resource_dict['language'] = geocat_resource['language']
     return resource_dict
+
+
+def _remove_duplicate_term_in_name(name, term):
+    if not name:
+        return ""
+    return name.lstrip(term)
 
 
 def map_service(geocat_service, issued, modified, description, rights):
