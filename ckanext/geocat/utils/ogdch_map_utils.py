@@ -204,7 +204,8 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['rights'] = rights
     resource_dict['format'] = geocat_resource.get('format', '')
     resource_dict['description'] = geocat_resource.get('description')
-    resource_dict['media_type'] = geocat_resource.get('media_type', '')
+    if geocat_resource.get('media_type'):
+        resource_dict['media_type'] = geocat_resource['media_type']
     name = geocat_resource.get('name')
     protocol_name = geocat_resource.get('protocol_name')
     if name and protocol_name and protocol_name.startswith("Map"):
@@ -230,8 +231,6 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['url'] = geocat_resource['url']
     if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['download_url'] = geocat_resource['url']
-    else:
-        resource_dict['download_url'] = ""
     resource_dict['language'] = geocat_resource['language']
     return resource_dict
 

@@ -59,6 +59,7 @@ OGC_WMTS_PROTOCOL = "OGC:WMTS"
 OGC_WFS_PROTOCOL = "OGC:WFS"
 OGC_WMS_PROTOCOL = "OGC:WMS"
 LINKED_DATA_PROTOCOL = "LINKED:DATA"
+APP_PROTOCOL = "WWW:DOWNLOAD-APP"
 ESRI_REST_PROTOCOL = "ESRI:REST"
 MAP_PROTOCOL = 'MAP:Preview'
 SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL,
@@ -234,7 +235,6 @@ def xpath_get_distribution_from_distribution_node(
     if normed_protocol in resource_formats:
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
-        distribution['media_type'] = ""
     GMD_URL = './/gmd:linkage'
     url_node = \
         xpath_get_single_sub_node_for_node_and_path(
@@ -271,12 +271,14 @@ def _get_normed_protocol(protocol):
         OGC_WMS_PROTOCOL: "WMS",
         OGC_WFS_PROTOCOL: "WFS",
         DOWNLOAD_PROTOCOL: "Download",
+        APP_PROTOCOL: "App",
         LINKED_DATA_PROTOCOL: "Linked Data (Dienst)",
         MAP_PROTOCOL: "Map (Preview)",
         ESRI_REST_PROTOCOL: "ESRI (Rest)"
     }
+    protocol_identifier = ':'.join(protocol.split(':')[:2])
     for normed_protocol, protocol_name in protocol_to_name_mapping.items():
-        if protocol.startswith(normed_protocol):
+        if protocol_identifier == normed_protocol:
             return normed_protocol, protocol_name
     return None, None
 
