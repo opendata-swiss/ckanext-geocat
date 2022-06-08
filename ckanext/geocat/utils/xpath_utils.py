@@ -222,7 +222,8 @@ def xpath_get_distribution_from_distribution_node(
     else:
         distribution['description'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
     normed_protocol, protocol_name = _get_normed_protocol(protocol)
-    distribution['protocol'] = normed_protocol
+    distribution['normed_protocol'] = normed_protocol
+    distribution['protocol'] = protocol
     distribution['protocol_name'] = protocol_name
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
         format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
@@ -235,6 +236,7 @@ def xpath_get_distribution_from_distribution_node(
     if normed_protocol in resource_formats:
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
+        distribution['media_type'] = ""
     GMD_URL = './/gmd:linkage'
     url_node = \
         xpath_get_single_sub_node_for_node_and_path(
@@ -278,7 +280,7 @@ def _get_normed_protocol(protocol):
     }
     protocol_identifier = ':'.join(protocol.split(':')[:2])
     for normed_protocol, protocol_name in protocol_to_name_mapping.items():
-        if protocol_identifier == normed_protocol:
+        if protocol_identifier.startswith(normed_protocol):
             return normed_protocol, protocol_name
     return None, None
 

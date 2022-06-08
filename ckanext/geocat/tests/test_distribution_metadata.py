@@ -14,7 +14,7 @@ __location__ = os.path.realpath(
 )
 
 
-class TestGeocatDcatDistributionMetadata(unittest.TestCase):
+class TestGeocatDistributionMetadataDesprecatedProtocols(unittest.TestCase):
     def setUp(self):
         self.csw_map = csw_mapping.GeoMetadataMapping(
             organization_slug="swisstopo",
@@ -35,81 +35,78 @@ class TestGeocatDcatDistributionMetadata(unittest.TestCase):
     def _is_multi_lang(self, value):
         for lang in ['de', 'fr', 'it', 'en']:
             self.assertIn(lang, value)
-        
-    def test_fields(self):
+
+    def test_all_resources(self):
         xml = self._load_xml('complete.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
         distributions = dataset.get('resources')
-
         self.assertEquals(4, len(distributions))
 
-        fields = [
-            'title',
-            'description',
-            'issued',
-            'modified',
-            'language',
-            'url',
-            'download_url',
-            'media_type',
-            'rights',
-            'format',
-        ]
-        for dist in distributions:
-            for field in fields:
-                self.assertIn(field, dist)
-
-            for key, value in dist.iteritems():
-                self.assertIn(key, fields)
-
-            # check multilang fields
-            self._is_multi_lang(dist.get('title'))
-            self._is_multi_lang(dist.get('description'))
-
-    def test_fields_values(self):
+    def test_download_resources_with_deprecated_protocol_OGC_WMS(self):
+        print("in test test_download_resources_with_deprecated_protocol_OGC_WMS")
         xml = self._load_xml('complete.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
         distributions = dataset.get('resources')
+        distribution = _get_distribution_by_protocol(distributions, "OGC:WMS-http-get-capabilities")
+        self._is_multi_lang(distribution.get('title'))
+        self.assertEquals(distribution.get('format'), 'WMS')
+        self.assertIsNone(distribution.get('download_url'))
+        self.assertEquals(distribution.get('url'), 'http://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities&lang=de/1')
+        self.assertEquals(distribution['description']['fr'], 'Service WMS de geo.admin.ch')
+        self.assertEquals(distribution['description']['de'], 'WMS Dienst von geo.admin.ch')
+        self.assertEquals(distribution['description']['en'], 'WMS Service from geo.admin.ch')
+        self.assertEquals(distribution['description']['it'], 'Servizio WMS di geo.admin.ch')
 
-        download = None
-        for dist in distributions:
-            if dist['download_url']:
-                download = dist
-                break
+    def test_download_resources_with_deprecated_protocol_OGC_WMTS(self):
+        print("in test test_download_resources_with_deprecated_protocol_OGC_WMTS")
+        xml = self._load_xml('complete.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        distributions = dataset.get('resources')
+        distribution = _get_distribution_by_protocol(distributions, "OGC:WMTS-http-get-capabilities")
+        self._is_multi_lang(distribution.get('title'))
+        self._is_multi_lang(distribution.get('description'))
+        self.assertEquals(distribution.get('format'), 'WMTS')
+        self.assertIsNone(distribution.get('download_url'))
+        self.assertEquals(distribution.get('url'), 'http://wmts.geo.admin.ch/1')
 
-        self.assertIsNotNone(download)
-
-        # title
-        # self.assertEquals('Download', download['title']['de'])
-        # self.assertEquals('Download', download['title']['fr'])
-        # self.assertEquals('Download', download['title']['it'])
-        # self.assertEquals('Download', download['title']['en'])
-
-        # description
-        self.assertEquals('Download Server von geo.admin.ch', download['description']['de'])
-        self.assertIn('', download['description']['fr'])
-        self.assertIn('', download['description']['it'])
-        self.assertIn('', download['description']['en'])
-
-        # dates
+    def test_download_resources_with_deprecated_protocol_WWW_DOWNLOAD(self):
+        print("in test test_download_resources_with_deprecated_protocol_WWW_DOWNLOAD")
+        xml = self._load_xml('complete.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        distributions = dataset.get('resources')
+        distribution = _get_distribution_by_protocol(distributions, "WWW:DOWNLOAD-1.0-http--download")
+        self._is_multi_lang(distribution.get('title'))
+        self._is_multi_lang(distribution.get('description'))
+        self.assertEquals('Link zum Datenbezug', distribution['description']['de'])
+        self.assertEquals(u'Lien vers la distribution des donn\xe9es', distribution['description']['fr'])
+        self.assertEquals('Link per le fonti dei dati', distribution['description']['it'])
+        self.assertEquals('Link for download', distribution['description']['en'])
+        self.assertEquals('Link zum Datenbezug', distribution['title']['de'])
+        self.assertEquals(u'Lien vers la distribution des donn\xe9es', distribution['title']['fr'])
+        self.assertEquals('Link per le fonti dei dati', distribution['title']['it'])
+        self.assertEquals('Link for download', distribution['title']['en'])
         date_string = '2011-12-31' # revision date from XML
         d = datetime.strptime(date_string, '%Y-%m-%d')
-        self.assertEquals(int(time.mktime(d.timetuple())), download['issued'])
-        self.assertEquals(int(time.mktime(d.timetuple())), download['modified'])
+        self.assertEquals(int(time.mktime(d.timetuple())), distribution['issued'])
+        self.assertEquals(int(time.mktime(d.timetuple())), distribution['modified'])
+        self.assertSetEqual({'de', 'fr', 'en', 'it'}, set(distribution.get('language')))
+        self.assertEquals('http://www.bafu.admin.ch/umwelt/12877/15716/15721/index.html?lang=de', distribution.get('url'))
+        self.assertEquals('http://www.bafu.admin.ch/umwelt/12877/15716/15721/index.html?lang=de', distribution.get('download_url'))
+        self.assertEquals(distribution.get('url'), distribution.get('download_url'))
+        self.assertEquals('NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired', distribution.get('rights'))
+        self.assertEquals('', distribution.get('media_type'))
+        self.assertEquals('', distribution.get('format'))
 
-        # language
-        self.assertEquals(set(['de']), set(download.get('language')))
 
-        # access url + download url
-        self.assertEquals('http://data.geo.admin.ch/ch.bafu.laerm-bahnlaerm_nacht/data.zip', download.get('url'))
-        self.assertEquals('http://data.geo.admin.ch/ch.bafu.laerm-bahnlaerm_nacht/data.zip', download.get('download_url'))
-        self.assertEquals(download.get('url'), download.get('download_url'))
-
-        # rights
-        self.assertEquals('NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired', download.get('rights')) 
-
-        # media type
-        self.assertEquals('', download.get('media_type'))
-
-        # format
-        self.assertEquals('', download.get('format'))
+def _get_distribution_by_protocol(distributions, protocol):
+    for distribution in distributions:
+        print("-----------------------------------------")
+        print("search protocol = {}".format(protocol))
+        print("distribution protocol = {}".format(distribution.get('protocol')))
+        print("distribution description = {}".format(distribution.get('description')))
+        print("++++++++++++++++++++++++++++++++++++++++++++++++")
+        if distribution.get('protocol') == protocol:
+            print("return distribution")
+            print(distribution)
+            print("-===========================================")
+            return distribution
