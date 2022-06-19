@@ -65,6 +65,10 @@ MAP_PROTOCOL = 'MAP:Preview'
 SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL,
                      OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL,
                      ESRI_REST_PROTOCOL, MAP_PROTOCOL, APP_PROTOCOL]
+FORMAT_SERVICE_PROTOCOLS = filter(
+    lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL],
+    SERVICE_PROTOCOLS)
+
 SERVICE_FORMAT = 'SERVICE'
 
 
@@ -229,10 +233,7 @@ def xpath_get_distribution_from_distribution_node(
         media_type = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         distribution['format'] = format
         distribution['media_type'] = media_type
-    resource_formats = filter(
-        lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL],
-        SERVICE_PROTOCOLS)
-    if normed_protocol in resource_formats:
+    if normed_protocol in FORMAT_SERVICE_PROTOCOLS:
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
         distribution['media_type'] = ""
