@@ -230,8 +230,6 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['url'] = geocat_resource['url']
     if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['download_url'] = geocat_resource['url']
-    else:
-        resource_dict['download_url'] = ""
     resource_dict['language'] = geocat_resource['language']
     return resource_dict
 
