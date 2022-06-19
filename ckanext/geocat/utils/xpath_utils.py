@@ -59,11 +59,12 @@ OGC_WMTS_PROTOCOL = "OGC:WMTS"
 OGC_WFS_PROTOCOL = "OGC:WFS"
 OGC_WMS_PROTOCOL = "OGC:WMS"
 LINKED_DATA_PROTOCOL = "LINKED:DATA"
+APP_PROTOCOL = "WWW:DOWNLOAD-APP"
 ESRI_REST_PROTOCOL = "ESRI:REST"
 MAP_PROTOCOL = 'MAP:Preview'
 SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL,
                      OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL,
-                     ESRI_REST_PROTOCOL, MAP_PROTOCOL]
+                     ESRI_REST_PROTOCOL, MAP_PROTOCOL, APP_PROTOCOL]
 SERVICE_FORMAT = 'SERVICE'
 
 
@@ -271,12 +272,14 @@ def _get_normed_protocol(protocol):
         OGC_WMS_PROTOCOL: "WMS",
         OGC_WFS_PROTOCOL: "WFS",
         DOWNLOAD_PROTOCOL: "Download",
+        APP_PROTOCOL: "App",
         LINKED_DATA_PROTOCOL: "Linked Data (Dienst)",
         MAP_PROTOCOL: "Map (Preview)",
         ESRI_REST_PROTOCOL: "ESRI (Rest)"
     }
+    protocol_identifier = ':'.join(protocol.split(':')[:2])
     for normed_protocol, protocol_name in protocol_to_name_mapping.items():
-        if protocol.startswith(normed_protocol):
+        if protocol_identifier.startswith(normed_protocol):
             return normed_protocol, protocol_name
     return None, None
 
