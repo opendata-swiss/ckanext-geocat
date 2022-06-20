@@ -24,7 +24,8 @@ class TestGeocatDistributionMetadataDesprecatedProtocols(unittest.TestCase):
             default_rights="",
             valid_identifiers=['8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'],
         )
-        self.geocat_identifier = '93814e81-2466-4690-b54d-c1d958f1c3b8'
+        self.geocat_identifier_deprecated_protocols = '93814e81-2466-4690-b54d-c1d958f1c3b8'
+        self.geocat_identifier_normed_protocols = '3143e92b-51fa-40ab-bcc0-fa389807e879'
 
     def _load_xml(self, filename):
         path = os.path.join(__location__, 'fixtures', filename)
@@ -38,14 +39,14 @@ class TestGeocatDistributionMetadataDesprecatedProtocols(unittest.TestCase):
 
     def test_all_resources(self):
         xml = self._load_xml('complete.xml')
-        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_deprecated_protocols)
         distributions = dataset.get('resources')
         self.assertEquals(4, len(distributions))
 
-    def test_download_resources_with_deprecated_protocol_OGC_WMS(self):
+    def test_deprecated_protocol_for_OGC_WMS(self):
         print("in test test_download_resources_with_deprecated_protocol_OGC_WMS")
         xml = self._load_xml('complete.xml')
-        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_deprecated_protocols)
         distributions = dataset.get('resources')
         distribution = _get_distribution_by_protocol(distributions, "OGC:WMS-http-get-capabilities")
         self._is_multi_lang(distribution.get('title'))
@@ -57,10 +58,10 @@ class TestGeocatDistributionMetadataDesprecatedProtocols(unittest.TestCase):
         self.assertEquals(distribution['description']['en'], 'WMS Service from geo.admin.ch')
         self.assertEquals(distribution['description']['it'], 'Servizio WMS di geo.admin.ch')
 
-    def test_download_resources_with_deprecated_protocol_OGC_WMTS(self):
+    def test_deprecated_protocol_for_OGC_WMTS(self):
         print("in test test_download_resources_with_deprecated_protocol_OGC_WMTS")
         xml = self._load_xml('complete.xml')
-        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_deprecated_protocols)
         distributions = dataset.get('resources')
         distribution = _get_distribution_by_protocol(distributions, "OGC:WMTS-http-get-capabilities")
         self._is_multi_lang(distribution.get('title'))
@@ -69,10 +70,10 @@ class TestGeocatDistributionMetadataDesprecatedProtocols(unittest.TestCase):
         self.assertIsNone(distribution.get('download_url'))
         self.assertEquals(distribution.get('url'), 'http://wmts.geo.admin.ch/1')
 
-    def test_download_resources_with_deprecated_protocol_WWW_DOWNLOAD(self):
+    def test_deprecated_protocol_for_WWW_DOWNLOAD_all_fields(self):
         print("in test test_download_resources_with_deprecated_protocol_WWW_DOWNLOAD")
         xml = self._load_xml('complete.xml')
-        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_deprecated_protocols)
         distributions = dataset.get('resources')
         distribution = _get_distribution_by_protocol(distributions, "WWW:DOWNLOAD-1.0-http--download")
         self._is_multi_lang(distribution.get('title'))
@@ -96,6 +97,37 @@ class TestGeocatDistributionMetadataDesprecatedProtocols(unittest.TestCase):
         self.assertEquals('NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired', distribution.get('rights'))
         self.assertEquals('', distribution.get('media_type'))
         self.assertEquals('', distribution.get('format'))
+
+    def test_normed_protocol_WWW_DOWNLOAD_INTERLIS(self):
+        print("in test_format_mapping_for_download_resource_normed_protocol")
+        xml = self._load_xml('geocat_testdata.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_normed_protocols)
+        distributions = dataset.get('resources')
+        distribution = _get_distribution_by_protocol(distributions, "WWW:DOWNLOAD:INTERLIS")
+        self.assertEquals('https://data.geo.admin.ch', distribution.get('url'))
+        self.assertEquals('https://data.geo.admin.ch', distribution.get('download_url'))
+        self.assertEquals(distribution.get('url'), distribution.get('download_url'))
+        self.assertEquals('NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired', distribution.get('rights'))
+        self.assertEquals('INTERLIS', distribution.get('media_type'))
+        self.assertEquals('INTERLIS', distribution.get('format'))
+
+    def test_normed_protocol_WWW_DOWNLOAD_APP(self):
+        print("in test_format_mapping_for_download_resource_normed_protocol")
+        xml = self._load_xml('geocat_testdata.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_normed_protocols)
+        distributions = dataset.get('resources')
+        distribution = _get_distribution_by_protocol(distributions, "WWW:DOWNLOAD-APP")
+        self.assertEquals('https://geocat.geoshop.ch', distribution.get('url'))
+        self.assertIsNone(distribution.get('download_url'))
+
+    def test_normed_protocol_Map_Preview(self):
+        print("in test_format_mapping_for_download_resource_normed_protocol")
+        xml = self._load_xml('geocat_testdata.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier_normed_protocols)
+        distributions = dataset.get('resources')
+        distribution = _get_distribution_by_protocol(distributions, "WWW:DOWNLOAD-APP")
+        self.assertEquals('https://geocat.geoshop.ch', distribution.get('url'))
+        self.assertIsNone(distribution.get('download_url'))
 
 
 def _get_distribution_by_protocol(distributions, protocol):
