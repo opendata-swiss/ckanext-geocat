@@ -113,21 +113,25 @@ def xpath_get_first_of_values_from_path_list(node, path_list, get=XPATH_NODE):
 
 def xpath_get_language_dict_from_geocat_multilanguage_node(node):
     language_dict = {'en': '', 'it': '', 'de': '', 'fr': ''}
-    try:
-        for locale in LOCALES:
-            value_locale = \
-                node.xpath('.//gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]'  # noqa
-                           .format(locale) + '/text()',
-                           namespaces=gmd_namespaces)
-            if value_locale:
-                language_dict[locale.lower()] = _clean_string(value_locale[0])
+    localised_string_found = False
+    for locale in LOCALES:
+        value_locale = \
+            node.xpath('.//gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]/text()'  # noqa
+                       .format(locale),
+                       namespaces=gmd_namespaces)
+        if value_locale:
+            localised_string_found = True
+            cleaned_value = _clean_string(value_locale[0])
+            language_dict[locale.lower()] = cleaned_value
+    if localised_string_found:
         return language_dict
-    except:
-        value = node.xpath('.//gco:CharacterString/text()',
-                           namespaces=gmd_namespaces)
-        if value:
-            for locale in LOCALES:
-                language_dict[locale] = value
+    value = node.xpath('.//gco:CharacterString/text()',
+                       namespaces=gmd_namespaces)
+    if value:
+        cleaned_value = _clean_string(value[0])
+        for locale in LOCALES:
+            language_dict[locale.lower()] = cleaned_value
+        return language_dict
     return language_dict
 
 
