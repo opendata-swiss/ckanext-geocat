@@ -121,14 +121,16 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
                        namespaces=gmd_namespaces)
         if value_locale:
             localised_string_found = True
-            language_dict[locale.lower()] = _clean_string(value_locale[0])
+            cleaned_value = _clean_string(value_locale[0])
+            language_dict[locale.lower()] = cleaned_value
     if localised_string_found:
         return language_dict
     value = node.xpath('.//gco:CharacterString/text()',
                        namespaces=gmd_namespaces)
     if value:
+        cleaned_value = _clean_string(value[0])
         for locale in LOCALES:
-            language_dict[locale.lower()] = _clean_string(value[0])
+            language_dict[locale.lower()] = cleaned_value
         return language_dict
     return language_dict
 
