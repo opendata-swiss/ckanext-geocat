@@ -216,7 +216,7 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['description'] = geocat_resource.get('description')
     resource_dict['title'] = _get_resource_title(
         normed_protocol=geocat_resource['normed_protocol'],
-        name=geocat_resource['name'],
+        name=geocat_resource.get('name'),
         title=geocat_resource.get('title', ''),
     )
     resource_dict['url'] = geocat_resource['url']
@@ -245,16 +245,11 @@ def _get_resource_title(normed_protocol, name, title):
     """
     if name and normed_protocol == xpath_utils.MAP_PROTOCOL:
         return {
-            'de': "{} {}".format(MAP_PROTOCOL_PREFIX,
-                                 name['de']),
-            'fr': "{} {}".format(MAP_PROTOCOL_PREFIX,
-                                 name['fr']),
-            'en': "{} {}".format(MAP_PROTOCOL_PREFIX,
-                                 _remove_duplicate_term_in_name(
-                                     name['en'], "Preview")
-                                 ),
-            'it': "{} {}".format(MAP_PROTOCOL_PREFIX,
-                                 name['it']),
+            'de': MAP_PROTOCOL_PREFIX + " " + name['de'],
+            'fr': MAP_PROTOCOL_PREFIX + " " + name['fr'],
+            'en': MAP_PROTOCOL_PREFIX + " " + _remove_duplicate_term_in_name(
+                name['en'], "Preview"),
+            'it': MAP_PROTOCOL_PREFIX + " " + name['it'],
         }
     if not name:
         return {
