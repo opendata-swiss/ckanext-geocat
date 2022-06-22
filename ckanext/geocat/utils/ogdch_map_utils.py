@@ -217,17 +217,21 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['title'] = _get_resource_title(
         normed_protocol=geocat_resource['normed_protocol'],
         name=geocat_resource.get('name'),
-        title=geocat_resource.get('title', ''),
+        title=_avoid_none_as_value(geocat_resource.get('url'))
     )
-    resource_dict['url'] = geocat_resource['url']
+    resource_dict['url'] = _avoid_none_as_value(geocat_resource.get('url'))
     if geocat_resource['normed_protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
         resource_dict['media_type'] = geocat_resource['media_type']
         resource_dict['download_url'] = geocat_resource['url']
     resource_dict['protocol'] = geocat_resource['protocol']
     resource_dict['language'] = geocat_resource['language']
-    from pprint import pprint
-    pprint(resource_dict)
     return resource_dict
+
+
+def _avoid_none_as_value(value):
+    if not value:
+        return ""
+    return value
 
 
 def _get_resource_title(normed_protocol, name, title):
