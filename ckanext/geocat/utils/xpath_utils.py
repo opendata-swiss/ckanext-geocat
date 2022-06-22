@@ -331,7 +331,10 @@ def _get_normed_protocol(protocol):
 
 
 def _clean_string(value):
-    return re.sub('\s+', ' ', value).strip()
+    try:
+        return re.sub('\s+', ' ', value).strip()
+    except TypeError:
+        return value
 
 
 class MetadataFormatError(Exception):

@@ -225,6 +225,8 @@ def map_resource(geocat_resource, issued, modified, rights):
         resource_dict['download_url'] = geocat_resource['url']
     resource_dict['protocol'] = geocat_resource['protocol']
     resource_dict['language'] = geocat_resource['language']
+    from pprint import pprint
+    pprint(resource_dict)
     return resource_dict
 
 
