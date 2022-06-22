@@ -157,13 +157,13 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         return results
 
     def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
-        path = os.path.join(__location__, 'fixtures', 'capabilities.xml')
+        path = os.path.join(__location__, 'fixtures', 'test_harvesters', 'capabilities.xml')
         with open(path) as xml:
             capabilities = unicode(xml.read(), 'utf-8')
 
         mocker.get(mock_capabilities_url, text=capabilities)
 
-        path = os.path.join(__location__, 'fixtures', all_results_filename)
+        path = os.path.join(__location__, 'fixtures', 'test_harvesters',  all_results_filename)
         with open(path) as xml:
             all_results = unicode(xml.read(), 'utf-8')
 
@@ -171,7 +171,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         responses = []
         for filename in single_results_filenames:
-            path = os.path.join(__location__, 'fixtures', filename)
+            path = os.path.join(__location__, 'fixtures', 'test_harvesters', filename)
             with open(path) as xml:
                 result = unicode(xml.read(), 'utf-8')
 
