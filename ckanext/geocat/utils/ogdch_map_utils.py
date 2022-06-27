@@ -217,7 +217,7 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['title'] = _get_resource_title(
         normed_protocol=geocat_resource['normed_protocol'],
         name=geocat_resource.get('name'),
-        title=_avoid_none_as_value(geocat_resource.get('url'))
+        title=_avoid_none_as_value(geocat_resource.get('title'))
     )
     resource_dict['url'] = _avoid_none_as_value(geocat_resource.get('url'))
     if geocat_resource['normed_protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
