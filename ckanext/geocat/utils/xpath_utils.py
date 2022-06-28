@@ -76,6 +76,7 @@ FORMATED_SERVICE_PROTOCOLS = [
     if protocol not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL]
 ]
 SERVICE_FORMAT = 'SERVICE'
+API_FORMAT = "API"
 
 
 def get_elem_tree_from_string(xml_string):
@@ -278,6 +279,12 @@ def xpath_get_distribution_from_distribution_node(
             distribution['media_type'] = ""
     elif normed_protocol == DOWNLOAD_PROTOCOL:
         distribution['media_type'] = ""
+    elif normed_protocol == ESRI_REST_PROTOCOL:
+        distribution['format'] = API_FORMAT
+    elif normed_protocol == APP_PROTOCOL:
+        distribution['format'] = SERVICE_FORMAT
+    elif normed_protocol == MAP_PROTOCOL:
+        distribution['format'] = SERVICE_FORMAT
     elif normed_protocol in FORMATED_SERVICE_PROTOCOLS:
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
