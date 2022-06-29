@@ -13,6 +13,8 @@ __location__ = os.path.realpath(
     )
 )
 
+LANGUAGES = ['de', 'fr', 'it', 'en']
+
 
 class TestGeocatDistributionProtocols(unittest.TestCase):
     def setUp(self):
@@ -35,7 +37,7 @@ class TestGeocatDistributionProtocols(unittest.TestCase):
         return entry
 
     def _is_multi_lang(self, value):
-        for lang in ['de', 'fr', 'it', 'en']:
+        for lang in LANGUAGES:
             self.assertIn(lang, value)
 
     def _get_distribution_by_protocol(self, protocol):
@@ -132,6 +134,9 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         map_preview_protocol = 'MAP:Preview'
         distribution = self._get_distribution_by_protocol(map_preview_protocol)
         self.assertIsNotNone(distribution)
+        self.assertEquals(distribution['protocol'], map_preview_protocol)
+        for lang in LANGUAGES:
+            self.assertTrue(distribution['title'][lang].startswith("Map (Preview)"))
         self.assertIsNotNone(distribution.get('url'))
         self.assertIsNone(distribution.get('download_url'))
         self.assertEquals('SERVICE', distribution.get('format'))
