@@ -39,7 +39,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIn(lang, value)
 
     def test_fields(self):
-        xml = self._load_xml('complete.xml')
+        xml = self._load_xml('testdata-deprecated-protocols.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         fields = [
@@ -79,7 +79,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self._is_multi_lang(dataset.get('description'))
 
     def test_fields_values(self):
-        xml = self._load_xml('complete.xml')
+        xml = self._load_xml('testdata-deprecated-protocols.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         # identifier

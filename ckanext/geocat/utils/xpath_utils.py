@@ -3,6 +3,8 @@
 import re
 from lxml import etree
 
+import logging
+log = logging.getLogger(__name__)
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
 XPATH_NODE = 'node'
@@ -59,12 +61,22 @@ OGC_WMTS_PROTOCOL = "OGC:WMTS"
 OGC_WFS_PROTOCOL = "OGC:WFS"
 OGC_WMS_PROTOCOL = "OGC:WMS"
 LINKED_DATA_PROTOCOL = "LINKED:DATA"
+APP_PROTOCOL = "WWW:DOWNLOAD-APP"
 ESRI_REST_PROTOCOL = "ESRI:REST"
 MAP_PROTOCOL = 'MAP:Preview'
-SERVICE_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL,
-                     OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL,
-                     ESRI_REST_PROTOCOL, MAP_PROTOCOL]
+NORMED_PROTOCOLS = [OGC_WMTS_PROTOCOL, OGC_WFS_PROTOCOL,
+                    OGC_WMS_PROTOCOL, LINKED_DATA_PROTOCOL,
+                    ESRI_REST_PROTOCOL, MAP_PROTOCOL,
+                    APP_PROTOCOL, DOWNLOAD_PROTOCOL]
+SERVICE_PROTOCOLS = [protocol for protocol in NORMED_PROTOCOLS
+                     if protocol != DOWNLOAD_PROTOCOL]
+FORMATED_SERVICE_PROTOCOLS = [
+    protocol
+    for protocol in SERVICE_PROTOCOLS
+    if protocol not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL]
+]
 SERVICE_FORMAT = 'SERVICE'
+API_FORMAT = "API"
 
 
 def get_elem_tree_from_string(xml_string):
@@ -211,10 +223,39 @@ def xpath_get_url_from_node(node):
 
 def xpath_get_distribution_from_distribution_node(
         resource_node, protocol):
+    """
+    sets the geocat distribution: it is later mapped to a ckan
+    resource:
+
+    - the normed protocol is determined from the protocol
+    - both protocols are stored
+    - url and language are determined from the url: a geocat resource
+      has just one url. whether it is mapped as access url is decided later
+      and depends on the protocol
+    - the format and media_type also both depend on the protocol
+
+    There are the following normed protocol types:
+
+    Download Protocol:
+    - format and media type are derived from the format,
+      that is passed as a string following the protocol name:
+      WWW.DOWNLOAD:INTERLIS, means format and
+      media type are set to INTERLIS
+    - if the format cannot be drived the media type is set to blank
+
+    Service Resource:
+    - the format is derived from the protocol: OGC:WMS has format WMS
+    - the media type is not set
+
+    Map Preview Resources, Linked Data :
+    - these resources don't have a format
+    """
     distribution = {}
+
     distribution['name'] = \
         xpath_get_language_dict_from_geocat_multilanguage_node(
             resource_node)
+
     description_node = \
         xpath_get_single_sub_node_for_node_and_path(
             node=resource_node, path=GMD_RESOURCE_DESCRIPTION)
@@ -224,28 +265,39 @@ def xpath_get_distribution_from_distribution_node(
                 description_node)
     else:
         distribution['description'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
-    normed_protocol, protocol_name = _get_normed_protocol(protocol)
-    distribution['protocol'] = normed_protocol
-    distribution['protocol_name'] = protocol_name
+
+    normed_protocol = _get_normed_protocol(protocol)
+    distribution['protocol'] = protocol
+    distribution['normed_protocol'] = normed_protocol
+
     if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
         format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
-        media_type = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
-        distribution['format'] = format
-        distribution['media_type'] = media_type
-    resource_formats = filter(
-        lambda i: i not in [LINKED_DATA_PROTOCOL, MAP_PROTOCOL],
-        SERVICE_PROTOCOLS)
-    if normed_protocol in resource_formats:
+        if format:
+            distribution['media_type'] = format
+            distribution['format'] = format
+        else:
+            distribution['media_type'] = ""
+    elif normed_protocol == DOWNLOAD_PROTOCOL:
+        distribution['media_type'] = ""
+    elif normed_protocol == ESRI_REST_PROTOCOL:
+        distribution['format'] = API_FORMAT
+    elif normed_protocol == APP_PROTOCOL:
+        distribution['format'] = SERVICE_FORMAT
+    elif normed_protocol == MAP_PROTOCOL:
+        distribution['format'] = SERVICE_FORMAT
+    elif normed_protocol in FORMATED_SERVICE_PROTOCOLS:
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
-        distribution['media_type'] = ""
+
     GMD_URL = './/gmd:linkage'
     url_node = \
         xpath_get_single_sub_node_for_node_and_path(
             node=resource_node, path=GMD_URL)
     if url_node is not None:
-        distribution['url'], distribution['language'] = \
+        distribution_url, distribution_language = \
             xpath_get_url_and_languages(url_node)
+        distribution['url'] = _clean_string(distribution_url)
+        distribution['language'] = distribution_language
     return distribution
 
 
@@ -270,23 +322,26 @@ def xpath_get_geocat_services(node):
 
 
 def _get_normed_protocol(protocol):
-    protocol_to_name_mapping = {
-        OGC_WMTS_PROTOCOL: "WMTS",
-        OGC_WMS_PROTOCOL: "WMS",
-        OGC_WFS_PROTOCOL: "WFS",
-        DOWNLOAD_PROTOCOL: "Download",
-        LINKED_DATA_PROTOCOL: "Linked Data (Dienst)",
-        MAP_PROTOCOL: "Map (Preview)",
-        ESRI_REST_PROTOCOL: "ESRI (Rest)"
-    }
-    for normed_protocol, protocol_name in protocol_to_name_mapping.items():
-        if protocol.startswith(normed_protocol):
-            return normed_protocol, protocol_name
-    return None, None
+    if protocol != APP_PROTOCOL:
+        normed_protocol = [normed_protocol
+                           for normed_protocol in NORMED_PROTOCOLS
+                           if protocol.startswith(normed_protocol)]
+        if normed_protocol:
+            return normed_protocol[0]
+    if protocol == APP_PROTOCOL:
+        return APP_PROTOCOL
+    log.error(
+        "unknown protocol detected: {}. Could not be mapped to normed protocol"
+        .format(protocol)
+    )
+    return None
 
 
 def _clean_string(value):
-    return re.sub('\s+', ' ', value).strip()
+    try:
+        return re.sub('\s+', ' ', value).strip()
+    except TypeError:
+        return value
 
 
 class MetadataFormatError(Exception):

@@ -6,6 +6,7 @@ from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
 
 ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
+MAP_PROTOCOL_PREFIX = "Map (Preview)"
 
 
 def _get_organization_url(organization_name):
@@ -195,45 +196,80 @@ def get_additonal_relation_protocols():
 
 
 def map_resource(geocat_resource, issued, modified, rights):
+    """
+    map geocat resources to resources on opendata.swiss
+    - issued, modified and rights are taken from the dataset
+    - the title depends on the normed protocol
+    - the format is taken from the geocat resource if it has been set
+    - the media type and the download_url are set only for the normed
+      protocol WWW:DOWNLOAD
+    - url and language are mapped as they come
+    - the original protocol is also stored on the resource since
+      it helps to trace the resource back to the original geocat resource
+    """
     resource_dict = {}
-    title = geocat_resource.get('title', '')
-    resource_dict['title'] = \
-        {'fr': title, 'de': title, 'en': title, 'it': title}
     resource_dict['issued'] = issued
     resource_dict['modified'] = modified
     resource_dict['rights'] = rights
-    resource_dict['format'] = geocat_resource.get('format', '')
+    if geocat_resource.get('format'):
+        resource_dict['format'] = geocat_resource['format']
     resource_dict['description'] = geocat_resource.get('description')
-    resource_dict['media_type'] = geocat_resource.get('media_type', '')
-    name = geocat_resource.get('name')
-    protocol_name = geocat_resource.get('protocol_name')
-    if name and protocol_name and protocol_name.startswith("Map"):
-        resource_dict['title'] = \
-            {'de': protocol_name + " " + geocat_resource['name']['de'],
-             'fr': protocol_name + " " + geocat_resource['name']['fr'],
-             'en': protocol_name + " " + _remove_duplicate_term_in_name(
-                 geocat_resource['name']['en'], "Preview"
-             ),
-             'it': protocol_name + " " + geocat_resource['name']['it'], }
-    elif protocol_name and not name:
-        resource_dict['title'] = \
-            {'de': title,
-             'fr': title,
-             'en': title,
-             'it': title}
-    else:
-        resource_dict['title'] = \
-            {'de': geocat_resource['name']['de'],
-             'fr': geocat_resource['name']['fr'],
-             'en': geocat_resource['name']['en'],
-             'it': geocat_resource['name']['it']}
-    resource_dict['url'] = geocat_resource['url']
-    if geocat_resource['protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
+    resource_dict['title'] = _get_resource_title(
+        normed_protocol=geocat_resource['normed_protocol'],
+        name=geocat_resource.get('name'),
+        title=_avoid_none_as_value(geocat_resource.get('title'))
+    )
+    resource_dict['url'] = _avoid_none_as_value(geocat_resource.get('url'))
+    if geocat_resource['normed_protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
+        resource_dict['media_type'] = geocat_resource['media_type']
         resource_dict['download_url'] = geocat_resource['url']
-    else:
-        resource_dict['download_url'] = ""
+    resource_dict['protocol'] = geocat_resource['protocol']
     resource_dict['language'] = geocat_resource['language']
     return resource_dict
+
+
+def _avoid_none_as_value(value):
+    if not value:
+        return ""
+    return value
+
+
+def _get_resource_title(normed_protocol, name, title):
+    """
+    the name of the resource depends on the normed protocol,
+    the name, that is a multiligual dictionary and the title that
+    is a single value field.
+
+    Only Mpa Preview Resources are prefixed with a protocol
+    identifier, so that these resources can be identified by the
+    frontend.
+
+    In all other cases the name of the geocat reosurce is taken as
+    resource title. Only it the name is not filled the simple
+    geocat title (not a multiligual dictionary) is taken as a
+    fallback value
+    """
+    if name and normed_protocol == xpath_utils.MAP_PROTOCOL:
+        return {
+            'de': MAP_PROTOCOL_PREFIX + " " + name['de'],
+            'fr': MAP_PROTOCOL_PREFIX + " " + name['fr'],
+            'en': MAP_PROTOCOL_PREFIX + " " + _remove_duplicate_term_in_name(
+                name['en'], "Preview"),
+            'it': MAP_PROTOCOL_PREFIX + " " + name['it'],
+        }
+    if not name:
+        return {
+            'de': title,
+            'fr': title,
+            'en': title,
+            'it': title,
+        }
+    return {
+        'de': name['de'],
+        'fr': name['fr'],
+        'en': name['en'],
+        'it': name['it'],
+    }
 
 
 def _remove_duplicate_term_in_name(name, term):
