@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/opendata-swiss/ckanext-geocat.svg?branch=master)](https://travis-ci.org/opendata-swiss/ckanext-geocat)
+[![Build Status](https://app.travis-ci.com/opendata-swiss/ckanext-geocat.svg?branch=master)](https://app.travis-ci.com/opendata-swiss/ckanext-geocat)
 
 ckanext-geocat
 =============
