@@ -53,7 +53,7 @@ URL_PATH_LIST = [
     './/che:LocalisedURL/text()',
     './/gmd:URL/text()',
 ]
-GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
+GMD_RESOURCE_NAME = './/gmd:name'
 GMD_RESOURCE_DESCRIPTION = './/gmd:description'
 
 DOWNLOAD_PROTOCOL = "WWW:DOWNLOAD"
@@ -252,10 +252,14 @@ def xpath_get_distribution_from_distribution_node(
     """
     distribution = {}
 
-    distribution['name'] = \
-        xpath_get_language_dict_from_geocat_multilanguage_node(
-            resource_node)
-
+    name_node = xpath_get_single_sub_node_for_node_and_path(
+        node=resource_node, path=GMD_RESOURCE_NAME)
+    if name_node:
+        distribution['name'] = \
+            xpath_get_language_dict_from_geocat_multilanguage_node(
+                name_node)
+    else:
+        distribution['name'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
     description_node = \
         xpath_get_single_sub_node_for_node_and_path(
             node=resource_node, path=GMD_RESOURCE_DESCRIPTION)
@@ -309,7 +313,7 @@ def xpath_get_geocat_services(node):
     if service_nodes:
         for service_node in service_nodes:
             geocat_service = {}
-            geocat_service['title'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
+            geocat_service['name'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_SERVICE_TITLE)
             geocat_service['url'], _ = \
                 xpath_get_first_of_values_from_path_list(
