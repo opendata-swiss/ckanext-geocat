@@ -244,11 +244,11 @@ def _map_geocat_resource_name_to_title(normed_protocol, name):
     """
     if name and normed_protocol == xpath_utils.MAP_PROTOCOL:
         return {
-            'de': MAP_PROTOCOL_PREFIX + " " + name['de'],
-            'fr': MAP_PROTOCOL_PREFIX + " " + name['fr'],
-            'en': MAP_PROTOCOL_PREFIX + " " + _remove_duplicate_term_in_name(
-                name['en'], "Preview"),
-            'it': MAP_PROTOCOL_PREFIX + " " + name['it'],
+            'de': (MAP_PROTOCOL_PREFIX + " " + name['de']).strip(),
+            'fr': (MAP_PROTOCOL_PREFIX + " " + name['fr']).strip(),
+            'en': (MAP_PROTOCOL_PREFIX + " " + _remove_duplicate_term_in_name(
+                name['en'], "Preview")).strip(),
+            'it': (MAP_PROTOCOL_PREFIX + " " + name['it']).strip(),
         }
     return name
 
