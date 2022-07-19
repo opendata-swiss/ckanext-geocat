@@ -11939,15 +11939,6 @@
                                 <gmd:protocol>
                                     <gco:CharacterString>OGC:WMS</gco:CharacterString>
                                 </gmd:protocol>
-                                <gmd:name xsi:type="gmd:PT_FreeText_PropertyType">
-                                    <gco:CharacterString>DE#WMS Dienst</gco:CharacterString>
-                                    <gmd:PT_FreeText>
-                                        <gmd:textGroup>
-                                            <gmd:LocalisedCharacterString locale="#DE">DE#WMS Dienst
-                                            </gmd:LocalisedCharacterString>
-                                        </gmd:textGroup>
-                                    </gmd:PT_FreeText>
-                                </gmd:name>
                             </gmd:CI_OnlineResource>
                         </gmd:onLine>
                         <gmd:onLine>
@@ -11990,7 +11981,7 @@
                                     <gco:CharacterString>Map Preview</gco:CharacterString>
                                     <gmd:PT_FreeText>
                                         <gmd:textGroup>
-                                            <gmd:LocalisedCharacterString locale="#DE">Map Preview
+                                            <gmd:LocalisedCharacterString locale="#DE">Kartenvorschau
                                             </gmd:LocalisedCharacterString>
                                         </gmd:textGroup>
                                     </gmd:PT_FreeText>
@@ -11999,7 +11990,7 @@
                                     <gco:CharacterString>map preview</gco:CharacterString>
                                     <gmd:PT_FreeText>
                                         <gmd:textGroup>
-                                            <gmd:LocalisedCharacterString locale="#DE">map preview
+                                            <gmd:LocalisedCharacterString locale="#DE">Kartenvorschau
                                             </gmd:LocalisedCharacterString>
                                         </gmd:textGroup>
                                     </gmd:PT_FreeText>

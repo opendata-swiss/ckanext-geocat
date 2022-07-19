@@ -53,7 +53,7 @@ URL_PATH_LIST = [
     './/che:LocalisedURL/text()',
     './/gmd:URL/text()',
 ]
-GMD_RESOURCE_NAME = './/gmd:name/gco:CharacterString/text()'
+GMD_RESOURCE_NAME = './/gmd:name'
 GMD_RESOURCE_DESCRIPTION = './/gmd:description'
 
 DOWNLOAD_PROTOCOL = "WWW:DOWNLOAD"
@@ -252,10 +252,14 @@ def xpath_get_distribution_from_distribution_node(
     """
     distribution = {}
 
-    distribution['name'] = \
-        xpath_get_language_dict_from_geocat_multilanguage_node(
-            resource_node)
-
+    name_node = xpath_get_single_sub_node_for_node_and_path(
+        node=resource_node, path=GMD_RESOURCE_NAME)
+    if name_node:
+        distribution['name'] = \
+            xpath_get_language_dict_from_geocat_multilanguage_node(
+                name_node)
+    else:
+        distribution['name'] = {'en': '', 'it': '', 'de': '', 'fr': ''}
     description_node = \
         xpath_get_single_sub_node_for_node_and_path(
             node=resource_node, path=GMD_RESOURCE_DESCRIPTION)
@@ -270,7 +274,33 @@ def xpath_get_distribution_from_distribution_node(
     distribution['protocol'] = protocol
     distribution['normed_protocol'] = normed_protocol
 
-    if normed_protocol == DOWNLOAD_PROTOCOL and protocol.startswith(DOWNLOAD_PROTOCOL + ':'):  # noqa
+    _set_distribution_format_and_media_type(
+        protocol,
+        normed_protocol,
+        distribution
+    )
+
+    GMD_URL = './/gmd:linkage'
+    url_node = \
+        xpath_get_single_sub_node_for_node_and_path(
+            node=resource_node, path=GMD_URL)
+    if url_node is not None:
+        distribution_url, distribution_language = \
+            xpath_get_url_and_languages(url_node)
+        distribution['url'] = _clean_string(distribution_url)
+        distribution['language'] = distribution_language
+    return distribution
+
+
+def _set_distribution_format_and_media_type(
+    protocol,
+    normed_protocol,
+    distribution,
+):
+    protocol_is_download_protocol_and_has_format = \
+        normed_protocol == DOWNLOAD_PROTOCOL and \
+        protocol.startswith(DOWNLOAD_PROTOCOL + ':')
+    if protocol_is_download_protocol_and_has_format:
         format = protocol.replace(DOWNLOAD_PROTOCOL + ':', '')
         if format:
             distribution['media_type'] = format
@@ -289,17 +319,6 @@ def xpath_get_distribution_from_distribution_node(
         format = re.findall(r'(?<=:).*$', normed_protocol)[0]
         distribution['format'] = format
 
-    GMD_URL = './/gmd:linkage'
-    url_node = \
-        xpath_get_single_sub_node_for_node_and_path(
-            node=resource_node, path=GMD_URL)
-    if url_node is not None:
-        distribution_url, distribution_language = \
-            xpath_get_url_and_languages(url_node)
-        distribution['url'] = _clean_string(distribution_url)
-        distribution['language'] = distribution_language
-    return distribution
-
 
 def xpath_get_geocat_services(node):
     service_nodes = \
@@ -309,7 +328,7 @@ def xpath_get_geocat_services(node):
     if service_nodes:
         for service_node in service_nodes:
             geocat_service = {}
-            geocat_service['title'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
+            geocat_service['name'] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_SERVICE_TITLE)
             geocat_service['url'], _ = \
                 xpath_get_first_of_values_from_path_list(

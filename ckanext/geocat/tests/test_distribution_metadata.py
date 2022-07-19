@@ -122,13 +122,17 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         self.assertIsNone(distribution.get('download_url'))
         self.assertEquals('SERVICE', distribution.get('format'))
 
-    def test_normed_protocol_OGC_WMS(self):
+    def test_normed_protocol_OGC_WMS_without_gmd_name(self):
         ogc_wms_protocol = 'OGC:WMS'
         distribution = self._get_distribution_by_protocol(ogc_wms_protocol)
         self.assertIsNotNone(distribution)
         self.assertIsNotNone(distribution.get('url'))
         self.assertIsNone(distribution.get('download_url'))
         self.assertEquals('WMS', distribution.get('format'))
+        self.assertEquals('', distribution['title']['de'])
+        self.assertEquals('', distribution['title']['en'])
+        self.assertEquals('', distribution['title']['fr'])
+        self.assertEquals('', distribution['title']['it'])
 
     def test_normed_protocol_Map_Preview(self):
         map_preview_protocol = 'MAP:Preview'
@@ -140,6 +144,10 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         self.assertIsNotNone(distribution.get('url'))
         self.assertIsNone(distribution.get('download_url'))
         self.assertEquals('SERVICE', distribution.get('format'))
+        self.assertEquals('Map (Preview) Kartenvorschau', distribution['title']['de'])
+        self.assertEquals('Map (Preview)', distribution['title']['en'])
+        self.assertEquals('Map (Preview)', distribution['title']['fr'])
+        self.assertEquals('Map (Preview)', distribution['title']['it'])
 
     def test_normed_protocol_ESRI_REST(self):
         esri_rest_protocol = 'ESRI:REST'
@@ -149,6 +157,9 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         self.assertIsNone(distribution.get('download_url'))
         self.assertEquals('API', distribution.get('format'))
         self.assertEquals('RESTful API von geo.admin.ch', distribution['title']['de'])
+        self.assertEquals('', distribution['title']['en'])
+        self.assertEquals('', distribution['title']['fr'])
+        self.assertEquals('', distribution['title']['it'])
 
     def test_normed_protocol_WWW_DOWNLOAD_with_format_INTERLIS(self):
         download_protocol_with_format = "WWW:DOWNLOAD:INTERLIS"

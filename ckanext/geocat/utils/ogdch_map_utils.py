@@ -214,10 +214,9 @@ def map_resource(geocat_resource, issued, modified, rights):
     if geocat_resource.get('format'):
         resource_dict['format'] = geocat_resource['format']
     resource_dict['description'] = geocat_resource.get('description')
-    resource_dict['title'] = _get_resource_title(
+    resource_dict['title'] = _map_geocat_resource_name_to_title(
         normed_protocol=geocat_resource['normed_protocol'],
         name=geocat_resource.get('name'),
-        title=_avoid_none_as_value(geocat_resource.get('title'))
     )
     resource_dict['url'] = _avoid_none_as_value(geocat_resource.get('url'))
     if geocat_resource['normed_protocol'] == xpath_utils.DOWNLOAD_PROTOCOL:
@@ -234,42 +233,24 @@ def _avoid_none_as_value(value):
     return value
 
 
-def _get_resource_title(normed_protocol, name, title):
+def _map_geocat_resource_name_to_title(normed_protocol, name):
     """
-    the name of the resource depends on the normed protocol,
-    the name, that is a multiligual dictionary and the title that
-    is a single value field.
-
     Only Mpa Preview Resources are prefixed with a protocol
     identifier, so that these resources can be identified by the
     frontend.
 
-    In all other cases the name of the geocat reosurce is taken as
-    resource title. Only it the name is not filled the simple
-    geocat title (not a multiligual dictionary) is taken as a
-    fallback value
+    In all other cases the name of the geocat ressurce name is taken as
+    resource title.
     """
     if name and normed_protocol == xpath_utils.MAP_PROTOCOL:
         return {
-            'de': MAP_PROTOCOL_PREFIX + " " + name['de'],
-            'fr': MAP_PROTOCOL_PREFIX + " " + name['fr'],
-            'en': MAP_PROTOCOL_PREFIX + " " + _remove_duplicate_term_in_name(
-                name['en'], "Preview"),
-            'it': MAP_PROTOCOL_PREFIX + " " + name['it'],
+            'de': (MAP_PROTOCOL_PREFIX + " " + name['de']).strip(),
+            'fr': (MAP_PROTOCOL_PREFIX + " " + name['fr']).strip(),
+            'en': (MAP_PROTOCOL_PREFIX + " " + _remove_duplicate_term_in_name(
+                name['en'], "Preview")).strip(),
+            'it': (MAP_PROTOCOL_PREFIX + " " + name['it']).strip(),
         }
-    if not name:
-        return {
-            'de': title,
-            'fr': title,
-            'en': title,
-            'it': title,
-        }
-    return {
-        'de': name['de'],
-        'fr': name['fr'],
-        'en': name['en'],
-        'it': name['it'],
-    }
+    return name
 
 
 def _remove_duplicate_term_in_name(name, term):
