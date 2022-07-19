@@ -98,10 +98,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertIn('', dataset['description']['en'])
 
         # dates
-        date_string = '2011-12-31' # revision date from XML
-        d = datetime.strptime(date_string, '%Y-%m-%d')
-        self.assertEquals(int(time.mktime(d.timetuple())), dataset['issued'])
-        self.assertEquals(int(time.mktime(d.timetuple())), dataset['modified'])
+        issued_modified_date = '2011-12-31T00:00:00'
+        self.assertEquals(issued_modified_date, dataset['issued'])
+        self.assertEquals(issued_modified_date, dataset['modified'])
 
         # publisher
         publisher = json.loads(dataset['publisher'])
@@ -254,23 +253,16 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         xml = self._load_xml('revision_date.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        revision_string = '2011-12-31'
-        r = datetime.strptime(revision_string, '%Y-%m-%d')
-        self.assertEquals(int(time.mktime(r.timetuple())), dataset['issued'])
-        self.assertEquals(int(time.mktime(r.timetuple())), dataset['modified'])
-        self.assertEquals(dataset['issued'], dataset['modified'])
+        revision_date = '2011-12-31T00:00:00'
+        self.assertEquals(revision_date, dataset['issued'])
+        self.assertEquals(revision_date, dataset['modified'])
 
     def test_date_publication(self):
         xml = self._load_xml('publication_date.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        publication_string = '2010-12-30'
-        p = datetime.strptime(publication_string, '%Y-%m-%d')
-        self.assertEquals(int(time.mktime(p.timetuple())), dataset['issued'])
-
-        revision_string = '2011-12-31'
-        r = datetime.strptime(revision_string, '%Y-%m-%d')
-        self.assertEquals(int(time.mktime(r.timetuple())), dataset['modified'])
+        self.assertEquals('2010-12-30T00:00:00', dataset['issued'])
+        self.assertEquals('2011-12-31T00:00:00', dataset['modified'])
 
         self.assertNotEquals(dataset['issued'], dataset['modified'])
 
@@ -278,15 +270,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         xml = self._load_xml('publication_date_before_1900.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        self.assertEquals(dataset['issued'], -2461622400)
-        issued = datetime.fromtimestamp(dataset['issued'])
-        self.assertEquals(issued.date().isoformat(), '1891-12-30')
-
-        self.assertEquals(dataset['modified'], -2461536000)
-        modified = datetime.fromtimestamp(dataset['modified'])
-        self.assertEquals(modified.date().isoformat(), '1891-12-31')
-
-        self.assertNotEquals(dataset['issued'], dataset['modified'])
+        self.assertEquals(dataset['issued'], '1891-12-30T00:00:00')
+        self.assertEquals(dataset['modified'], '1891-12-31T00:00:00')
 
 
 if __name__ == '__main__':

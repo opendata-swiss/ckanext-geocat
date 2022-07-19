@@ -34,12 +34,7 @@ def map_to_ogdch_datetime(datetime_value):
             datetime_value[0:len('YYYY-MM-DD')],
             '%Y-%m-%d'
         )
-        # we have to calculate this manually since the
-        # time library of Python 2.7 does not support
-        # years < 1900, see OGD-751 and the time docs
-        # https://docs.python.org/2.7/library/time.html
-        epoch = datetime(1970, 1, 1)
-        return int((d - epoch).total_seconds())
+        return datetime.isoformat(d)
     except (ValueError, KeyError, TypeError, IndexError):
         raise ValueError("Could not parse datetime")
 
