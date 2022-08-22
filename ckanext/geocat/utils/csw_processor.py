@@ -6,7 +6,7 @@ import logging
 log = logging.getLogger(__name__)
 
 CHE_SCHEMA = 'http://www.geocat.ch/2008/che'
-CQL_QUERY_DEFAULT = 'keyword'
+CQL_QUERY_DEFAULT = 'subject'
 CQL_SEARCH_TERM_DEFAULT = 'opendata.swiss'
 
 
