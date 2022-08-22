@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from owslib.csw import CatalogueServiceWeb
-from owslib.fes import PropertyIsEqualTo
 
 import logging
 log = logging.getLogger(__name__)
@@ -16,18 +15,21 @@ class GeocatCatalogueServiceWeb(object):
         self.csw = CatalogueServiceWeb(url)
         self.schema = CHE_SCHEMA
 
-    def get_geocat_id_from_csw(self, cqlquery=CQL_QUERY_DEFAULT,
-                               cqlterm=CQL_SEARCH_TERM_DEFAULT):
-        harvest_query = PropertyIsEqualTo(cqlquery, cqlterm)
+    def get_geocat_id_from_csw(self, cql):
         nextrecord = 0
         record_ids = []
+
+        if cql is None:
+            cql = "{} = '{}'"\
+                .format(CQL_QUERY_DEFAULT, CQL_SEARCH_TERM_DEFAULT)
+
         while nextrecord is not None:
-            self.csw.getrecords2(constraints=[harvest_query],
+            self.csw.getrecords2(cql=cql,
                                  maxrecords=50,
                                  startposition=nextrecord)
             if self.csw.response is None or self.csw.results['matches'] == 0:
-                raise CswNotFoundError("No dataset found for harvest query {}"
-                                       .format(harvest_query))
+                raise CswNotFoundError("No dataset found for cql {}"
+                                       .format(cql))
             if self.csw.results['returned'] > 0:
                 if self.csw.results['nextrecord'] > 0:
                     nextrecord = self.csw.results['nextrecord']

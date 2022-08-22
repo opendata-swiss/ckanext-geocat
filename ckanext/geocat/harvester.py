@@ -94,10 +94,11 @@ class GeocatHarvester(HarvesterBase):
         self._set_config(harvest_job.source.config, harvest_job.source.id)
 
         csw_url = harvest_job.source.url
+        cql = self.config.get('cql', None)
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=csw_url)
-            gathered_geocat_identifiers = csw_data.get_geocat_id_from_csw()
+            gathered_geocat_identifiers = csw_data.get_geocat_id_from_csw(cql)
         except Exception as e:
             self._save_gather_error(
                 'Unable to get content for URL: %s: %s / %s'

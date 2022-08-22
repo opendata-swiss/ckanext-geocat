@@ -36,6 +36,7 @@ To install ckanext-geocat:
 
 To configure the harvester you have several harvester config options (in the harvester config JSON):
 
+* `cql`: The CQL query to be used when requesting the CSW service (default: `keyword = 'opendata.swiss'`)
 * `rights`: The fall back terms of use to be associated with the harvested datasets if 
 *           terms of use is not specified for them 
 *           (default: `NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired`)
