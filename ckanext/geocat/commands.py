@@ -46,25 +46,25 @@ class GeocatCommand(CkanCommand):
     def command(self):
         self._load_config()
         options = {
-            'dataset': self.datasetCmd,
-            'list': self.listCmd,
-            'help': self.helpCmd,
+            'dataset': self.dataset_command,
+            'list': self.list_command,
+            'help': self.help_command,
         }
         try:
             cmd = self.args[0]
             options[cmd](*self.args[1:])
         except (KeyError, IndexError):
-            self.helpCmd()
+            self.help_command()
 
-    def helpCmd(self):
+    def help_command(self):
         print(self.__doc__)
 
-    def listCmd(self, url=None):
+    def list_command(self, url=None):
         if len(self.args) >= 2:
             url = unicode(self.args[1])
         else:
             print("Expected remote url")
-            self.helpCmd()
+            self.help_command()
             sys.exit(1)
 
         cqlquery = self.options.cql_query or csw_processor.CQL_QUERY_DEFAULT
@@ -81,16 +81,16 @@ class GeocatCommand(CkanCommand):
                 print('geocat_id: %r' % record_id)
         except Exception as e:
             print("Got error %r when searching remote url %r" % (e, url))
-            self.helpCmd()
+            self.help_command()
             sys.exit(1)
 
-    def datasetCmd(self, url=None, id=None):
+    def dataset_command(self, url=None, id=None):
         if len(self.args) >= 3:
             url = unicode(self.args[1])
             id = unicode(self.args[2])
         else:
             print("Expected remote url and record id")
-            self.helpCmd()
+            self.help_command()
             sys.exit(1)
 
         try:
@@ -108,7 +108,7 @@ class GeocatCommand(CkanCommand):
             dataset = self.csw_map.get_metadata(xml, id)
         except Exception as e:
             print("Got error %r when searching at remote url %r for record id %r" % (e, url, id))  # noqa
-            self.helpCmd()
+            self.help_command()
             sys.exit(1)
 
         print("\nDataset:")
