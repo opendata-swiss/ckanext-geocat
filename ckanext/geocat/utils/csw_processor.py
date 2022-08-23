@@ -31,7 +31,8 @@ class GeocatCatalogueServiceWeb(object):
                 raise CswNotFoundError("No dataset found for cql {}"
                                        .format(cql))
             if self.csw.results['returned'] > 0:
-                if self.csw.results['nextrecord'] > 0:
+                if 0 < self.csw.results['nextrecord']\
+                        <= self.csw.results['matches']:
                     nextrecord = self.csw.results['nextrecord']
                 else:
                     nextrecord = None
