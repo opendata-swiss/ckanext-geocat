@@ -36,6 +36,8 @@ To install ckanext-geocat:
 
 To configure the harvester you have several harvester config options (in the harvester config JSON):
 
+* `cql_query`: The CQL query to be used when requesting the CSW service (default: `subject`)
+* `cql_search_term`: The search term to be used with the CQL query (default: `opendata.swiss`)
 * `rights`: The fall back terms of use to be associated with the harvested datasets if 
 *           terms of use is not specified for them 
 *           (default: `NonCommercialNotAllowed-CommercialNotAllowed-ReferenceRequired`)
@@ -48,6 +50,7 @@ the harvest-source (default: `false`)
    The geocat permalink is attached to `dct:relation` for the datasets
 * `legal_basis_url`: the link to the legal documents that relate to the publication of the dataset. This is also added
    to `dct:relation` for all harvested datasets in case it is provided
+* [**Deprecated**] `cql`: The CQL query to be used when requesting the CSW service (default: `subject = 'opendata.swiss'`)
 
 
 ## CLI Commands
