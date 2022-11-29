@@ -2,7 +2,6 @@ from collections import namedtuple
 import ckan.plugins.toolkit as tk
 from ckan import model
 from ckan.model import Session
-import json
 
 import logging
 

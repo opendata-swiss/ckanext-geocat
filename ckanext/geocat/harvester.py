@@ -295,7 +295,10 @@ class GeocatHarvester(HarvesterBase):
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
                 pkg_dict['id'] = pkg_info.package_id
-                existing_package = map_resources_to_ids(pkg_dict, pkg_info.package_id)
+                existing_package = map_resources_to_ids(
+                    pkg_dict,
+                    pkg_info.package_id
+                )
                 if check_package_change(existing_package, pkg_dict):
                     create_activity(package_id=pkg_dict['id'])
                 updated_pkg = \
