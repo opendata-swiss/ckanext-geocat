@@ -2,7 +2,6 @@ from collections import namedtuple
 import ckan.plugins.toolkit as tk
 from ckan import model
 from ckan.model import Session
-import json
 
 import logging
 
@@ -131,26 +130,3 @@ def get_value_from_object_extra(harvest_object_extras, key):
         if extra.key == key:
             return extra.value
     return None
-
-
-def map_resources_to_ids(pkg_dict, pkg_info):
-    existing_package = \
-        tk.get_action('package_show')({}, {'id': pkg_info.package_id})
-    existing_resources = existing_package.get('resources')
-    existing_resources_mapping = \
-        {r['id']: _get_resource_id_string(r) for r in existing_resources}
-    for resource in pkg_dict.get('resources'):
-        resource_id_dict = _get_resource_id_string(resource)
-        id_to_reuse = [k for k, v in existing_resources_mapping.items()
-                       if v == resource_id_dict]
-        if id_to_reuse:
-            id_to_reuse = id_to_reuse[0]
-            resource['id'] = id_to_reuse
-            del existing_resources_mapping[id_to_reuse]
-
-
-def _get_resource_id_string(resource):
-    resource_id_dict = {'url': resource.get('url'),
-                        'title': resource.get('title'),
-                        'description': resource.get('description')}
-    return json.dumps(resource_id_dict)

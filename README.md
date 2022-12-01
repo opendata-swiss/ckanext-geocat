@@ -126,3 +126,4 @@ https://geonetwork-opensource.org/manuals/2.10.4/eng/developer/xml_services/csw_
 <harvest-source-url>?service=CSW&version=2.0.2&request=GetRecords
 <harvest-source-url>?service=CSW&version=2.0.2&request=GetRecordById&id=<geocat-id>&elementsetname=full&outputSchema=http://www.isotc211.org/2005/gmd
 ``` 
+

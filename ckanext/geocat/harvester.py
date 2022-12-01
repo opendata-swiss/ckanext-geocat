@@ -14,6 +14,11 @@ import ckan.plugins.toolkit as tk
 from ckan import model
 from ckan.model import Session
 import uuid
+from ckanext.geocat.utils.harvest_helper import (
+    map_resources_to_ids,
+    check_package_change,
+    create_activity,
+)
 
 import logging
 log = logging.getLogger(__name__)
@@ -290,7 +295,12 @@ class GeocatHarvester(HarvesterBase):
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
                 pkg_dict['id'] = pkg_info.package_id
-                search_utils.map_resources_to_ids(pkg_dict, pkg_info)
+                existing_package = map_resources_to_ids(
+                    pkg_dict,
+                    pkg_info.package_id
+                )
+                if check_package_change(existing_package, pkg_dict):
+                    create_activity(package_id=pkg_dict['id'])
                 updated_pkg = \
                     tk.get_action('package_update')(context, pkg_dict)
                 harvest_object.current = True
