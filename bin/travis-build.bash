@@ -136,6 +136,13 @@ cd ckanext-showcase
 python setup.py develop
 cd -
 
+echo "Installing ckanext-subscribe and its requirements..."
+git clone https://github.com/opendata-swiss/ckanext-subscribe
+cd ckanext-subscribe
+python setup.py develop
+pip install -r requirements.txt
+cd -
+
 echo "Installing ckanext-switzerland and its requirements..."
 git clone https://github.com/opendata-swiss/ckanext-switzerland-ng
 cd ckanext-switzerland-ng
