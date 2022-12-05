@@ -299,8 +299,12 @@ class GeocatHarvester(HarvesterBase):
                     pkg_dict,
                     pkg_info.package_id
                 )
-                if check_package_change(existing_package, pkg_dict):
-                    create_activity(package_id=pkg_dict['id'])
+                package_changed, msg = check_package_change(
+                    existing_package,
+                    pkg_dict
+                )
+                if package_changed:
+                    create_activity(package_id=pkg_dict['id'], message=msg)
                 updated_pkg = \
                     tk.get_action('package_update')(context, pkg_dict)
                 harvest_object.current = True
