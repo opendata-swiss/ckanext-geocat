@@ -23,7 +23,7 @@ from ckanext.geocat.utils.harvest_helper import (
 import logging
 log = logging.getLogger(__name__)
 
-DEFAULT_PERMA_LINK_URL = 'https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/'  # noqa
+DEFAULT_PERMA_LINK_URL = 'https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/'  # noqa
 DEFAULT_PERMA_LINK_LABEL = 'geocat.ch Permalink'
 HARVEST_USER = 'harvest'
 
