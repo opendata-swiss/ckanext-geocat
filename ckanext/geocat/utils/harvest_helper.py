@@ -48,9 +48,10 @@ def create_activity(package_id, message):
 
 
 def check_package_change(existing_pkg, dataset_dict):
-    if _changes_in_date(existing_pkg['modified'], dataset_dict['modified']):
-        msg = "dataset modified date changed: {}"\
-              .format(dataset_dict.get('modified'))
+    if _changes_in_date(
+            existing_pkg.get('modified'), dataset_dict.get('modified')):
+        msg = "dataset modified date changed: {}" \
+            .format(dataset_dict.get('modified'))
         return True, msg
     resources = dataset_dict.get('resources', [])
     existing_resources = existing_pkg.get('resources', [])
@@ -73,13 +74,13 @@ def check_package_change(existing_pkg, dataset_dict):
             matching_existing_resource.get('download_url') != \
             resource.get('download_url')
         if download_url_changed:
-            msg = "resource download url changed: {}"\
-                  .format(resource.get('download_url'))
+            msg = "resource download url changed: {}" \
+                .format(resource.get('download_url'))
             return True, msg
         if _changes_in_date(matching_existing_resource.get('modified'),
                             resource.get('modified')):
-            msg = "resource modified date changed: {}"\
-                  .format(resource.get('modified'))
+            msg = "resource modified date changed: {}" \
+                .format(resource.get('modified'))
             return True, msg
     return False, None
 
