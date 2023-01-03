@@ -74,13 +74,13 @@ def check_package_change(existing_pkg, dataset_dict):
             matching_existing_resource.get('download_url') != \
             resource.get('download_url')
         if download_url_changed:
-            msg = "resource download url changed: {}"\
-                  .format(resource.get('download_url'))
+            msg = "resource download url changed: {}" \
+                .format(resource.get('download_url'))
             return True, msg
         if _changes_in_date(matching_existing_resource.get('modified'),
                             resource.get('modified')):
-            msg = "resource modified date changed: {}"\
-                  .format(resource.get('modified'))
+            msg = "resource modified date changed: {}" \
+                .format(resource.get('modified'))
             return True, msg
     return False, None
 
