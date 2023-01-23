@@ -309,9 +309,10 @@ def _set_distribution_format_and_media_type(
             distribution['media_type'] = ""
     elif normed_protocol == DOWNLOAD_PROTOCOL:
         distribution['media_type'] = ""
-    elif normed_protocol in LINKED_DATA_PROTOCOL:
+    elif normed_protocol == LINKED_DATA_PROTOCOL:
         format = re.findall(r'([^:]+$)', protocol)[0]
-        distribution['format'] = format
+        if format != 'DATA':
+            distribution['format'] = format
     elif normed_protocol == ESRI_REST_PROTOCOL:
         distribution['format'] = API_FORMAT
     elif normed_protocol == APP_PROTOCOL:
