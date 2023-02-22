@@ -79,6 +79,7 @@ SERVICE_FORMAT = 'SERVICE'
 API_FORMAT = "API"
 LINKED_DATA_SERVICE = "Linked Data Service"
 
+
 def get_elem_tree_from_string(xml_string):
     try:
         xml_elem_tree = etree.fromstring(xml_string)
