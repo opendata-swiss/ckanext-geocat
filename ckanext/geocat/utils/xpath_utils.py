@@ -194,20 +194,26 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
 def xpath_get_url_with_label(node):
     url = xpath_get_url_from_node(node)
     url = {'url': url, 'label': url}
-    text_node = node.xpath(GMD_URL_LABEL,
-                           namespaces=gmd_namespaces)
     value_locale_en = \
         node.xpath('.//gmd:LocalisedCharacterString[@locale = "#EN"]/text()',
                    namespaces=gmd_namespaces)
-    if text_node or value_locale_en:
+
+    if value_locale_en and value_locale_en[0].startswith(LINKED_DATA_SERVICE):
+        url['label'] = value_locale_en[0]
+        return url
+
+    text_node = node.xpath(GMD_URL_LABEL,
+                           namespaces=gmd_namespaces)
+    if text_node:
         url_text_node = \
             xpath_get_one_value_from_geocat_multilanguage_node(text_node[0])
-        if value_locale_en[0].startswith(LINKED_DATA_SERVICE):
-            url['label'] = value_locale_en[0]
-        elif url_text_node:
+        if url_text_node:
             url['label'] = url_text_node[0]
-        else:
-            url['label'] = value_locale_en[0]
+            return url
+
+    if value_locale_en:
+        url['label'] = value_locale_en[0]
+
     return url
 
 
