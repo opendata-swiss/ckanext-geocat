@@ -77,6 +77,7 @@ FORMATED_SERVICE_PROTOCOLS = [
 ]
 SERVICE_FORMAT = 'SERVICE'
 API_FORMAT = "API"
+LINKED_DATA_SERVICE = "Linked Data Service"
 
 
 def get_elem_tree_from_string(xml_string):
@@ -193,6 +194,14 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
 def xpath_get_url_with_label(node):
     url = xpath_get_url_from_node(node)
     url = {'url': url, 'label': url}
+    value_locale_en = \
+        node.xpath('.//gmd:LocalisedCharacterString[@locale = "#EN"]/text()',
+                   namespaces=gmd_namespaces)
+
+    if value_locale_en and value_locale_en[0].startswith(LINKED_DATA_SERVICE):
+        url['label'] = value_locale_en[0]
+        return url
+
     text_node = node.xpath(GMD_URL_LABEL,
                            namespaces=gmd_namespaces)
     if text_node:
@@ -200,6 +209,11 @@ def xpath_get_url_with_label(node):
             xpath_get_one_value_from_geocat_multilanguage_node(text_node[0])
         if url_text_node:
             url['label'] = url_text_node[0]
+            return url
+
+    if value_locale_en:
+        url['label'] = value_locale_en[0]
+
     return url
 
 
