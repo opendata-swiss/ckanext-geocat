@@ -176,7 +176,7 @@ def get_landing_page_protocols():
     dataset does not have a url, map the resource node's url onto the dataset.
 
     If the dataset already has a url, then the url is added to the dataset's
-    relations instead.
+    documentation instead.
     """
     return ['WWW:LINK-1.0-http--link', 'WWW:LINK']
 

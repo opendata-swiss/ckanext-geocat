@@ -192,7 +192,9 @@ class GeoMetadataMapping(object):
                 if not dataset_dict.get('url'):
                     dataset_dict['url'] = url_with_label.get('url')
                 else:
-                    dataset_dict['relations'].append(url_with_label)
+                    dataset_dict['documentation'].append(
+                        url_with_label.get('url')
+                    )
         elif protocol in ogdch_map_utils.get_additonal_relation_protocols():
             url_with_label = \
                 xpath_utils.xpath_get_url_with_label(
