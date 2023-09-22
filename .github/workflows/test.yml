@@ -63,13 +63,8 @@ jobs:
           -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/solrconfig.xml":"$SOLR_CONFIG_CKAN_DIR/solrconfig.xml" \
           ckan/ckan-solr:${{ matrix.ckan-version }}
         docker start test_solr
-        docker exec test_solr bash -c "echo $SOLR_CONFIG_CKAN_DIR"
-        docker exec test_solr ls /opt/solr/server/solr/
-        docker exec test_solr ls /opt/solr/server/solr/ckan/
-        docker exec test_solr ls /opt/solr/server/solr/ckan/conf/
-        docker exec test_solr ls /opt/solr/server/solr/ckan/conf/solrconfig.xml
-        docker exec test_solr ls /opt/solr/server/solr/configsets/ckan/conf
-        docker exec test_solr ls /opt/solr/server/solr/configsets/ckan/conf/managed-schema
+        docker exec test_solr bash -c "echo $SOLR_SCHEMA_FILE"
+        docker exec test_solr cat /opt/solr/server/solr/configsets/ckan/conf/managed-schema
     - name: Create ckan container
       run: |
         docker create --name test_ckan --network ${{ job.container.network }} --network-alias ckan \
