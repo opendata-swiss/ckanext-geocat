@@ -21,8 +21,6 @@ jobs:
 
     name: CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
-    container:
-      image: openknowledge/ckan-dev:${{ matrix.ckan-version }}
     services:
       postgres:
         image: ckan/ckan-postgres-dev:${{ matrix.ckan-version }}
