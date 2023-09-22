@@ -31,6 +31,8 @@ pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git#
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/master/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-scheming.git#egg=ckanext-scheming
 
+WORKDIR=/__w/ckanext-geocat/ckanext-geocat
+
 # Replace default path to CKAN core config file with the one on the container
 sed -i -e 's/use = config:.*/use = config:\/srv\/app\/src\/ckan\/test-core.ini/' "$WORKDIR"/test.ini
 
