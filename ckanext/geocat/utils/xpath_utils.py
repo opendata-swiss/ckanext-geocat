@@ -173,7 +173,7 @@ def xpath_get_rights_dict_form_rights_node(node):
             if value_locale:
                 rights_dict[locale.lower()] = _clean_string(value_locale[0])
         return rights_dict
-    except:
+    except Exception:
         return ''
 
 
@@ -376,7 +376,7 @@ def _get_normed_protocol(protocol):
 
 def _clean_string(value):
     try:
-        return re.sub('\s+', ' ', value).strip()
+        return re.sub(r'\s+', ' ', value).strip()
     except TypeError:
         return value
 
