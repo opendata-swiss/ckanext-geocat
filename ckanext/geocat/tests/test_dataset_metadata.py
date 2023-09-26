@@ -285,6 +285,12 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             ]
         )
 
+    def test_license_and_rights(self):
+        xml = self._load_xml('geocat-testdata.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+
+        self.assertEquals(dataset['license'], "http://dcat-ap.ch/vocabulary/licenses/terms_by")
+        self.assertEquals(dataset['rights'], "http://dcat-ap.ch/vocabulary/licenses/terms_by")
 
 if __name__ == '__main__':
     unittest.main()
