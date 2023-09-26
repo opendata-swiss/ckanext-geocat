@@ -273,6 +273,18 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(dataset['issued'], '1891-12-30T00:00:00')
         self.assertEquals(dataset['modified'], '1891-12-31T00:00:00')
 
+    def test_documentation(self):
+        xml = self._load_xml('geocat-testdata.xml')
+        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
+
+        self.assertEquals(
+            sorted(dataset['documentation']),
+            [
+                "https://example.org/documentation/1",
+                "https://example.org/documentation/2"
+            ]
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
