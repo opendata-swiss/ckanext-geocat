@@ -3,11 +3,25 @@
 from rdflib import Literal
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
+from rdflib.namespace import Namespace, RDF
 
 import logging
 log = logging.getLogger(__name__)
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
+
+DCT = Namespace("http://purl.org/dc/terms/")
+SKOSXL = Namespace("http://www.w3.org/2008/05/skos-xl#")
+RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
+
+
+license_namespaces = {
+  "skos": SKOS,
+  "dct": DCT,
+  "skosxl": SKOSXL,
+  "rdf": RDF,
+  "rdfs": RDFS,
+}
 
 gmd_namespaces = {
     'atom': 'http://www.w3.org/2005/Atom',
@@ -128,11 +142,18 @@ class GeoMetadataMapping(object):
                                    organization_slug=self.organization_slug,
                                    valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
+        
         rights = \
             _map_dataset_rights(node=root_node,
                                 terms_of_use=self.terms_of_use_graph,
                                 default_rights=self.default_rights)
-
+        
+        # set license to rights if rights name is found in the license vocabulary
+        license = rights
+        rights_uri = get_license_uri_by_name(rights)
+        if rights_uri is not None:
+            license = rights_uri
+          
         # Map resource nodes as resources
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
@@ -144,7 +165,8 @@ class GeoMetadataMapping(object):
                 self._map_resource_onto_dataset(
                     dataset_dict,
                     resource_node,
-                    rights
+                    rights,
+                    license
                 )
 
         # Map geocat services as resources
@@ -172,10 +194,10 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
             ))
-        log.debug(dataset_dict)
+            
         return dataset_dict
 
-    def _map_resource_onto_dataset(self, dataset_dict, resource_node, rights):
+    def _map_resource_onto_dataset(self, dataset_dict, resource_node, rights, license):
         protocol = \
             xpath_utils.xpath_get_single_sub_node_for_node_and_path(
                 node=resource_node, path=GMD_PROTOCOL)
@@ -211,6 +233,7 @@ class GeoMetadataMapping(object):
                 issued=dataset_dict['issued'],
                 modified=dataset_dict['modified'],
                 rights=rights,
+                license=license,
             )
             dataset_dict['resources'].append(resource)
             for lang in resource.get('language', []):
@@ -414,3 +437,37 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
                         if ogdch_rights:
                             return ogdch_rights
     return default_rights
+
+
+def get_license_uri_by_name(vocabulary_name):
+    license_vocabulary = get_license_values()
+    for key, value in license_vocabulary.items():
+        if unicode(vocabulary_name) == unicode(value):
+            return key
+    return None
+
+
+def get_license_name_by_uri(vocabulary_uri):
+    license_vocabulary = get_license_values()
+    for key, value in license_vocabulary.items():
+        if unicode(vocabulary_uri) == unicode(key):
+            return unicode(value)
+    return None
+
+
+def get_license_values():
+    g = Graph()
+    license_mapping = {}
+    for prefix, namespace in license_namespaces.items():
+        g.bind(prefix, namespace)
+    file = os.path.join(__location__, 'license.ttl')
+    g.parse(file, format='turtle')
+    for ogdch_license_ref in g.subjects(predicate=RDF.type,
+                                        object=SKOS.Concept):
+        license_mapping[ogdch_license_ref] = None
+        for license_pref_label in g.objects(subject=ogdch_license_ref,
+                                            predicate=SKOSXL.prefLabel):
+            for license_literal in g.objects(subject=license_pref_label,
+                                             predicate=SKOSXL.literalForm):
+                license_mapping[ogdch_license_ref] = license_literal
+    return license_mapping
