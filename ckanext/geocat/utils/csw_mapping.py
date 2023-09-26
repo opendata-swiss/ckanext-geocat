@@ -185,14 +185,15 @@ class GeoMetadataMapping(object):
             return
 
         if protocol in ogdch_map_utils.get_landing_page_protocols():
-            url_with_label = \
-                xpath_utils.xpath_get_url_with_label(
-                    resource_node)
-            if url_with_label:
+            url = xpath_utils.xpath_get_url_from_node(
+                resource_node)
+            if url:
                 if not dataset_dict.get('url'):
-                    dataset_dict['url'] = url_with_label.get('url')
+                    dataset_dict['url'] = url
                 else:
-                    dataset_dict['relations'].append(url_with_label)
+                    documentation = dataset_dict.get('documentation', [])
+                    documentation.append(url)
+                    dataset_dict['documentation'] = documentation
         elif protocol in ogdch_map_utils.get_additonal_relation_protocols():
             url_with_label = \
                 xpath_utils.xpath_get_url_with_label(
