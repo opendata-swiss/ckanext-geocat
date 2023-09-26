@@ -206,6 +206,7 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['issued'] = issued
     resource_dict['modified'] = modified
     resource_dict['rights'] = rights
+    resource_dict['license'] = rights
     if geocat_resource.get('format'):
         resource_dict['format'] = geocat_resource['format']
     resource_dict['description'] = geocat_resource.get('description')
