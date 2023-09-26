@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import os
 from rdflib import Literal
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
 from rdflib.namespace import Namespace, RDF
+from rdflib import Graph
 
 import logging
 log = logging.getLogger(__name__)
@@ -22,6 +24,9 @@ license_namespaces = {
   "rdf": RDF,
   "rdfs": RDFS,
 }
+
+__location__ = \
+    os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 gmd_namespaces = {
     'atom': 'http://www.w3.org/2005/Atom',
@@ -142,18 +147,19 @@ class GeoMetadataMapping(object):
                                    organization_slug=self.organization_slug,
                                    valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
-        
+
         rights = \
             _map_dataset_rights(node=root_node,
                                 terms_of_use=self.terms_of_use_graph,
                                 default_rights=self.default_rights)
-        
-        # set license to rights if rights name is found in the license vocabulary
+
+        # set license to rights
+        # if rights name is found in the license vocabulary
         license = rights
         rights_uri = get_license_uri_by_name(rights)
         if rights_uri is not None:
             license = rights_uri
-          
+
         # Map resource nodes as resources
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
@@ -194,10 +200,15 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
             ))
-            
+
         return dataset_dict
 
-    def _map_resource_onto_dataset(self, dataset_dict, resource_node, rights, license):
+    def _map_resource_onto_dataset(
+            self,
+            dataset_dict,
+            resource_node,
+            rights,
+            license):
         protocol = \
             xpath_utils.xpath_get_single_sub_node_for_node_and_path(
                 node=resource_node, path=GMD_PROTOCOL)
