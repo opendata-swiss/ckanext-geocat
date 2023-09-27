@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from rdflib import Literal
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
+from rdflib import Literal
 
 import logging
 log = logging.getLogger(__name__)
@@ -128,6 +128,7 @@ class GeoMetadataMapping(object):
                                    organization_slug=self.organization_slug,
                                    valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
+
         rights = \
             _map_dataset_rights(node=root_node,
                                 terms_of_use=self.terms_of_use_graph,
@@ -172,10 +173,14 @@ class GeoMetadataMapping(object):
             dataset_dict['relations'].append(ogdch_map_utils.get_legal_basis_link(  # noqa
                 legal_basis_url=self.legal_basis_url,
             ))
-        log.debug(dataset_dict)
+
         return dataset_dict
 
-    def _map_resource_onto_dataset(self, dataset_dict, resource_node, rights):
+    def _map_resource_onto_dataset(
+            self,
+            dataset_dict,
+            resource_node,
+            rights):
         protocol = \
             xpath_utils.xpath_get_single_sub_node_for_node_and_path(
                 node=resource_node, path=GMD_PROTOCOL)
@@ -210,8 +215,9 @@ class GeoMetadataMapping(object):
                 geocat_resource=geocat_resource,
                 issued=dataset_dict['issued'],
                 modified=dataset_dict['modified'],
-                rights=rights,
+                rights=rights
             )
+
             dataset_dict['resources'].append(resource)
             for lang in resource.get('language', []):
                 if lang not in dataset_dict['language']:

@@ -8,6 +8,7 @@ import time
 import unittest
 from pprint import pprint
 
+
 __location__ = os.path.realpath(
     os.path.join(
         os.getcwd(),
@@ -284,7 +285,6 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
                 "https://example.org/documentation/2"
             ]
         )
-
 
 if __name__ == '__main__':
     unittest.main()
