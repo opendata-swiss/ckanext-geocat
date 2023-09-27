@@ -7,6 +7,7 @@ from datetime import datetime
 import time
 import unittest
 from pprint import pprint
+from rdflib import URIRef
 
 __location__ = os.path.realpath(
     os.path.join(
@@ -288,9 +289,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
     def test_license_and_rights(self):
         xml = self._load_xml('geocat-testdata.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
-
-        self.assertEquals(dataset['license'], "http://dcat-ap.ch/vocabulary/licenses/terms_by")
-        self.assertEquals(dataset['rights'], "http://dcat-ap.ch/vocabulary/licenses/terms_by")
+        for resource in dataset['resources']:
+            self.assertEquals(resource['license'], URIRef('http://dcat-ap.ch/vocabulary/licenses/terms_by'))
+            self.assertEquals(resource['rights'], URIRef('http://dcat-ap.ch/vocabulary/licenses/terms_by'))
 
 if __name__ == '__main__':
     unittest.main()

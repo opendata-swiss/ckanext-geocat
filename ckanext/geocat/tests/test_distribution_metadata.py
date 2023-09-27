@@ -5,6 +5,8 @@ import os
 from datetime import datetime
 import time
 import unittest
+from rdflib import URIRef
+
 
 __location__ = os.path.realpath(
     os.path.join(
@@ -57,7 +59,7 @@ class TestGeocatDeprecatedDistributionProtocols(TestGeocatDistributionProtocols)
     def test_resources_are_picked_up_correctly_with_dataset_fields(self):
         self.assertEquals(4, len(self.distributions))
         for distribution in self.distributions:
-            self.assertEquals(distribution.get('rights'), 'NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired')
+            self.assertEquals(distribution.get('rights'), URIRef('http://dcat-ap.ch/vocabulary/licenses/terms_open'))
             self.assertEquals(distribution.get('issued'), self.dataset.get('issued'))
             self.assertEquals(distribution.get('modified'), self.dataset.get('modified'))
             self._is_multi_lang(distribution['title'])
@@ -109,7 +111,7 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
     def test_fields_that_come_from_the_dataset(self):
         self.assertEquals(6, len(self.distributions))
         for distribution in self.distributions:
-            self.assertEquals(distribution.get('rights'), 'NonCommercialAllowed-CommercialAllowed-ReferenceRequired')
+            self.assertEquals(distribution.get('rights'), URIRef('http://dcat-ap.ch/vocabulary/licenses/terms_by'))
             self.assertEquals(distribution.get('issued'), self.dataset.get('issued'))
             self.assertEquals(distribution.get('modified'), self.dataset.get('modified'))
             self._is_multi_lang(distribution['title'])
