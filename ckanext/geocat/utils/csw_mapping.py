@@ -4,7 +4,7 @@ import os
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
 from rdflib.namespace import Namespace, RDF
-from rdflib import Graph, Literal
+from rdflib import Literal
 
 import logging
 log = logging.getLogger(__name__)
@@ -153,11 +153,7 @@ class GeoMetadataMapping(object):
                                 default_rights=self.default_rights)
 
         # set license to rights
-        # if rights name is found in the license vocabulary
         license = rights
-        rights_uri = get_license_uri_by_name(rights)
-        if rights_uri is not None:
-            license = rights
 
         # Map resource nodes as resources
         dataset_dict['relations'] = []
@@ -448,29 +444,3 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
                         if ogdch_rights:
                             return ogdch_rights
     return default_rights
-
-
-def get_license_uri_by_name(vocabulary_name):
-    license_vocabulary = get_license_values()
-    for key, value in license_vocabulary.items():
-        if unicode(vocabulary_name) == unicode(value):
-            return key
-    return None
-
-
-def get_license_values():
-    g = Graph()
-    license_mapping = {}
-    for prefix, namespace in license_namespaces.items():
-        g.bind(prefix, namespace)
-    file = os.path.join(__location__, 'license.ttl')
-    g.parse(file, format='turtle')
-    for ogdch_license_ref in g.subjects(predicate=RDF.type,
-                                        object=SKOS.Concept):
-        license_mapping[ogdch_license_ref] = None
-        for license_pref_label in g.objects(subject=ogdch_license_ref,
-                                            predicate=SKOSXL.prefLabel):
-            for license_literal in g.objects(subject=license_pref_label,
-                                             predicate=SKOSXL.literalForm):
-                license_mapping[ogdch_license_ref] = license_literal
-    return license_mapping
