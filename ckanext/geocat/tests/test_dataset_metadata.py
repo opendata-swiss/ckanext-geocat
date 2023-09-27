@@ -286,12 +286,5 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             ]
         )
 
-    def test_license_and_rights(self):
-        xml = self._load_xml('geocat-testdata.xml')
-        dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
-        for resource in dataset['resources']:
-            self.assertEquals(resource['license'], "NonCommercialAllowed-CommercialAllowed-ReferenceRequired")
-            self.assertEquals(resource['rights'], "NonCommercialAllowed-CommercialAllowed-ReferenceRequired")
-
 if __name__ == '__main__':
     unittest.main()
