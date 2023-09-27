@@ -1,31 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import os
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
-from rdflib.namespace import Namespace, RDF
 from rdflib import Literal
 
 import logging
 log = logging.getLogger(__name__)
 
 LOCALES = ['DE', 'FR', 'EN', 'IT']
-
-DCT = Namespace("http://purl.org/dc/terms/")
-SKOSXL = Namespace("http://www.w3.org/2008/05/skos-xl#")
-RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
-
-
-license_namespaces = {
-  "skos": SKOS,
-  "dct": DCT,
-  "skosxl": SKOSXL,
-  "rdf": RDF,
-  "rdfs": RDFS,
-}
-
-__location__ = \
-    os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 gmd_namespaces = {
     'atom': 'http://www.w3.org/2005/Atom',
