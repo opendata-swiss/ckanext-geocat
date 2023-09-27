@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-from rdflib import Literal
 from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
 from rdflib.namespace import Namespace, RDF
-from rdflib import Graph
+from rdflib import Graph, URIRef, Literal
 
 import logging
 log = logging.getLogger(__name__)
@@ -159,6 +158,8 @@ class GeoMetadataMapping(object):
         rights_uri = get_license_uri_by_name(rights)
         if rights_uri is not None:
             license = rights_uri
+            if isinstance(rights_uri, URIRef):
+                rights = rights_uri
 
         # Map resource nodes as resources
         dataset_dict['relations'] = []
@@ -246,6 +247,7 @@ class GeoMetadataMapping(object):
                 rights=rights,
                 license=license,
             )
+
             dataset_dict['resources'].append(resource)
             for lang in resource.get('language', []):
                 if lang not in dataset_dict['language']:
