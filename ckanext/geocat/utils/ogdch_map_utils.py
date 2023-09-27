@@ -190,7 +190,7 @@ def get_additonal_relation_protocols():
     return ['CHTOPO:specialised-geoportal']
 
 
-def map_resource(geocat_resource, issued, modified, rights, license):
+def map_resource(geocat_resource, issued, modified, rights):
     """
     map geocat resources to resources on opendata.swiss
     - issued, modified and rights are taken from the dataset
@@ -206,7 +206,7 @@ def map_resource(geocat_resource, issued, modified, rights, license):
     resource_dict['issued'] = issued
     resource_dict['modified'] = modified
     resource_dict['rights'] = rights
-    resource_dict['license'] = license
+    resource_dict['license'] = rights
     if geocat_resource.get('format'):
         resource_dict['format'] = geocat_resource['format']
     resource_dict['description'] = geocat_resource.get('description')

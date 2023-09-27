@@ -152,9 +152,6 @@ class GeoMetadataMapping(object):
                                 terms_of_use=self.terms_of_use_graph,
                                 default_rights=self.default_rights)
 
-        # set license to rights
-        license = rights
-
         # Map resource nodes as resources
         dataset_dict['relations'] = []
         dataset_dict['resources'] = []
@@ -166,8 +163,7 @@ class GeoMetadataMapping(object):
                 self._map_resource_onto_dataset(
                     dataset_dict,
                     resource_node,
-                    rights,
-                    license
+                    rights
                 )
 
         # Map geocat services as resources
@@ -202,8 +198,7 @@ class GeoMetadataMapping(object):
             self,
             dataset_dict,
             resource_node,
-            rights,
-            license):
+            rights):
         protocol = \
             xpath_utils.xpath_get_single_sub_node_for_node_and_path(
                 node=resource_node, path=GMD_PROTOCOL)
@@ -238,8 +233,7 @@ class GeoMetadataMapping(object):
                 geocat_resource=geocat_resource,
                 issued=dataset_dict['issued'],
                 modified=dataset_dict['modified'],
-                rights=rights,
-                license=license,
+                rights=rights
             )
 
             dataset_dict['resources'].append(resource)
