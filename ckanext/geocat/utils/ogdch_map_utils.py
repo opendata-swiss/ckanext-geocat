@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
+import ckanext.geocat.utils.mapping_utils as mu
 
 ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
 MAP_PROTOCOL_PREFIX = "Map (Preview)"
@@ -208,7 +209,9 @@ def map_resource(geocat_resource, issued, modified, rights):
     resource_dict['rights'] = rights
     resource_dict['license'] = rights
     if geocat_resource.get('format'):
-        resource_dict['format'] = geocat_resource['format']
+        resource_dict['format'] = _map_geocat_resource_format_to_valid_format(
+            geocat_resource['format']
+        )
     resource_dict['description'] = geocat_resource.get('description')
     resource_dict['title'] = _map_geocat_resource_name_to_title(
         normed_protocol=geocat_resource['normed_protocol'],
@@ -264,3 +267,14 @@ def map_service(geocat_service, issued, modified, description, rights):
         'media_type': geocat_service.get('media_type', ''),
         'url': geocat_service.get('url', '')
     }
+
+
+def _map_geocat_resource_format_to_valid_format(geocat_format):
+    valid_formats = mu.get_format_values()
+    for key, value in valid_formats.items():
+        if geocat_format == key:
+            return value
+    valid_media_types = mu.get_iana_media_type_values()
+    for key, value in valid_media_types.items():
+        if geocat_format == key:
+            return value

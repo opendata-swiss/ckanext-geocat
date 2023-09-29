@@ -1,11 +1,21 @@
 import os
 import rdflib
 import yaml
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, RDF, SKOS
 from lxml import etree
+import xml.etree.ElementTree as ET
 
 import logging
 log = logging.getLogger(__name__)
+
+format_namespaces = {
+  "skos": SKOS,
+  "rdf": RDF,
+}
+
+media_types_namespaces = {
+    'ns': 'http://www.iana.org/assignments'
+}
 
 DCT = Namespace("http://purl.org/dc/terms/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
@@ -65,3 +75,33 @@ def get_excluded_protocols():
     except (IOError, yaml.YAMLError):
         log.error("Mapping_path for protocol blacklist could not be opened {}"
                   .format(mapping_path))
+
+
+def get_format_values():
+    g = rdflib.Graph()
+    for prefix, namespace in format_namespaces.items():
+        g.bind(prefix, namespace)
+    file = os.path.join(__location__, 'formats.xml')
+    g.parse(file, format='xml')
+    format_values = {}
+    for format_uri_ref in g.subjects():
+        format_extension = format_uri_ref.split('/')[-1]
+        format_values[format_extension] = format_uri_ref
+    return format_values
+
+
+def get_iana_media_type_values():
+    file = os.path.join(__location__, 'iana_media_types.xml')
+    tree = ET.parse(file)
+    root = tree.getroot()
+    records = root.findall('.//ns:record', media_types_namespaces)
+    media_type_values = {}
+    for record in records:
+        if record.find('ns:file', media_types_namespaces) is None:
+            continue
+        if record.find('ns:name', media_types_namespaces) is None:
+            continue
+        name = record.find('ns:name', media_types_namespaces).text
+        file_value = record.find('ns:file', media_types_namespaces).text
+        media_type_values[name] = media_types_namespaces['ns']+'/'+file_value
+    return media_type_values
