@@ -278,3 +278,4 @@ def _map_geocat_resource_format_to_valid_format(geocat_format):
     for key, value in valid_media_types.items():
         if geocat_format == key:
             return value
+    return geocat_format    
