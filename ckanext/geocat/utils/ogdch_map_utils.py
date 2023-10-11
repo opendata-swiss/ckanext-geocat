@@ -270,13 +270,12 @@ def map_service(geocat_service, issued, modified, description, rights):
 
 
 def _map_geocat_resource_format_to_valid_format(geocat_format):
-    geocat_format_without_underscore = geocat_format.replace('_', '')
     valid_formats = mu.get_format_values()
     for key, value in valid_formats.items():
-        if geocat_format == key or geocat_format_without_underscore == key:
+        if geocat_format == key or geocat_format == key.replace('_', ' '):
             return value
     valid_media_types = mu.get_iana_media_type_values()
     for key, value in valid_media_types.items():
-        if geocat_format == key or geocat_format_without_underscore == key:
+        if geocat_format == key or  geocat_format == key.replace('_', ' '):
             return value
     return geocat_format
