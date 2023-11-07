@@ -207,7 +207,10 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         # see alsos
         self.assertTrue(hasattr(dataset['see_alsos'], '__iter__'))
         self.assertEquals(1, len(dataset['see_alsos']))
-        self.assertEquals('8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo', dataset['see_alsos'][0])  # noqa
+        self.assertEquals(
+            {'dataset_identifier': '8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'},
+            dataset['see_alsos'][0]
+        )
 
     def test_fields_values_de_only(self):
         xml = self._load_xml('only_de.xml')

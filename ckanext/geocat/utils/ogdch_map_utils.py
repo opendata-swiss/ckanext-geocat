@@ -146,7 +146,7 @@ def map_see_alsos(geocat_see_alsos, organization_slug, valid_identifiers):
     ogdch_see_alsos = [
         map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)
         for geocat_identifier in geocat_see_alsos]
-    return [see_also for see_also in ogdch_see_alsos
+    return [{'dataset_identifier': see_also} for see_also in ogdch_see_alsos
             if see_also in valid_identifiers]
 
 
