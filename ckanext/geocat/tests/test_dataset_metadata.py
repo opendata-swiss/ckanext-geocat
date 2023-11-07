@@ -60,7 +60,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             'spatial',
             'coverage',
             'accrual_periodicity',
-            'see_alsos',
+            'qualified_relations',
             'owner_org',
             'resources'
         ]
@@ -205,11 +205,14 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals('', dataset.get('accrual_periodicity'))
 
         # see alsos
-        self.assertTrue(hasattr(dataset['see_alsos'], '__iter__'))
-        self.assertEquals(1, len(dataset['see_alsos']))
+        self.assertTrue(hasattr(dataset['qualified_relations'], '__iter__'))
+        self.assertEquals(1, len(dataset['qualified_relations']))
         self.assertEquals(
-            {'dataset_identifier': '8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo'},
-            dataset['see_alsos'][0]
+            {
+                'relation': '8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo',
+                'had_role': 'http://www.iana.org/assignments/relation/related',
+            },
+            dataset['qualified_relations'][0]
         )
 
     def test_fields_values_de_only(self):
