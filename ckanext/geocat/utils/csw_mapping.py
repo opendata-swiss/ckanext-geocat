@@ -46,7 +46,7 @@ GMD_ISSUED = [
 ]
 GMD_DESCRIPTION = '//gmd:identificationInfo//gmd:abstract'
 GMD_RIGHTS = './/gmd:resourceConstraints//gmd:otherConstraints'
-GMD_SEE_ALSOS = '//gmd:identificationInfo//gmd:aggregationInfo//gmd:aggregateDataSetIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString/text()'  # noqa
+GMD_QUALIFIED_RELATIONS = '//gmd:identificationInfo//gmd:aggregationInfo//gmd:aggregateDataSetIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString/text()'  # noqa
 GMD_TEMPORAL_START = '//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:beginPosition/text()'  # noqa
 GMD_TEMPORAL_END = '//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:endPosition/text()'  # noqa
 GMD_LANGUAGE = ['//gmd:identificationInfo//gmd:language/gco:CharacterString/text()',  # noqa
@@ -123,10 +123,11 @@ class GeoMetadataMapping(object):
         dataset_dict['coverage'] = _map_dataset_coverage()
         dataset_dict['spatial'] = _map_dataset_spatial(node=root_node)
         dataset_dict['temporals'] = _map_dataset_temporals(node=root_node)
-        dataset_dict['see_alsos'] = \
-            _map_dataset_see_alsos(node=root_node,
-                                   organization_slug=self.organization_slug,
-                                   valid_identifiers=self.valid_identifiers)
+        dataset_dict['qualified_relations'] = \
+            _map_dataset_qualified_relations(
+                node=root_node,
+                organization_slug=self.organization_slug,
+                valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
 
         rights = \
@@ -162,7 +163,7 @@ class GeoMetadataMapping(object):
                 dataset_dict['resources'].append(ogdch_service)
 
         # Map geocat permalink as relation
-        dataset_dict['relations'].append(ogdch_map_utils.get_permalink(
+        dataset_dict['relations'].append(ogdch_map_utils.get_geocat_permalink(
             geocat_id=geocat_id,
             geocat_perma_link=self.geocat_perma_link,
             geocat_perma_label=self.geocat_perma_label,
@@ -389,15 +390,16 @@ def _map_dataset_temporals(node):
             geocat_temporal_end)
 
 
-def _map_dataset_see_alsos(node, organization_slug, valid_identifiers):
-    geocat_see_alsos = \
+def _map_dataset_qualified_relations(node, organization_slug,
+                                     valid_identifiers):
+    geocat_qualified_relations = \
         xpath_utils.xpath_get_all_sub_nodes_for_node_and_path(
             node=node,
-            path=GMD_SEE_ALSOS)
-    if geocat_see_alsos:
+            path=GMD_QUALIFIED_RELATIONS)
+    if geocat_qualified_relations:
         return \
-            ogdch_map_utils.map_see_alsos(
-                geocat_see_alsos,
+            ogdch_map_utils.map_qualified_relations(
+                geocat_qualified_relations,
                 organization_slug,
                 valid_identifiers)
     return []

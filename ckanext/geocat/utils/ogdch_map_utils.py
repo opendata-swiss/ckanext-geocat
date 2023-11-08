@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
+import ckan.plugins.toolkit as tk
 import ckanext.geocat.utils.mapping_utils as mu
 
 ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
@@ -142,12 +143,17 @@ def map_language(geocat_language):
     return language_mapping.get(geocat_language, '')
 
 
-def map_see_alsos(geocat_see_alsos, organization_slug, valid_identifiers):
-    ogdch_see_alsos = [
+def map_qualified_relations(geocat_qualified_relations, organization_slug,
+                            valid_identifiers):
+    ogdch_qualified_relations = [
         map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug)
-        for geocat_identifier in geocat_see_alsos]
-    return [see_also for see_also in ogdch_see_alsos
-            if see_also in valid_identifiers]
+        for geocat_identifier in geocat_qualified_relations]
+    return [
+        {'relation': get_ogdch_permalink(qualified_relation),
+         'had_role': "http://www.iana.org/assignments/relation/related"}
+        for qualified_relation in ogdch_qualified_relations
+        if qualified_relation in valid_identifiers
+    ]
 
 
 def map_temporals(geocat_temporal_start, geocat_temporal_end):
@@ -162,9 +168,14 @@ def map_temporals(geocat_temporal_start, geocat_temporal_end):
         return []
 
 
-def get_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
+def get_geocat_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
     permalink = geocat_perma_link + geocat_id
     return {'url': permalink, 'label': geocat_perma_label}
+
+
+def get_ogdch_permalink(identifier):
+    site_url = tk.config.get('ckan.site_url')
+    return u'{0}/perma/{1}'.format(site_url, identifier)
 
 
 def get_legal_basis_link(legal_basis_url):
