@@ -80,7 +80,6 @@ GMD_ACCRUAL_PERIODICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInfor
 EMPTY_PUBLISHER = {'url': '', 'name': ''}
 
 CHE_CONFORMS_TO = '//che:CHE_MD_Metadata/gmd:contentInfo/che:CHE_MD_FeatureCatalogueDescription/che:dataModel/che:PT_FreeURL/che:URLGroup/che:LocalisedURL/text()',  # noqa
-# CHE_CONFORMS_TO = '//che:CHE_MD_Metadata/gmd:contentInfo/che:CHE_MD_FeatureCatalogueDescription/che:dataModel/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[0]',  # noqa
 
 
 class GeoMetadataMapping(object):
