@@ -79,7 +79,7 @@ GMD_ACCRUAL_PERIODICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInfor
 
 EMPTY_PUBLISHER = {'url': '', 'name': ''}
 
-CHE_CONFORMS_TO = '//che:CHE_MD_Metadata/gmd:contentInfo/che:CHE_MD_FeatureCatalogueDescription/che:dataModel/che:PT_FreeURL/che:URLGroup/che:LocalisedURL/text()',  # noqa
+CHE_CONFORMS_TO = '//che:CHE_MD_Metadata/gmd:contentInfo/che:CHE_MD_FeatureCatalogueDescription/che:dataModel/che:PT_FreeURL/che:URLGroup/che:LocalisedURL/text()'  # noqa
 
 
 class GeoMetadataMapping(object):
@@ -426,8 +426,10 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
                             return ogdch_rights
     return default_rights
 
+
 def _map_dataset_conforms_to(node):
-    geocat_conforms_to = xpath_utils.xpath_get_all_values_for_node_and_path_list(
+    geocat_conforms_to = \
+        xpath_utils.xpath_get_all_values_for_node_and_path_list(
             node=node,
             path_list=CHE_CONFORMS_TO)
     return geocat_conforms_to
