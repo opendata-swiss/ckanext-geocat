@@ -53,6 +53,16 @@ URL_PATH_LIST = [
     './/che:LocalisedURL/text()',
     './/gmd:URL/text()',
 ]
+
+CHE_DATA_MODEL_NODE = './/gmd:contentInfo/che:CHE_MD_FeatureCatalogueDescription/che:dataModel/text()'
+CONFORMS_TO_URL_PATH_LIST = [
+    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[@locale="#DE"]/text()',
+    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURLL[@locale="#FR"]/text()',
+    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[@locale="#EN"]/text()',
+    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[@locale="#IT"]/text()',
+    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL/text()',
+]
+
 GMD_RESOURCE_NAME = './/gmd:name'
 GMD_RESOURCE_DESCRIPTION = './/gmd:description'
 
@@ -152,6 +162,28 @@ def xpath_get_url_and_languages(node):
     languages = []
     url, _ = xpath_get_first_of_values_from_path_list(
         node=node, path_list=URL_PATH_LIST)
+    for locale in LOCALES:
+        value_locale = \
+            node.xpath('.//che:LocalisedURL[@locale="#{}"]'
+                       .format(locale) + '/text()',
+                       namespaces=gmd_namespaces)
+        if value_locale:
+            languages.append(locale.lower())
+    return url, languages
+
+
+def xpath_get_url_and_languages_for_data_model(node):
+    languages = []
+
+    data_model_node = \
+        xpath_get_all_sub_nodes_for_node_and_path(
+            node=node, path=CHE_DATA_MODEL_NODE)
+
+    if data_model_node:
+        url, _ = xpath_get_first_of_values_from_path_list(
+            node=data_model_node,
+            path_list=CONFORMS_TO_URL_PATH_LIST)
+
     for locale in LOCALES:
         value_locale = \
             node.xpath('.//che:LocalisedURL[@locale="#{}"]'
