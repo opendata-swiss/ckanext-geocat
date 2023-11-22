@@ -126,8 +126,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(set(['de', 'fr', 'it', 'en']), set(dataset.get('language')))
 
         # conforms to
-        # self.assertEquals(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
-        #                   dataset['conforms_to'])
+        self.assertEquals(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
+                          dataset['conforms_to'])
         self.assertEquals(1, len(dataset['conforms_to']))
         self.assertIsInstance(dataset['conforms_to'], list)
 
