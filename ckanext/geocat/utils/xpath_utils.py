@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+from urlparse import urlparse
 
 from lxml import etree
 
@@ -194,9 +194,6 @@ def xpath_get_url_and_languages_for_data_model(node):
         validated_url = _is_valid_url(url)
         return validated_url, languages
     else:
-        log.warning(
-            "data model node is not found: return empty url"
-        )
         return '', []
 
 
@@ -420,13 +417,13 @@ def _clean_string(value):
 
 
 def _is_valid_url(url):
+    parsed_url = urlparse(url)
     try:
-        parsed_url = urllib.parse.urlparse(url)
         if parsed_url.scheme and parsed_url.netloc:
             return url
     except Exception:
         log.warning(
-            "failed to parse URL {} for conforms_to field:".format(url)
+            "provided URL {} for conforms_to field is not valid".format(url)
         )
         return ''
 
