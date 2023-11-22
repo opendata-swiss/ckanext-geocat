@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib
+
 from lxml import etree
 
 import logging
@@ -189,10 +191,11 @@ def xpath_get_url_and_languages_for_data_model(node):
                            namespaces=gmd_namespaces)
             if value_locale:
                 languages.append(locale.lower())
-        return url, languages
+        validated_url = _is_valid_url(url)
+        return validated_url, languages
     else:
         log.warning(
-            'Data model node is not found: return empty url'
+            "data model node is not found: return empty url"
         )
         return '', []
 
@@ -414,6 +417,18 @@ def _clean_string(value):
         return re.sub(r'\s+', ' ', value).strip()
     except TypeError:
         return value
+
+
+def _is_valid_url(url):
+    try:
+        parsed_url = urllib.parse.urlparse(url)
+        if parsed_url.scheme and parsed_url.netloc:
+            return url
+    except Exception:
+        log.warning(
+            "failed to parse URL {} for conforms_to field:".format(url)
+        )
+        return ''
 
 
 class MetadataFormatError(Exception):
