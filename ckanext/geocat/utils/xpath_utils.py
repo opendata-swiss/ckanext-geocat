@@ -136,6 +136,17 @@ def xpath_get_first_of_values_from_path_list(node, path_list, get=XPATH_NODE):
     return None, None
 
 
+def xpath_get_values_list_from_path_list(node, path_list, get=XPATH_NODE):
+    get_text = ''
+    if get == XPATH_TEXT:
+        get_text = '/text()'
+    for path in path_list:
+        value = node.xpath(path + get_text, namespaces=gmd_namespaces)
+        if value:
+            return value, path
+    return None, None
+
+
 def xpath_get_language_dict_from_geocat_multilanguage_node(node):
     language_dict = {'en': '', 'it': '', 'de': '', 'fr': ''}
     localised_string_found = False
@@ -181,7 +192,8 @@ def xpath_get_url_and_languages_for_data_model(node):
 
     if data_model_node:
         languages = []
-        url, _ = xpath_get_first_of_values_from_path_list(
+        validated_urls = []
+        urls_list, _ = xpath_get_values_list_from_path_list(
             node=node,
             path_list=CONFORMS_TO_URL_PATH_LIST)
         for locale in LOCALES:
@@ -191,10 +203,11 @@ def xpath_get_url_and_languages_for_data_model(node):
                            namespaces=gmd_namespaces)
             if value_locale:
                 languages.append(locale.lower())
-        validated_url = _is_valid_url(url)
-        return validated_url, languages
+        for url in urls_list:
+            validated_urls.append(_is_valid_url(url))
+            return validated_urls, languages
     else:
-        return '', []
+        return [], []
 
 
 def xpath_get_rights_dict_form_rights_node(node):

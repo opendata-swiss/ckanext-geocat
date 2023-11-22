@@ -427,7 +427,7 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
 
 
 def _map_dataset_conforms_to(node):
-    conforms_to_url, conforms_to_language = \
+    conforms_to_urls_list, conforms_to_languages_list = \
         xpath_utils.xpath_get_url_and_languages_for_data_model(
             node=node)
-    return conforms_to_url, conforms_to_language
+    return conforms_to_urls_list, conforms_to_languages_list
