@@ -129,7 +129,8 @@ class GeoMetadataMapping(object):
                 organization_slug=self.organization_slug,
                 valid_identifiers=self.valid_identifiers)
         dataset_dict['owner_org'] = self.organization_slug
-        dataset_dict['conforms_to'] = _map_dataset_conforms_to(node=root_node)
+        dataset_dict['conforms_to'], _ = \
+            _map_dataset_conforms_to(node=root_node)
 
         rights = \
             _map_dataset_rights(node=root_node,
@@ -425,8 +426,8 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
     return default_rights
 
 
-def _map_dataset_conforms_to(node, dataset_dict):
+def _map_dataset_conforms_to(node):
     conforms_to_url, conforms_to_language = \
         xpath_utils.xpath_get_url_and_languages_for_data_model(
             node=node)
-    return conforms_to_url
+    return conforms_to_url, conforms_to_language

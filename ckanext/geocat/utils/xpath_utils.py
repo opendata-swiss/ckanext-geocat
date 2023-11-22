@@ -54,13 +54,13 @@ URL_PATH_LIST = [
     './/gmd:URL/text()',
 ]
 
-CHE_DATA_MODEL_NODE = './/gmd:contentInfo/che:CHE_MD_FeatureCatalogueDescription/che:dataModel/text()'
+CHE_DATA_MODEL_NODE = './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel/text()'  # noqa
 CONFORMS_TO_URL_PATH_LIST = [
-    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[@locale="#DE"]/text()',
-    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURLL[@locale="#FR"]/text()',
-    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[@locale="#EN"]/text()',
-    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL[@locale="#IT"]/text()',
-    './/che:PT_FreeURL/che:URLGroup/che:LocalisedURL/text()',
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#DE"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURLL[@locale="#FR"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#EN"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#IT"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL/text()',  # noqa
 ]
 
 GMD_RESOURCE_NAME = './/gmd:name'
@@ -173,25 +173,28 @@ def xpath_get_url_and_languages(node):
 
 
 def xpath_get_url_and_languages_for_data_model(node):
-    languages = []
-
     data_model_node = \
         xpath_get_all_sub_nodes_for_node_and_path(
             node=node, path=CHE_DATA_MODEL_NODE)
 
     if data_model_node:
+        languages = []
         url, _ = xpath_get_first_of_values_from_path_list(
-            node=data_model_node,
+            node=node,
             path_list=CONFORMS_TO_URL_PATH_LIST)
-
-    for locale in LOCALES:
-        value_locale = \
-            node.xpath('.//che:LocalisedURL[@locale="#{}"]'
-                       .format(locale) + '/text()',
-                       namespaces=gmd_namespaces)
-        if value_locale:
-            languages.append(locale.lower())
-    return url, languages
+        for locale in LOCALES:
+            value_locale = \
+                node.xpath('.//che:LocalisedURL[@locale="#{}"]'
+                           .format(locale) + '/text()',
+                           namespaces=gmd_namespaces)
+            if value_locale:
+                languages.append(locale.lower())
+        return url, languages
+    else:
+        log.warning(
+            'Data model node is not found: return empty url'
+        )
+        return '', []
 
 
 def xpath_get_rights_dict_form_rights_node(node):
