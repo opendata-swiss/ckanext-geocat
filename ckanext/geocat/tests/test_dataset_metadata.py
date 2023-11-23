@@ -118,7 +118,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertEquals('noise@bafu.admin.ch', contact_point['email'])
 
         # groups
-        groups = ['territory', 'geography']
+        groups = ['regi', 'envi']
         for group in dataset.get('groups'):
             self.assertIn(group['name'], groups)
 
