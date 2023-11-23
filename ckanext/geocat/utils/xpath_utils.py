@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+from urlparse import urlparse
+
 from lxml import etree
 
 import logging
@@ -53,6 +55,16 @@ URL_PATH_LIST = [
     './/che:LocalisedURL/text()',
     './/gmd:URL/text()',
 ]
+
+CHE_DATA_MODEL_NODE = './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel/text()'  # noqa
+CONFORMS_TO_URL_PATH_LIST = [
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#DE"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURLL[@locale="#FR"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#EN"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#IT"]/text()',  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL/text()',  # noqa
+]
+
 GMD_RESOURCE_NAME = './/gmd:name'
 GMD_RESOURCE_DESCRIPTION = './/gmd:description'
 
@@ -124,6 +136,17 @@ def xpath_get_first_of_values_from_path_list(node, path_list, get=XPATH_NODE):
     return None, None
 
 
+def xpath_get_values_list_from_path_list(node, path_list, get=XPATH_NODE):
+    get_text = ''
+    if get == XPATH_TEXT:
+        get_text = '/text()'
+    for path in path_list:
+        value = node.xpath(path + get_text, namespaces=gmd_namespaces)
+        if value:
+            return value, path
+    return None, None
+
+
 def xpath_get_language_dict_from_geocat_multilanguage_node(node):
     language_dict = {'en': '', 'it': '', 'de': '', 'fr': ''}
     localised_string_found = False
@@ -160,6 +183,31 @@ def xpath_get_url_and_languages(node):
         if value_locale:
             languages.append(locale.lower())
     return url, languages
+
+
+def xpath_get_url_and_languages_for_data_model(node):
+    data_model_node = \
+        xpath_get_all_sub_nodes_for_node_and_path(
+            node=node, path=CHE_DATA_MODEL_NODE)
+
+    if data_model_node:
+        languages = []
+        validated_urls = []
+        urls_list, _ = xpath_get_values_list_from_path_list(
+            node=node,
+            path_list=CONFORMS_TO_URL_PATH_LIST)
+        for locale in LOCALES:
+            value_locale = \
+                node.xpath('.//che:LocalisedURL[@locale="#{}"]'
+                           .format(locale) + '/text()',
+                           namespaces=gmd_namespaces)
+            if value_locale:
+                languages.append(locale.lower())
+        for url in urls_list:
+            validated_urls.append(_is_valid_url(url))
+            return validated_urls, languages
+    else:
+        return [], []
 
 
 def xpath_get_rights_dict_form_rights_node(node):
@@ -379,6 +427,18 @@ def _clean_string(value):
         return re.sub(r'\s+', ' ', value).strip()
     except TypeError:
         return value
+
+
+def _is_valid_url(url):
+    parsed_url = urlparse(url)
+    try:
+        if parsed_url.scheme and parsed_url.netloc:
+            return url
+    except Exception:
+        log.warning(
+            "provided URL {} for conforms_to field is not valid".format(url)
+        )
+        return ''
 
 
 class MetadataFormatError(Exception):

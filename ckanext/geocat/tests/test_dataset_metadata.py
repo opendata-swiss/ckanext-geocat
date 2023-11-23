@@ -62,7 +62,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             'accrual_periodicity',
             'qualified_relations',
             'owner_org',
-            'resources'
+            'resources',
+            'conforms_to'
         ]
 
         for field in fields:
@@ -123,6 +124,12 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # language
         self.assertEquals(set(['de', 'fr', 'it', 'en']), set(dataset.get('language')))
+
+        # conforms to
+        self.assertEquals(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
+                          dataset['conforms_to'])
+        self.assertEquals(1, len(dataset['conforms_to']))
+        self.assertIsInstance(dataset['conforms_to'], list)
 
         # relations
         self.assertTrue(hasattr(dataset['relations'], '__iter__'))
@@ -204,7 +211,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         # accrual periodicity
         self.assertEquals('', dataset.get('accrual_periodicity'))
 
-        # see alsos
+        # qualified relations
         self.assertTrue(hasattr(dataset['qualified_relations'], '__iter__'))
         self.assertEquals(1, len(dataset['qualified_relations']))
         self.assertEquals(
