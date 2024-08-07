@@ -33,8 +33,8 @@
         <rdfs:label xml:lang="en">NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired</rdfs:label>
       </skosxl:Label>
     </skosxl:prefLabel>
-    <skos:mappingRelation>https://opendata.swiss/en/terms-of-use/#terms_open</skos:mappingRelation>
-    <foaf:homepage rdf:resource="https://opendata.swiss/en/terms-of-use/#terms_open"/>
+    <skos:mappingRelation>https://opendata.swiss/terms-of-use/#terms_open</skos:mappingRelation>
+    <foaf:homepage rdf:resource="https://opendata.swiss/terms-of-use/#terms_open"/>
   </skos:Concept>
 
   <skos:Concept rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_by">
@@ -50,8 +50,8 @@
         <rdfs:label xml:lang="en">NonCommercialAllowed-CommercialAllowed-ReferenceRequired</rdfs:label>
       </skosxl:Label>
     </skosxl:prefLabel>
-    <skos:mappingRelation>https://opendata.swiss/en/terms-of-use/#terms_by</skos:mappingRelation>
-    <foaf:homepage rdf:resource="https://opendata.swiss/en/terms-of-use/#terms_by"/>
+    <skos:mappingRelation>https://opendata.swiss/terms-of-use/#terms_by</skos:mappingRelation>
+    <foaf:homepage rdf:resource="https://opendata.swiss/terms-of-use/#terms_by"/>
   </skos:Concept>
 
   <skos:Concept rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_ask">
@@ -67,8 +67,8 @@
         <rdfs:label xml:lang="en">NonCommercialAllowed-CommercialWithPermission-ReferenceNotRequired</rdfs:label>
       </skosxl:Label>
     </skosxl:prefLabel>
-    <skos:mappingRelation>https://opendata.swiss/en/terms-of-use/#terms_ask</skos:mappingRelation>
-    <foaf:homepage rdf:resource="https://opendata.swiss/en/terms-of-use/#terms_ask"/>
+    <skos:mappingRelation>https://opendata.swiss/terms-of-use/#terms_ask</skos:mappingRelation>
+    <foaf:homepage rdf:resource="https://opendata.swiss/terms-of-use/#terms_ask"/>
   </skos:Concept>
 
   <skos:Concept rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_by_ask">
@@ -84,8 +84,8 @@
         <rdfs:label xml:lang="en">NonCommercialAllowed-CommercialWithPermission-ReferenceRequired</rdfs:label>
       </skosxl:Label>
     </skosxl:prefLabel>
-    <skos:mappingRelation>https://opendata.swiss/en/terms-of-use/#terms_by_ask</skos:mappingRelation>
-    <foaf:homepage rdf:resource="https://opendata.swiss/en/terms-of-use/#terms_by_ask"/>
+    <skos:mappingRelation>https://opendata.swiss/terms-of-use/#terms_by_ask</skos:mappingRelation>
+    <foaf:homepage rdf:resource="https://opendata.swiss/terms-of-use/#terms_by_ask"/>
   </skos:Concept>
 
 </rdf:RDF>

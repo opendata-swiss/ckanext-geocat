@@ -111,8 +111,8 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
     def test_fields_that_come_from_the_dataset(self):
         self.assertEquals(6, len(self.distributions))
         for distribution in self.distributions:
-            self.assertEquals(distribution.get('rights'), "https://opendata.swiss/en/terms-of-use/#terms_by")
-            self.assertEquals(distribution.get('license'), "https://opendata.swiss/en/terms-of-use/#terms_by")
+            self.assertEquals(distribution.get('rights'), "https://opendata.swiss/terms-of-use/#terms_by")
+            self.assertEquals(distribution.get('license'), "https://opendata.swiss/terms-of-use/#terms_by")
             self.assertEquals(distribution.get('issued'), self.dataset.get('issued'))
             self.assertEquals(distribution.get('modified'), self.dataset.get('modified'))
             self._is_multi_lang(distribution['title'])
