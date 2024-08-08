@@ -19,10 +19,10 @@ media_types_namespaces = {
 
 DCT = Namespace("http://purl.org/dc/terms/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
-TERMS_OF_USE_OPEN = 'https://opendata.swiss/terms-of-use/#terms_open' # noqa
-TERMS_OF_USE_BY = 'https://opendata.swiss/terms-of-use#terms_by' # noqa
-TERMS_OF_USE_ASK = 'https://opendata.swiss/terms-of-use#terms_ask' # noqa
-TERMS_OF_USE_BY_ASK = 'https://opendata.swiss/terms-of-use#terms_by_ask' # noqa
+TERMS_OF_USE_OPEN = 'https://opendata.swiss/terms-of-use/#terms_open'
+TERMS_OF_USE_BY = 'https://opendata.swiss/terms-of-use#terms_by'
+TERMS_OF_USE_ASK = 'https://opendata.swiss/terms-of-use#terms_ask'
+TERMS_OF_USE_BY_ASK = 'https://opendata.swiss/terms-of-use#terms_by_ask'
 VALID_TERMS_OF_USE = [
     TERMS_OF_USE_BY,
     TERMS_OF_USE_ASK,
