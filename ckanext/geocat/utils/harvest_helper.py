@@ -50,6 +50,11 @@ def create_activity(package_id, message):
 
 
 def check_package_change(existing_pkg, dataset_dict):
+    # Ensure to clear the key values if they are not
+    # in the new dataset_dict
+    for key in existing_pkg.keys():
+        if key not in dataset_dict or not dataset_dict[key]:
+            existing_pkg[key] = ''
     if _changes_in_date(
             existing_pkg.get('modified'), dataset_dict.get('modified')):
         msg = "dataset modified date changed: {}" \
