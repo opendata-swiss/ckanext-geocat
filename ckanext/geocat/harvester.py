@@ -294,15 +294,13 @@ class GeocatHarvester(HarvesterBase):
                 context['schema'] = schema
                 schema['__junk'] = [ignore]
                 pkg_dict['name'] = pkg_info.name
-
                 pkg_dict['id'] = pkg_info.package_id
-
                 existing_package = map_resources_to_ids(
                     pkg_dict,
                     pkg_info.package_id
                 )
 
-                # Ensure 'url' is set to "" if it's not in pkg_dict
+                # Ensure 'url' is set to "" if it is not in pkg_dict
                 existing_url = existing_package.get("url")
                 new_url = pkg_dict.get("url")
                 if new_url is None and new_url != existing_url:
@@ -312,7 +310,6 @@ class GeocatHarvester(HarvesterBase):
                     existing_package,
                     pkg_dict
                 )
-
                 if package_changed:
                     create_activity(package_id=pkg_dict['id'], message=msg)
                 updated_pkg = \
