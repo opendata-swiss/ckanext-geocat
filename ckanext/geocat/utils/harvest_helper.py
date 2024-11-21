@@ -55,7 +55,7 @@ def check_package_change(existing_pkg, dataset_dict):
     dataset_dict_url = dataset_dict.get('url', '')
     if existing_pkg_url != dataset_dict_url:
         msg = "dataset url value changed from '{}' to '{}'".format(
-            existing_pkg_url or "", dataset_dict_url or "")
+            existing_pkg_url, dataset_dict_url)
         return True, msg
 
     # Check if the modified date has changed
