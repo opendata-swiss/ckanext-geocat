@@ -83,7 +83,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "dataset url value changed from 'http://example.org/landing' to 'None'"
+            "dataset url value changed from 'http://example.org/landing' to ''"
         )
 
     def test_check_package_change_new_resource_url(self):
