@@ -260,21 +260,16 @@ def _map_dataset_publisher(node, organization_slug):
             node=node,
             path_list=GMD_PUBLISHER,
             get=xpath_utils.XPATH_NODE)
-
     if publisher_name_node is None:
         return EMPTY_PUBLISHER
-
     # extract the language dictionary from the publisher name node
     publisher_name = \
         xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(
             publisher_name_node
         )
-
     if not isinstance(publisher_name, dict) or not publisher_name:
         return EMPTY_PUBLISHER
-
     geocat_publisher = {'name': publisher_name}
-
     publisher_url_path = publisher_name_path.replace(GMD_PUBLISHER_NAME, '')
     publisher_url_node = \
         xpath_utils.xpath_get_single_sub_node_for_node_and_path(
@@ -284,7 +279,6 @@ def _map_dataset_publisher(node, organization_slug):
     publisher_url = xpath_utils.xpath_get_url_from_node(publisher_url_node)
     if publisher_url:
         geocat_publisher['url'] = publisher_url
-
     return ogdch_map_utils.map_to_ogdch_publisher(
         geocat_publisher,
         organization_slug
