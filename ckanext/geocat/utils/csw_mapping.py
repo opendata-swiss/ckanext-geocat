@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
+from ckanext.geocat.utils import xpath_utils, mapping_utils
 from ckanext.geocat.utils.mapping_utils import SKOS
 from rdflib import Literal
-
+import ckanext.geocat.utils.ogdch_map_utils as ogdch_map_utils
 import logging
 log = logging.getLogger(__name__)
 
@@ -77,7 +77,8 @@ GMD_KEYWORDS = '//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword' 
 GMD_THEME = '//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()'  # noqa
 GMD_ACCRUAL_PERIODICITY = '//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue'  # noqa
 
-EMPTY_PUBLISHER = {'url': '', 'name': ''}
+EMPTY_PUBLISHER = {'url': '',
+                   'name': {'de': '', 'en': '', 'fr': '', 'it': ''}}
 
 
 class GeoMetadataMapping(object):
@@ -261,13 +262,12 @@ def _map_dataset_publisher(node, organization_slug):
             get=xpath_utils.XPATH_NODE)
     if publisher_name_node is None:
         return EMPTY_PUBLISHER
+    # extract the language dictionary from the publisher name node
     publisher_name = \
-        xpath_utils.xpath_get_one_value_from_geocat_multilanguage_node(
+        xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(
             publisher_name_node
         )
-    if isinstance(publisher_name, list):
-        publisher_name = publisher_name[0]
-    if not publisher_name:
+    if not isinstance(publisher_name, dict) or not publisher_name:
         return EMPTY_PUBLISHER
     geocat_publisher = {'name': publisher_name}
     publisher_url_path = publisher_name_path.replace(GMD_PUBLISHER_NAME, '')
