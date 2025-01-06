@@ -6,7 +6,6 @@ from ckan.lib.munge import munge_tag
 from ckanext.geocat.utils import xpath_utils  # noqa
 import ckan.plugins.toolkit as tk
 import ckanext.geocat.utils.mapping_utils as mu
-import ckanext.geocat.utils.csw_mapping as csw_mapping
 
 ORGANIZATION_URI_BASE = 'https://opendata.swiss/organization/'
 MAP_PROTOCOL_PREFIX = "Map (Preview)"
@@ -21,9 +20,8 @@ def map_geocat_to_ogdch_identifier(geocat_identifier, organization_slug):
 
 
 def map_to_ogdch_publisher(geocat_publisher, organization_slug):
-    """Map a geocat publisher to the OGD-CH publisher format"""
     if not geocat_publisher:
-        return json.dumps(csw_mapping.EMPTY_PUBLISHER)
+        return
     ogdch_publisher = {
         'name': geocat_publisher.get('name'),
         'url': geocat_publisher.get('url',

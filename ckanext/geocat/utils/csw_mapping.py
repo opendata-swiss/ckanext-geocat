@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ckanext.geocat.utils import ogdch_map_utils, xpath_utils, mapping_utils  # noqa
+from ckanext.geocat.utils import xpath_utils, mapping_utils  # noqa
 from ckanext.geocat.utils.mapping_utils import SKOS
 from rdflib import Literal
-
+import ckanext.geocat.utils.ogdch_map_utils as ogdch_map_utils
 import logging
 log = logging.getLogger(__name__)
 
