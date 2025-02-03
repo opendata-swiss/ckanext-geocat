@@ -29,10 +29,14 @@ def map_resources_to_ids(pkg_dict, package_id):
 
 
 def create_activity(package_id, message):
-    notification_user = tk.get_action('user_show')(
-        {},
-        {'id': NOTIFICATION_USER}
-    )
+    try:
+        notification_user = tk.get_action('user_show')({}, {
+            'id': NOTIFICATION_USER})
+        log.info("Fetched harvest notification user")
+    except Exception:
+        log.error("Error fetching harvest notification user")
+        return
+
     activity_dict = {
         'user_id': notification_user['id'],
         'object_id': package_id,
