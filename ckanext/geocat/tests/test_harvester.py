@@ -123,9 +123,6 @@ class FunctionalHarvestTest(object):
         # Create new job for the source
         self._create_harvest_job(harvest_source_id)
 
-        # Run the job
-        self._run_jobs(harvest_source_id)
-
         # Handle the gather queue
         self._gather_queue(num_jobs)
 
