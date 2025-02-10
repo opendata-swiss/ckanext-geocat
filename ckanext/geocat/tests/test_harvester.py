@@ -90,12 +90,7 @@ class FunctionalHarvestTest(object):
         return harvest_job
 
     def _run_jobs(self, harvest_source_id=None):
-        try:
-            h.call_action('harvest_jobs_run',
-                          {}, source_id=harvest_source_id)
-        except Exception as e:
-            if str(e) == 'There are no new harvesting jobs':
-                pass
+        h.call_action('harvest_jobs_run', {}, source_id=harvest_source_id)
 
     def _gather_queue(self, num_jobs=1):
         for job in xrange(num_jobs):
