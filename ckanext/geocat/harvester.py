@@ -307,12 +307,12 @@ class GeocatHarvester(HarvesterBase):
                     pkg_info.package_id
                 )
                 update_existing_package = False
-                # Check if any key in existing_package is missing 
+                # Check if any key in existing_package is missing
                 # in pkg_dict
                 for key in existing_package:
-                  if key not in pkg_dict:
-                    update_existing_package = True
-                    break
+                    if key not in pkg_dict:
+                        update_existing_package = True
+                        break
 
                 package_changed, msg = check_package_change(
                     existing_package,
