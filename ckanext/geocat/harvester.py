@@ -386,10 +386,6 @@ class GeocatHarvester(HarvesterBase):
         )
         return True
 
-    def _get_geocat_permalink_relation(self, geocat_pkg_id):
-        return {'url': self.config['geocat_perma_link_url'] + geocat_pkg_id,
-                'label': self.config['geocat_perma_link_label']}
-
 
 class GeocatConfigError(Exception):
     pass
