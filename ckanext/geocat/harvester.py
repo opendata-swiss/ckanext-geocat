@@ -306,20 +306,19 @@ class GeocatHarvester(HarvesterBase):
                     pkg_dict,
                     pkg_info.package_id
                 )
-
-                # ensure all keys in existing_package are present in pkg_dict
-                for key, value in existing_package.items():
-                    if key not in pkg_dict:
-                        pkg_dict[key] = [] if isinstance(value, list) else \
-                            {} if isinstance(value, dict) else \
-                            "" if isinstance(value, basestring) else \
-                            None
+                update_existing_package = False
+                # Check if any key in existing_package is missing in pkg_dict
+                for key in existing_package:
+                  if key not in pkg_dict:
+                    update_existing_package = True
+                    break
 
                 package_changed, msg = check_package_change(
                     existing_package,
                     pkg_dict
                 )
-                if package_changed:
+                # If the package has changed or some keys are missing, update the package
+                if package_changed or update_existing_package:
                     create_activity(package_id=pkg_dict['id'], message=msg)
                 updated_pkg = \
                     tk.get_action('package_update')(context, pkg_dict)
