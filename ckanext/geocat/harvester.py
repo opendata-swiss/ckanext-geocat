@@ -88,8 +88,9 @@ class GeocatHarvester(HarvesterBase):
         }
         self.config['geocat_perma_link_url'] = \
             self.config.get('geocat_perma_link_url',
-                            tk.config.get('geocat_perma_link_url',
-                                          DEFAULT_PERMA_LINK_URL))
+                            tk.config.get(
+                                'ckanext.geocat.geocat_perma_link_url',
+                                DEFAULT_PERMA_LINK_URL))
 
         self.config['legal_basis_url'] = \
             self.config.get('legal_basis_url', None)
