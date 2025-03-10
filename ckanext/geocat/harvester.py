@@ -94,7 +94,6 @@ class GeocatHarvester(HarvesterBase):
                                       'ckanext.geocat.permalink_title_it',
                                       DEFAULT_PERMA_LINK_LABEL)),
         }
-      
         self.config['geocat_perma_link_url'] = \
             self.config.get('geocat_perma_link_url',
                             tk.config.get(
