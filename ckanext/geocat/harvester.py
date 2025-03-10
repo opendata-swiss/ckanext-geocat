@@ -76,9 +76,16 @@ class GeocatHarvester(HarvesterBase):
         self.config['delete_missing_datasets'] = \
             self.config.get('delete_missing_datasets', False)
 
-        self.config['geocat_perma_link_label'] = \
-            tk.config.get('ckanext.geocat.permalink_title',
-                          DEFAULT_PERMA_LINK_LABEL)
+        self.config['geocat_perma_link_label'] = {
+            "fr": tk.config.get("ckanext.geocat.permalink_title_fr",
+                                DEFAULT_PERMA_LINK_LABEL),
+            "de": tk.config.get("ckanext.geocat.permalink_title_de",
+                                DEFAULT_PERMA_LINK_LABEL),
+            "en": tk.config.get("ckanext.geocat.permalink_title_en",
+                                DEFAULT_PERMA_LINK_LABEL),
+            "it": tk.config.get("ckanext.geocat.permalink_title_it",
+                                DEFAULT_PERMA_LINK_LABEL),
+        }
         self.config['geocat_perma_link_url'] = \
             self.config.get('geocat_perma_link_url',
                             tk.config.get('geocat_perma_link_url',

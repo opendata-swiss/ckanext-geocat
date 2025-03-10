@@ -208,6 +208,20 @@ class GeoMetadataMapping(object):
                 xpath_utils.xpath_get_url_with_label(
                     resource_node)
             if url_with_label:
+                # Fetch multilingual label from the resource node
+                multilingual_label = \
+                    xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(resource_node)  # noqa
+                if not multilingual_label or not isinstance(multilingual_label,
+                                                            dict):
+                    # Ensure we always have a proper multilingual structure
+                    label_text = url_with_label.get("label", "")
+                    multilingual_label = {
+                        "fr": label_text,
+                        "de": label_text,
+                        "en": label_text,
+                        "it": label_text
+                    }
+                url_with_label["label"] = multilingual_label
                 dataset_dict['relations'].append(url_with_label)
         else:
             geocat_resource = \
