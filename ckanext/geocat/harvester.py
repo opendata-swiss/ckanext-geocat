@@ -317,12 +317,11 @@ class GeocatHarvester(HarvesterBase):
                 )
 
                 # ensure all keys in existing_package are present in pkg_dict
-                for key, value in existing_package.items():
-                    if key not in pkg_dict:
-                        pkg_dict[key] = [] if isinstance(value, list) else \
-                            {} if isinstance(value, dict) else \
-                            "" if isinstance(value, basestring) else \
-                            None
+                if "url" in existing_package and "url" not in pkg_dict:
+                    existing_package[
+                        "url"] = ""  # Remove the URL from existing_package
+                    package_changed, msg = True, "url is in existing_package" \
+                    " but not in pkg_dict, removing it from existing_package"
 
                 package_changed, msg = check_package_change(
                     existing_package,
