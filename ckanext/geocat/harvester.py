@@ -322,10 +322,11 @@ class GeocatHarvester(HarvesterBase):
                         "url"] = ""  # Remove the URL from existing_package
                     package_changed, msg = True, "url is not in pkg_dict"
 
-                package_changed, msg = check_package_change(
-                    existing_package,
-                    pkg_dict
-                )
+                if not package_changed:
+                    package_changed, msg = check_package_change(
+                        existing_package,
+                        pkg_dict
+                    )
                 if package_changed:
                     create_activity(package_id=pkg_dict['id'], message=msg)
                 updated_pkg = \
