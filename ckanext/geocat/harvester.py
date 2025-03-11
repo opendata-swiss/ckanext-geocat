@@ -77,19 +77,28 @@ class GeocatHarvester(HarvesterBase):
             self.config.get('delete_missing_datasets', False)
 
         self.config['geocat_perma_link_label'] = {
-            "fr": tk.config.get("ckanext.geocat.permalink_title_fr",
-                                DEFAULT_PERMA_LINK_LABEL),
-            "de": tk.config.get("ckanext.geocat.permalink_title_de",
-                                DEFAULT_PERMA_LINK_LABEL),
-            "en": tk.config.get("ckanext.geocat.permalink_title_en",
-                                DEFAULT_PERMA_LINK_LABEL),
-            "it": tk.config.get("ckanext.geocat.permalink_title_it",
-                                DEFAULT_PERMA_LINK_LABEL),
+            'fr': self.config.get('geocat_perma_link_label_fr',
+                                  tk.config.get(
+                                      'ckanext.geocat.permalink_title_fr',
+                                      DEFAULT_PERMA_LINK_LABEL)),
+            'de': self.config.get('geocat_perma_link_label_de',
+                                  tk.config.get(
+                                      'ckanext.geocat.permalink_title_de',
+                                      DEFAULT_PERMA_LINK_LABEL)),
+            'en': self.config.get('geocat_perma_link_label_en',
+                                  tk.config.get(
+                                      'ckanext.geocat.permalink_title_en',
+                                      DEFAULT_PERMA_LINK_LABEL)),
+            'it': self.config.get('geocat_perma_link_label_it',
+                                  tk.config.get(
+                                      'ckanext.geocat.permalink_title_it',
+                                      DEFAULT_PERMA_LINK_LABEL)),
         }
         self.config['geocat_perma_link_url'] = \
             self.config.get('geocat_perma_link_url',
-                            tk.config.get('geocat_perma_link_url',
-                                          DEFAULT_PERMA_LINK_URL))
+                            tk.config.get(
+                                'ckanext.geocat.geocat_perma_link_url',
+                                DEFAULT_PERMA_LINK_URL))
 
         self.config['legal_basis_url'] = \
             self.config.get('legal_basis_url', None)
@@ -385,10 +394,6 @@ class GeocatHarvester(HarvesterBase):
             package_dict
         )
         return True
-
-    def _get_geocat_permalink_relation(self, geocat_pkg_id):
-        return {'url': self.config['geocat_perma_link_url'] + geocat_pkg_id,
-                'label': self.config['geocat_perma_link_label']}
 
 
 class GeocatConfigError(Exception):
