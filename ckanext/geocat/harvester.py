@@ -320,8 +320,7 @@ class GeocatHarvester(HarvesterBase):
                 if "url" in existing_package and "url" not in pkg_dict:
                     existing_package[
                         "url"] = ""  # Remove the URL from existing_package
-                    package_changed, msg = True, "url is in existing_package" \
-                    " but not in pkg_dict, removing it from existing_package"
+                    package_changed, msg = True, "url is not in pkg_dict"
 
                 package_changed, msg = check_package_change(
                     existing_package,
