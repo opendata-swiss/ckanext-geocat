@@ -316,17 +316,11 @@ class GeocatHarvester(HarvesterBase):
                     pkg_info.package_id
                 )
 
-                # Extract keys and object types from existing_package
-                keys_with_types = {key: type(value) for key, value in
-                                   existing_package.items()}
-
-                # Update pkg_dict if the key is missing
-                for key, value_type in keys_with_types.items():
-                    if key not in pkg_dict or not pkg_dict[key]:
-                        pkg_dict[key] = [] if value_type is list else \
-                            {} if value_type is dict else \
-                            "" if value_type in (str, unicode) else \
-                            None
+                # Update only string values in pkg_dict
+                for key, value in existing_package.items():
+                    if isinstance(value, basestring) and (
+                            key not in pkg_dict or not pkg_dict[key]):
+                        pkg_dict[key] = ""
 
                 package_changed, msg = check_package_change(
                     existing_package,
