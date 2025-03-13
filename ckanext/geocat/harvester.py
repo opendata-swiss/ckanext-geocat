@@ -325,8 +325,8 @@ class GeocatHarvester(HarvesterBase):
                     if key not in pkg_dict or not pkg_dict[key]:
                         pkg_dict[key] = [] if value_type is list else \
                             {} if value_type is dict else \
-                                "" if value_type in (str, unicode) else \
-                                    None
+                            "" if value_type in (str, unicode) else \
+                            None
 
                 package_changed, msg = check_package_change(
                     existing_package,
