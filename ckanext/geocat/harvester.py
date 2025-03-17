@@ -317,10 +317,8 @@ class GeocatHarvester(HarvesterBase):
                 )
 
                 # Ensure 'url' is set to "" if it is not in pkg_dict
-                existing_url = existing_package.get("url")
-                new_url = pkg_dict.get("url")
-                if new_url is None and new_url != existing_url:
-                    existing_package["url"] = ""
+                if "url" in existing_package and "url" not in pkg_dict:
+                    pkg_dict["url"] = ""
 
                 package_changed, msg = check_package_change(
                     existing_package,
