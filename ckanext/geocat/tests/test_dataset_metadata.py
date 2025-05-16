@@ -123,7 +123,13 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIn(group['name'], groups)
 
         # language
-        self.assertEquals(set(['de', 'fr', 'it', 'en']), set(dataset.get('language')))
+        expected_languages = set([
+            'http://publications.europa.eu/resource/authority/language/DEU',
+            'http://publications.europa.eu/resource/authority/language/FRA',
+            'http://publications.europa.eu/resource/authority/language/ITA',
+            'http://publications.europa.eu/resource/authority/language/ENG'
+        ])
+        self.assertEquals(expected_languages, set(dataset.get('language')))
 
         # conforms to
         self.assertEquals(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
