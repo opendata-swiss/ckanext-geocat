@@ -248,7 +248,13 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertIn('', dataset['description']['en'])
 
         # language
-        self.assertEquals(set(['de']), set(dataset.get('language')))
+        expected_languages = set([
+            'http://publications.europa.eu/resource/authority/language/DEU',
+            'http://publications.europa.eu/resource/authority/language/FRA',
+            'http://publications.europa.eu/resource/authority/language/ITA',
+            'http://publications.europa.eu/resource/authority/language/ENG'
+        ])
+        self.assertEquals(expected_languages, set(dataset.get('language')))
 
         # keywords
         keywords = {
