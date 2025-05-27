@@ -216,7 +216,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(1, len(dataset['qualified_relations']))
         self.assertEquals(
             {
-                'relation': 'http://localhost:5000/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo',
+                'relation': 'http://test.ckan.net/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo',
                 'had_role': 'http://www.iana.org/assignments/relation/related',
             },
             dataset['qualified_relations'][0]
