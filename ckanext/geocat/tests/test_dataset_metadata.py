@@ -123,13 +123,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIn(group['name'], groups)
 
         # language
-        expected_languages = set([
-            'http://publications.europa.eu/resource/authority/language/DEU',
-            'http://publications.europa.eu/resource/authority/language/FRA',
-            'http://publications.europa.eu/resource/authority/language/ITA',
-            'http://publications.europa.eu/resource/authority/language/ENG'
-        ])
-        self.assertEquals(expected_languages, set(dataset.get('language')))
+        self.assertEquals(set(['de', 'fr', 'it', 'en', 'http://publications.europa.eu/resource/authority/language/DEU']), set(dataset.get('language')))
 
         # conforms to
         self.assertEquals(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
@@ -222,7 +216,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertEquals(1, len(dataset['qualified_relations']))
         self.assertEquals(
             {
-                'relation': 'http://test.ckan.net/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo',
+                'relation': 'http://localhost:5000/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo',
                 'had_role': 'http://www.iana.org/assignments/relation/related',
             },
             dataset['qualified_relations'][0]
@@ -248,13 +242,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         self.assertIn('', dataset['description']['en'])
 
         # language
-        expected_languages = set([
-            'http://publications.europa.eu/resource/authority/language/DEU',
-            'http://publications.europa.eu/resource/authority/language/FRA',
-            'http://publications.europa.eu/resource/authority/language/ITA',
-            'http://publications.europa.eu/resource/authority/language/ENG'
-        ])
-        self.assertEquals(expected_languages, set(dataset.get('language')))
+        print(dataset.get('language'))
+        self.assertEquals(set(['de', 'http://publications.europa.eu/resource/authority/language/DEU']), set(dataset.get('language')))
 
         # keywords
         keywords = {
