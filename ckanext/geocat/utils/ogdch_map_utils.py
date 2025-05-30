@@ -134,11 +134,11 @@ def map_contact_points(geocat_contact_point):
 
 def map_language(geocat_language):
     language_mapping = {
-        'ger': 'de',
-        'fre': 'fr',
-        'fra': 'fr',
-        'eng': 'en',
-        'ita': 'it',
+        'ger': 'http://publications.europa.eu/resource/authority/language/DEU',
+        'fre': 'http://publications.europa.eu/resource/authority/language/FRA',
+        'fra': 'http://publications.europa.eu/resource/authority/language/FRA',
+        'eng': 'http://publications.europa.eu/resource/authority/language/ENG',
+        'ita': 'http://publications.europa.eu/resource/authority/language/ITA',
     }
     return language_mapping.get(geocat_language, '')
 

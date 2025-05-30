@@ -238,8 +238,9 @@ class GeoMetadataMapping(object):
 
             dataset_dict['resources'].append(resource)
             for lang in resource.get('language', []):
-                if lang not in dataset_dict['language']:
-                    dataset_dict['language'].append(lang)
+                mapped_lang = ogdch_map_utils.map_language(lang)
+                if mapped_lang and mapped_lang not in dataset_dict['language']:
+                    dataset_dict['language'].append(mapped_lang)
 
 
 def _map_dataset_identifier(node, organization_slug):
