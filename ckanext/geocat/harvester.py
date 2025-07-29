@@ -22,7 +22,10 @@ from ckanext.geocat.utils.harvest_helper import (
     create_activity,
     map_resources_to_ids,
 )
-from ckanext.geocat.utils.mapping_utils import DEFAULT_TERMS_OF_USE, VALID_TERMS_OF_USE  # noqa
+from ckanext.geocat.utils.mapping_utils import (  # noqa
+    DEFAULT_TERMS_OF_USE,
+    VALID_TERMS_OF_USE,
+)
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 
