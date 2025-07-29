@@ -22,10 +22,7 @@ from ckanext.geocat.utils.harvest_helper import (
     create_activity,
     map_resources_to_ids,
 )
-from ckanext.geocat.utils.mapping_utils import (
-    DEFAULT_TERMS_OF_USE,
-    VALID_TERMS_OF_USE,
-)
+from ckanext.geocat.utils.mapping_utils import DEFAULT_TERMS_OF_USE, VALID_TERMS_OF_USE  # noqa
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 
@@ -293,7 +290,7 @@ class GeocatHarvester(HarvesterBase):
     def fetch_stage(self, harvest_object):
         return True
 
-    def import_stage(self, harvest_object):  # noqa
+    def import_stage(self, harvest_object):
 
         log.debug("In GeocatHarvester import_stage")
 
