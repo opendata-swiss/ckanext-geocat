@@ -3,20 +3,23 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
-    container:
-      image: python:2.7.18-buster
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: Install requirements
-        run: pip install flake8 pycodestyle
+        run: pip install flake8 pycodestyle black isort
       - name: Check syntax
-        run: flake8 --statistics --show-source ckanext
+        run: flake8 . --count --select=C901,E721,E901,E999,F401,F821,F822,F823,F841 --show-source --statistics --extend-exclude ckan
+      - name: Check codestyle
+          run: |
+            isort --diff --check ckanext/
+            black --diff --check ckanext/
 
   test:
     needs: lint
     strategy:
       matrix:
-        ckan-version: [2.8]
+        ckan-version: [2.11]
       fail-fast: false
 
     name: CKAN ${{ matrix.ckan-version }}
@@ -44,7 +47,7 @@ jobs:
       SOLR_CONFIG_CKAN_DIR: /opt/solr/server/solr/ckan/conf
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Create solr container
       run: |
         git clone https://github.com/opendata-swiss/ckanext-switzerland-ng.git
@@ -59,7 +62,7 @@ jobs:
           -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/german_stop.txt":"$SOLR_CONFIG_CKAN_DIR/german_stop.txt" \
           -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/italian_stop.txt":"$SOLR_CONFIG_CKAN_DIR/italian_stop.txt" \
           -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/solrconfig.xml":"$SOLR_CONFIG_CKAN_DIR/solrconfig.xml" \
-          ckan/ckan-solr:${{ matrix.ckan-version }}
+          ckan/ckan-solr:${{ matrix.ckan-version }}-solr9
         docker start test_solr
     - name: Create ckan container
       run: |
