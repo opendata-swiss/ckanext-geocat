@@ -57,9 +57,7 @@ class GeocatHarvester(HarvesterBase):
             config_obj = json.loads(config)
         except Exception as e:
             raise ValueError(
-                "Configuration could not be parsed. An error {} occured".format(
-                    e
-                )
+                f"Configuration could not be parsed. An error {e} occured"
             )
 
         if "delete_missing_datasets" in config_obj:
@@ -69,9 +67,7 @@ class GeocatHarvester(HarvesterBase):
         if "rights" in config_obj:
             if not config_obj["rights"] in VALID_TERMS_OF_USE:
                 raise ValueError(
-                    "{} is not valid as terms of use".format(
-                        config_obj["rights"]
-                    )
+                    f"{config_obj['rights']} is not valid as terms of use"
                 )
         return config
 
@@ -136,7 +132,7 @@ class GeocatHarvester(HarvesterBase):
         )
         self.config["organization"] = organization_slug
 
-        log.debug("Using config: %r" % self.config)
+        log.debug(f"Using config: {self.config!r}")
 
     def gather_stage(self, harvest_job):
         log.debug("In GeocatHarvester gather_stage")
@@ -212,7 +208,7 @@ class GeocatHarvester(HarvesterBase):
             harvest_job,
         )
 
-        log.debug("IDs: %r" % harvest_obj_ids)
+        log.debug(f"IDs: {harvest_obj_ids!r}")
 
         if self.config["delete_missing_datasets"]:
             delete_harvest_object_ids = self.delete_geocat_ids(
@@ -313,13 +309,13 @@ class GeocatHarvester(HarvesterBase):
         )
 
         if import_action and import_action == "delete":
-            log.debug("import action: %s" % import_action)
+            log.debug(f"import action: {import_action}")
             harvest_object.current = False
             return self._delete_dataset({"id": harvest_object.guid})
 
         if harvest_object.content is None:
             self._save_object_error(
-                "Empty content for object %s" % harvest_object.id,
+                f"Empty content for object {harvest_object.id}",
                 harvest_object,
                 "Import",
             )
@@ -329,9 +325,7 @@ class GeocatHarvester(HarvesterBase):
             pkg_dict = json.loads(harvest_object.content)
         except ValueError:
             self._save_object_error(
-                "Could not parse content for object {0}".format(
-                    harvest_object.id
-                ),
+                f"Could not parse content for object {harvest_object.id}",
                 harvest_object,
                 "Import",
             )
@@ -374,13 +368,13 @@ class GeocatHarvester(HarvesterBase):
                 harvest_object.current = True
                 harvest_object.package_id = updated_pkg["id"]
                 harvest_object.save()
-                log.debug("Updated PKG: %s" % updated_pkg)
+                log.debug(f"Updated PKG: {updated_pkg}")
             else:
                 flat_title = _derive_flat_title(pkg_dict["title"])
                 if not flat_title:
                     self._save_object_error(
-                        "Unable to derive name from title %s"
-                        % pkg_dict["title"],
+                        f"Unable to derive name from title"
+                        f" {pkg_dict['title']}",
                         harvest_object,
                         "Import",
                     )
@@ -412,7 +406,7 @@ class GeocatHarvester(HarvesterBase):
                     context, pkg_dict
                 )
 
-                log.debug("Created PKG: %s" % created_pkg)
+                log.debug(f"Created PKG: {created_pkg}")
 
             Session.commit()
             return True
@@ -420,8 +414,8 @@ class GeocatHarvester(HarvesterBase):
         except Exception as e:
             self._save_object_error(
                 (
-                    "Exception in import stage: %r / %s"
-                    % (e, traceback.format_exc())
+                    f"Exception in import stage: {e!r} /"
+                    f" {traceback.format_exc()}"
                 ),
                 harvest_object,
             )
@@ -440,7 +434,7 @@ class GeocatHarvester(HarvesterBase):
         return context
 
     def _delete_dataset(self, package_dict):
-        log.debug("deleting dataset %s" % package_dict["id"])
+        log.debug(f"deleting dataset {package_dict['id']}")
         context = self._create_new_context()
         tk.get_action("dataset_purge")(context.copy(), package_dict)
         return True

@@ -105,7 +105,7 @@ def get_elem_tree_from_string(xml_string):
     try:
         xml_elem_tree = etree.fromstring(xml_string)
     except etree.XMLSyntaxError as e:
-        raise MetadataFormatError("Could not parse XML: %r" % e)
+        raise MetadataFormatError(f"Could not parse XML: {e!r}")
     return xml_elem_tree
 
 
@@ -190,7 +190,7 @@ def xpath_get_url_and_languages(node):
     )
     for locale in LOCALES:
         value_locale = node.xpath(
-            './/che:LocalisedURL[@locale="#{}"]'.format(locale) + "/text()",
+            f'.//che:LocalisedURL[@locale="#{locale}"]' + "/text()",
             namespaces=gmd_namespaces,
         )
         if value_locale:
@@ -211,8 +211,7 @@ def xpath_get_url_and_languages_for_data_model(node):
         )
         for locale in LOCALES:
             value_locale = node.xpath(
-                './/che:LocalisedURL[@locale="#{}"]'.format(locale)
-                + "/text()",
+                f'.//che:LocalisedURL[@locale="#{locale}"]' + "/text()",
                 namespaces=gmd_namespaces,
             )
             if value_locale:
@@ -295,7 +294,7 @@ def xpath_get_url_from_node(node):
         return url_node[0]
     for locale in LOCALES:
         url_node = node.xpath(
-            './/che:LocalisedURL[@locale="#{}"]'.format(locale) + "/text()",
+            f'.//che:LocalisedURL[@locale="#{locale}"]' + "/text()",
             namespaces=gmd_namespaces,
         )
         if url_node:
@@ -453,9 +452,8 @@ def _get_normed_protocol(protocol):
     if protocol == APP_PROTOCOL:
         return APP_PROTOCOL
     log.error(
-        "unknown protocol detected: {}. Could not be mapped to normed protocol".format(
-            protocol
-        )
+        f"unknown protocol detected: {protocol}. Could not be mapped to "
+        f"normed protocol"
     )
     return None
 
@@ -473,9 +471,7 @@ def _is_valid_url(url):
         if parsed_url.scheme and parsed_url.netloc:
             return url
     except Exception:
-        log.warning(
-            "provided URL {} for conforms_to field is not valid".format(url)
-        )
+        log.warning(f"provided URL {url} for conforms_to field is not valid")
         return ""
 
 

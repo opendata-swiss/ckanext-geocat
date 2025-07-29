@@ -152,7 +152,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         num_objects,
         expected_packages,
         mocker,
-        **kwargs
+        **kwargs,
     ):
         self._mock_csw_results(
             all_results_filename, single_results_filenames, mocker
@@ -163,7 +163,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         self._run_full_job(harvest_source["id"], num_objects=num_objects)
 
         # Check that correct amount of datasets were created
-        fq = "+type:dataset harvest_source_id:{0}".format(harvest_source["id"])
+        fq = f"+type:dataset harvest_source_id:{harvest_source['id']}"
         results = h.call_action("package_search", {}, fq=fq)
         eq_(results["count"], expected_packages)
 

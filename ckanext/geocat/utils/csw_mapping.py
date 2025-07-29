@@ -110,7 +110,7 @@ class GeoMetadataMapping(object):
         self.default_rights = default_rights
 
     def get_metadata(self, csw_record_as_string, geocat_id):
-        log.debug("processing geocat_id {}".format(geocat_id))
+        log.debug(f"processing geocat_id {geocat_id}")
         root_node = xpath_utils.get_elem_tree_from_string(csw_record_as_string)
         dataset_dict = {}
         dataset_dict["identifier"] = _map_dataset_identifier(
@@ -218,9 +218,9 @@ class GeoMetadataMapping(object):
             )
             if url_with_label:
                 # Fetch multilingual label from the resource node
-                multilingual_label = xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(
+                multilingual_label = xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(  # noqa
                     resource_node
-                )  # noqa
+                )
                 if not multilingual_label or not isinstance(
                     multilingual_label, dict
                 ):

@@ -46,7 +46,7 @@ def get_elem_tree_from_string(xml_string):
     try:
         xml_elem_tree = etree.fromstring(xml_string)
     except etree.XMLSyntaxError as e:
-        raise MetadataFormatError("Could not parse XML: %r" % e)
+        raise MetadataFormatError(f"Could not parse XML: {e!r}")
     return xml_elem_tree
 
 
@@ -71,15 +71,13 @@ def get_excluded_protocols():
             return mapping.get("EXCLUDED_PROTOCOLS")
     except KeyError:
         log.error(
-            "No blacklist of protocols could be found in mapping_path {}".format(
-                mapping_path
-            )
+            f"No blacklist of protocols could be found in mapping_path "
+            f"{mapping_path}"
         )
     except (IOError, yaml.YAMLError):
         log.error(
-            "Mapping_path for protocol blacklist could not be opened {}".format(
-                mapping_path
-            )
+            f"Mapping_path for protocol blacklist could not be opened "
+            f"{mapping_path}"
         )
 
 

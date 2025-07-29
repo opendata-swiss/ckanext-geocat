@@ -91,12 +91,12 @@ class GeocatCommand(CkanCommand):
             search_result = csw_data.get_geocat_id_from_csw(
                 cql_query=cqlquery, cql_search_term=cqlterm
             )
-            print(("Search result for %r" % url))
-            print(("CQL query: %s: %s" % (cqlquery, cqlterm)))
+            print(f"Search result for {url!r}")
+            print(f"CQL query: {cqlquery}: {cqlterm}")
             for record_id in search_result:
-                print(("geocat_id: %r" % record_id))
+                print(f"geocat_id: {record_id!r}")
         except Exception as e:
-            print(("Got error %r when searching remote url %r" % (e, url)))
+            print(f"Got error {e!r} when searching remote url {url!r}")
             self.help_command()
             sys.exit(1)
 
@@ -124,11 +124,9 @@ class GeocatCommand(CkanCommand):
             dataset = self.csw_map.get_metadata(xml, id)
         except Exception as e:
             print(
-                (
-                    "Got error %r when searching at remote url %r for record id %r"
-                    % (e, url, id)
-                )
-            )  # noqa
+                f"Got error {e!r} when searching at remote url {url!r} "
+                f"for record id {id!r}"
+            )
             self.help_command()
             sys.exit(1)
 

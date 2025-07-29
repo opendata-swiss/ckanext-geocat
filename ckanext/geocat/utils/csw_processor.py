@@ -40,9 +40,8 @@ class GeocatCatalogueServiceWeb(object):
             self.csw.getrecords2(**csw_args)
             if self.csw.response is None or self.csw.results["matches"] == 0:
                 raise CswNotFoundError(
-                    "No dataset found for url {} with arguments {}".format(
-                        self.csw.url, csw_args
-                    )
+                    f"No dataset found for url {self.csw.url} with arguments "
+                    f"{csw_args}"
                 )
             if self.csw.results["returned"] > 0:
                 if (

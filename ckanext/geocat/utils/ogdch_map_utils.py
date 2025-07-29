@@ -7,7 +7,7 @@ import ckan.plugins.toolkit as tk
 from ckan.lib.munge import munge_tag
 
 import ckanext.geocat.utils.mapping_utils as mu
-from ckanext.geocat.utils import xpath_utils  # noqa
+from ckanext.geocat.utils import xpath_utils
 
 ORGANIZATION_URI_BASE = "https://opendata.swiss/organization/"
 MAP_PROTOCOL_PREFIX = "Map (Preview)"
@@ -36,7 +36,7 @@ def map_to_ogdch_publisher(geocat_publisher, organization_slug):
 def map_to_ogdch_datetime(datetime_value):
     try:
         d = datetime.strptime(
-            datetime_value[0 : len("YYYY-MM-DD")], "%Y-%m-%d"
+            datetime_value[0: len("YYYY-MM-DD")], "%Y-%m-%d"
         )
         return datetime.isoformat(d)
     except (ValueError, KeyError, TypeError, IndexError):
@@ -104,18 +104,18 @@ def map_to_ogdch_categories(geocat_categories):
 
 def map_frequency(geocat_frequency):
     frequency_mapping = {
-        "continual": "http://publications.europa.eu/resource/authority/frequency/CONT",
-        "daily": "http://publications.europa.eu/resource/authority/frequency/DAILY",
-        "weekly": "http://publications.europa.eu/resource/authority/frequency/WEEKLY",
-        "fortnightly": "http://publications.europa.eu/resource/authority/frequency/BIWEEKLY",
-        "monthly": "http://publications.europa.eu/resource/authority/frequency/MONTHLY",
-        "quarterly": "http://publications.europa.eu/resource/authority/frequency/QUARTERLY",
-        "biannually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2",
-        "annually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL",
-        "asNeeded": "http://publications.europa.eu/resource/authority/frequency/IRREG",
-        "irregular": "http://publications.europa.eu/resource/authority/frequency/IRREG",
-        "notPlanned": "http://publications.europa.eu/resource/authority/frequency/NEVER",
-        "unknown": "http://publications.europa.eu/resource/authority/frequency/UNKNOWN",
+        "continual": "http://publications.europa.eu/resource/authority/frequency/CONT",  # noqa
+        "daily": "http://publications.europa.eu/resource/authority/frequency/DAILY",  # noqa
+        "weekly": "http://publications.europa.eu/resource/authority/frequency/WEEKLY",  # noqa
+        "fortnightly": "http://publications.europa.eu/resource/authority/frequency/BIWEEKLY",  # noqa
+        "monthly": "http://publications.europa.eu/resource/authority/frequency/MONTHLY",  # noqa
+        "quarterly": "http://publications.europa.eu/resource/authority/frequency/QUARTERLY",  # noqa
+        "biannually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2",  # noqa
+        "annually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL",  # noqa
+        "asNeeded": "http://publications.europa.eu/resource/authority/frequency/IRREG",  # noqa
+        "irregular": "http://publications.europa.eu/resource/authority/frequency/IRREG",  # noqa
+        "notPlanned": "http://publications.europa.eu/resource/authority/frequency/NEVER",  # noqa
+        "unknown": "http://publications.europa.eu/resource/authority/frequency/UNKNOWN",  # noqa
     }
     return frequency_mapping.get(geocat_frequency, "")
 
@@ -171,7 +171,7 @@ def get_geocat_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
 
 def get_ogdch_permalink(identifier):
     site_url = tk.config.get("ckan.site_url")
-    return "{0}/perma/{1}".format(site_url, identifier)
+    return f"{site_url}/perma/{identifier}"
 
 
 def get_legal_basis_link(legal_basis_url):

@@ -45,7 +45,7 @@ def get_double_packages(
 
 def find_package_for_identifier(identifier):
     context = get_default_context()
-    fq = "identifier:({})".format(identifier)
+    fq = f"identifier:({identifier})"
     try:
         result = tk.get_action("package_search")(
             context, {"fq": fq, "include_private": True}
@@ -74,7 +74,7 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
     rows = 500
     page = 0
     result_count = 0
-    fq = "organization:({})".format(organization_name)
+    fq = f"organization:({organization_name})"
     processed_count = 0
     ogdch_dataset_infos = {}
     while page == 0 or processed_count < result_count:
