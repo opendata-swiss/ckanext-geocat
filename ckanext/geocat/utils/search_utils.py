@@ -32,7 +32,9 @@ def get_packages_to_delete(existing_dataset_infos, gathered_ogdch_identifiers):
     ]
 
 
-def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
+def get_double_packages(
+    existing_dataset_infos, gathered_ogdch_identifiers
+):  # noqa
     return [
         (identifier, info)
         for identifier, info in list(existing_dataset_infos.items())
@@ -51,7 +53,9 @@ def find_package_for_identifier(identifier):
         if result.get("count") > 0:
             pkg = result["results"][0]
             return OgdchDatasetInfo(
-                name=pkg["name"], package_id=pkg["id"], belongs_to_harvester=True
+                name=pkg["name"],
+                package_id=pkg["id"],
+                belongs_to_harvester=True,
             )
         else:
             return None
@@ -77,7 +81,8 @@ def get_dataset_infos_for_organization(organization_name, harvest_source_id):
         page = page + 1
         start = (page - 1) * rows
         result = tk.get_action("package_search")(
-            context, {"fq": fq, "rows": rows, "start": start, "include_private": True}
+            context,
+            {"fq": fq, "rows": rows, "start": start, "include_private": True},
         )
         if not result_count:
             result_count = result["count"]

@@ -82,7 +82,9 @@ class GeocatCommand(CkanCommand):
             sys.exit(1)
 
         cqlquery = self.options.cql_query or csw_processor.CQL_QUERY_DEFAULT
-        cqlterm = self.options.cql_term or csw_processor.CQL_SEARCH_TERM_DEFAULT
+        cqlterm = (
+            self.options.cql_term or csw_processor.CQL_SEARCH_TERM_DEFAULT
+        )
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)

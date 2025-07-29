@@ -26,14 +26,18 @@ def map_to_ogdch_publisher(geocat_publisher, organization_slug):
         return
     ogdch_publisher = {
         "name": geocat_publisher.get("name"),
-        "url": geocat_publisher.get("url", _get_organization_url(organization_slug)),
+        "url": geocat_publisher.get(
+            "url", _get_organization_url(organization_slug)
+        ),
     }
     return json.dumps(ogdch_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
     try:
-        d = datetime.strptime(datetime_value[0 : len("YYYY-MM-DD")], "%Y-%m-%d")
+        d = datetime.strptime(
+            datetime_value[0 : len("YYYY-MM-DD")], "%Y-%m-%d"
+        )
         return datetime.isoformat(d)
     except (ValueError, KeyError, TypeError, IndexError):
         raise ValueError("Could not parse datetime")
@@ -43,7 +47,12 @@ def map_to_ogdch_keywords(geocat_keywords):
     ogdch_keywords = {"fr": [], "de": [], "en": [], "it": []}
     for keyword in geocat_keywords:
         for lang, geocat_keyword in list(keyword.items()):
-            if geocat_keyword != "opendata.swiss" and lang in ["fr", "de", "en", "it"]:
+            if geocat_keyword != "opendata.swiss" and lang in [
+                "fr",
+                "de",
+                "en",
+                "it",
+            ]:
                 if geocat_keyword:
                     ogdch_keywords[lang].append(munge_tag(geocat_keyword))
     return ogdch_keywords

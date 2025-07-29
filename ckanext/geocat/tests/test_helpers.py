@@ -24,7 +24,10 @@ class TestHarvestHelpersUnit(object):
             ],
         }
 
-        assert check_package_change(existing_package, dataset_dict) == (False, None)
+        assert check_package_change(existing_package, dataset_dict) == (
+            False,
+            None,
+        )
 
     def test_check_package_change_new_modified_time(self):
         existing_package = {

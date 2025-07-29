@@ -8,7 +8,9 @@ from nose.tools import *  # noqa
 
 from ckanext.geocat.utils import csw_mapping
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__))
+)
 
 LANGUAGES = ["de", "fr", "it", "en"]
 
@@ -24,7 +26,9 @@ class TestGeocatDistributionProtocols(unittest.TestCase):
             geocat_perma_label="some label",
             legal_basis_url="",
             default_rights="",
-            valid_identifiers=["8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo"],
+            valid_identifiers=[
+                "8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo"
+            ],
         )
 
     def _load_xml(self, filename):
@@ -43,7 +47,9 @@ class TestGeocatDistributionProtocols(unittest.TestCase):
                 return distribution
 
 
-class TestGeocatDeprecatedDistributionProtocols(TestGeocatDistributionProtocols):
+class TestGeocatDeprecatedDistributionProtocols(
+    TestGeocatDistributionProtocols
+):
     def setUp(self):
         csw_map = self._set_csw()
         xml = self._load_xml("testdata-deprecated-protocols.xml")
@@ -62,22 +68,36 @@ class TestGeocatDeprecatedDistributionProtocols(TestGeocatDistributionProtocols)
                 distribution.get("license"),
                 "https://opendata.swiss/terms-of-use#terms_open",
             )
-            self.assertEqual(distribution.get("issued"), self.dataset.get("issued"))
-            self.assertEqual(distribution.get("modified"), self.dataset.get("modified"))
+            self.assertEqual(
+                distribution.get("issued"), self.dataset.get("issued")
+            )
+            self.assertEqual(
+                distribution.get("modified"), self.dataset.get("modified")
+            )
             self._is_multi_lang(distribution["title"])
             self._is_multi_lang(distribution["description"])
 
-    def test_deprecated_WWW_DOWNLOAD_protocol_is_mapped_to_download_resource(self):
+    def test_deprecated_WWW_DOWNLOAD_protocol_is_mapped_to_download_resource(
+        self,
+    ):
         deprecated_download_protocol = "WWW:DOWNLOAD-1.0-http--download"
-        distribution = self._get_distribution_by_protocol(deprecated_download_protocol)
+        distribution = self._get_distribution_by_protocol(
+            deprecated_download_protocol
+        )
         self.assertIsNotNone(distribution)
-        self.assertEqual(distribution.get("protocol"), deprecated_download_protocol)
-        self.assertEqual(distribution.get("url"), distribution.get("download_url"))
+        self.assertEqual(
+            distribution.get("protocol"), deprecated_download_protocol
+        )
+        self.assertEqual(
+            distribution.get("url"), distribution.get("download_url")
+        )
         self.assertIsNotNone(distribution.get("media_type"))
 
     def test_deprecated_WMS_protocol(self):
         deprecated_wms_protocol = "OGC:WMS-http-get-capabilities"
-        distribution = self._get_distribution_by_protocol(deprecated_wms_protocol)
+        distribution = self._get_distribution_by_protocol(
+            deprecated_wms_protocol
+        )
         self.assertEqual(distribution.get("protocol"), deprecated_wms_protocol)
         self.assertIsNotNone(distribution)
         self.assertIsNone(distribution.get("download_url"))
@@ -86,8 +106,12 @@ class TestGeocatDeprecatedDistributionProtocols(TestGeocatDistributionProtocols)
 
     def test_deprecated_WMTS_protocol(self):
         deprecated_wmts_protocol = "OGC:WMTS-http-get-capabilities"
-        distribution = self._get_distribution_by_protocol(deprecated_wmts_protocol)
-        self.assertEqual(distribution.get("protocol"), deprecated_wmts_protocol)
+        distribution = self._get_distribution_by_protocol(
+            deprecated_wmts_protocol
+        )
+        self.assertEqual(
+            distribution.get("protocol"), deprecated_wmts_protocol
+        )
         self.assertIsNotNone(distribution)
         self.assertIsNone(distribution.get("download_url"))
         self.assertEqual(distribution.get("format"), "WMTS")
@@ -99,8 +123,12 @@ class TestGeocatDeprecatedDistributionProtocols(TestGeocatDistributionProtocols)
             deprecated_download_url_protocol
         )
         self.assertIsNotNone(distribution)
-        self.assertEqual(distribution.get("protocol"), deprecated_download_url_protocol)
-        self.assertEqual(distribution.get("url"), distribution.get("download_url"))
+        self.assertEqual(
+            distribution.get("protocol"), deprecated_download_url_protocol
+        )
+        self.assertEqual(
+            distribution.get("url"), distribution.get("download_url")
+        )
 
 
 class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
@@ -122,14 +150,20 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
                 distribution.get("license"),
                 "https://opendata.swiss/terms-of-use#terms_by",
             )
-            self.assertEqual(distribution.get("issued"), self.dataset.get("issued"))
-            self.assertEqual(distribution.get("modified"), self.dataset.get("modified"))
+            self.assertEqual(
+                distribution.get("issued"), self.dataset.get("issued")
+            )
+            self.assertEqual(
+                distribution.get("modified"), self.dataset.get("modified")
+            )
             self._is_multi_lang(distribution["title"])
             self._is_multi_lang(distribution["description"])
 
     def test_normed_protocol_WWW_DOWNLOAD_APP(self):
         download_app_protocol = "WWW:DOWNLOAD-APP"
-        distribution = self._get_distribution_by_protocol(download_app_protocol)
+        distribution = self._get_distribution_by_protocol(
+            download_app_protocol
+        )
         self.assertIsNotNone(distribution.get("url"))
         self.assertIsNone(distribution.get("download_url"))
         self.assertEqual("SERVICE", distribution.get("format"))
@@ -152,11 +186,15 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         self.assertIsNotNone(distribution)
         self.assertEqual(distribution["protocol"], map_preview_protocol)
         for lang in LANGUAGES:
-            self.assertTrue(distribution["title"][lang].startswith("Map (Preview)"))
+            self.assertTrue(
+                distribution["title"][lang].startswith("Map (Preview)")
+            )
         self.assertIsNotNone(distribution.get("url"))
         self.assertIsNone(distribution.get("download_url"))
         self.assertEqual("SERVICE", distribution.get("format"))
-        self.assertEqual("Map (Preview) Kartenvorschau", distribution["title"]["de"])
+        self.assertEqual(
+            "Map (Preview) Kartenvorschau", distribution["title"]["de"]
+        )
         self.assertEqual("Map (Preview)", distribution["title"]["en"])
         self.assertEqual("Map (Preview)", distribution["title"]["fr"])
         self.assertEqual("Map (Preview)", distribution["title"]["it"])
@@ -168,14 +206,20 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         self.assertIsNotNone(distribution.get("url"))
         self.assertIsNone(distribution.get("download_url"))
         self.assertEqual("API", distribution.get("format"))
-        self.assertEqual("RESTful API von geo.admin.ch", distribution["title"]["de"])
+        self.assertEqual(
+            "RESTful API von geo.admin.ch", distribution["title"]["de"]
+        )
         self.assertEqual("", distribution["title"]["en"])
         self.assertEqual("", distribution["title"]["fr"])
         self.assertEqual("", distribution["title"]["it"])
 
     def test_normed_protocol_WWW_DOWNLOAD_with_format_INTERLIS(self):
         download_protocol_with_format = "WWW:DOWNLOAD:INTERLIS"
-        distribution = self._get_distribution_by_protocol(download_protocol_with_format)
+        distribution = self._get_distribution_by_protocol(
+            download_protocol_with_format
+        )
         self.assertIsNotNone(distribution)
-        self.assertEqual(distribution.get("url"), distribution.get("download_url"))
+        self.assertEqual(
+            distribution.get("url"), distribution.get("download_url")
+        )
         self.assertEqual("INTERLIS", distribution.get("media_type"))

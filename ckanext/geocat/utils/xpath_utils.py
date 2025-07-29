@@ -172,7 +172,9 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
             language_dict[locale.lower()] = cleaned_value
     if localised_string_found:
         return language_dict
-    value = node.xpath(".//gco:CharacterString/text()", namespaces=gmd_namespaces)
+    value = node.xpath(
+        ".//gco:CharacterString/text()", namespaces=gmd_namespaces
+    )
     if value:
         cleaned_value = _clean_string(value[0])
         for locale in LOCALES:
@@ -209,7 +211,8 @@ def xpath_get_url_and_languages_for_data_model(node):
         )
         for locale in LOCALES:
             value_locale = node.xpath(
-                './/che:LocalisedURL[@locale="#{}"]'.format(locale) + "/text()",
+                './/che:LocalisedURL[@locale="#{}"]'.format(locale)
+                + "/text()",
                 namespaces=gmd_namespaces,
             )
             if value_locale:
@@ -240,7 +243,9 @@ def xpath_get_rights_dict_form_rights_node(node):
 
 
 def xpath_get_one_value_from_geocat_multilanguage_node(node):
-    value = node.xpath(".//gco:CharacterString/text()", namespaces=gmd_namespaces)
+    value = node.xpath(
+        ".//gco:CharacterString/text()", namespaces=gmd_namespaces
+    )
     if value:
         return value
     for locale in LOCALES:
@@ -269,7 +274,9 @@ def xpath_get_url_with_label(node):
 
     text_node = node.xpath(GMD_URL_LABEL, namespaces=gmd_namespaces)
     if text_node:
-        url_text_node = xpath_get_one_value_from_geocat_multilanguage_node(text_node[0])
+        url_text_node = xpath_get_one_value_from_geocat_multilanguage_node(
+            text_node[0]
+        )
         if url_text_node:
             url["label"] = url_text_node[0]
             return url
@@ -281,7 +288,9 @@ def xpath_get_url_with_label(node):
 
 
 def xpath_get_url_from_node(node):
-    url_node = node.xpath(".//gmd:linkage/gmd:URL/text()", namespaces=gmd_namespaces)
+    url_node = node.xpath(
+        ".//gmd:linkage/gmd:URL/text()", namespaces=gmd_namespaces
+    )
     if url_node:
         return url_node[0]
     for locale in LOCALES:
@@ -291,7 +300,9 @@ def xpath_get_url_from_node(node):
         )
         if url_node:
             return url_node[0]
-    url_node = node.xpath(".//che:LocalisedURL/text()", namespaces=gmd_namespaces)
+    url_node = node.xpath(
+        ".//che:LocalisedURL/text()", namespaces=gmd_namespaces
+    )
     if url_node:
         return url_node[0]
     return None
@@ -331,9 +342,9 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol):
         node=resource_node, path=GMD_RESOURCE_NAME
     )
     if name_node:
-        distribution["name"] = xpath_get_language_dict_from_geocat_multilanguage_node(
-            name_node
-        )
+        distribution[
+            "name"
+        ] = xpath_get_language_dict_from_geocat_multilanguage_node(name_node)
     else:
         distribution["name"] = {"en": "", "it": "", "de": "", "fr": ""}
     description_node = xpath_get_single_sub_node_for_node_and_path(
@@ -342,7 +353,9 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol):
     if description_node is not None:
         distribution[
             "description"
-        ] = xpath_get_language_dict_from_geocat_multilanguage_node(description_node)
+        ] = xpath_get_language_dict_from_geocat_multilanguage_node(
+            description_node
+        )
     else:
         distribution["description"] = {"en": "", "it": "", "de": "", "fr": ""}
 
@@ -350,14 +363,18 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol):
     distribution["protocol"] = protocol
     distribution["normed_protocol"] = normed_protocol
 
-    _set_distribution_format_and_media_type(protocol, normed_protocol, distribution)
+    _set_distribution_format_and_media_type(
+        protocol, normed_protocol, distribution
+    )
 
     GMD_URL = ".//gmd:linkage"
     url_node = xpath_get_single_sub_node_for_node_and_path(
         node=resource_node, path=GMD_URL
     )
     if url_node is not None:
-        distribution_url, distribution_language = xpath_get_url_and_languages(url_node)
+        distribution_url, distribution_language = xpath_get_url_and_languages(
+            url_node
+        )
         distribution["url"] = _clean_string(distribution_url)
         distribution["language"] = distribution_language
     return distribution
@@ -409,7 +426,10 @@ def xpath_get_geocat_services(node):
             ] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_SERVICE_TITLE
             )
-            geocat_service["url"], _ = xpath_get_first_of_values_from_path_list(
+            (
+                geocat_service["url"],
+                _,
+            ) = xpath_get_first_of_values_from_path_list(
                 node=service_node, path_list=GMD_SERVICE_URLS
             )
             geocat_service[
@@ -453,7 +473,9 @@ def _is_valid_url(url):
         if parsed_url.scheme and parsed_url.netloc:
             return url
     except Exception:
-        log.warning("provided URL {} for conforms_to field is not valid".format(url))
+        log.warning(
+            "provided URL {} for conforms_to field is not valid".format(url)
+        )
         return ""
 
 

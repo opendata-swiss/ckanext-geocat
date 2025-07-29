@@ -33,7 +33,9 @@ def map_resources_to_ids(pkg_dict, package_id):
 
 
 def create_activity(package_id, message):
-    notification_user = tk.get_action("user_show")({}, {"id": NOTIFICATION_USER})
+    notification_user = tk.get_action("user_show")(
+        {}, {"id": NOTIFICATION_USER}
+    )
     activity_dict = {
         "user_id": notification_user["id"],
         "object_id": package_id,
@@ -61,8 +63,12 @@ def check_package_change(existing_pkg, dataset_dict):
         return True, msg
 
     # Check if the modified date has changed
-    if _changes_in_date(existing_pkg.get("modified"), dataset_dict.get("modified")):
-        msg = "dataset modified date changed: {}".format(dataset_dict.get("modified"))
+    if _changes_in_date(
+        existing_pkg.get("modified"), dataset_dict.get("modified")
+    ):
+        msg = "dataset modified date changed: {}".format(
+            dataset_dict.get("modified")
+        )
         return True, msg
 
     # Check for changes in resources
@@ -81,7 +87,9 @@ def check_package_change(existing_pkg, dataset_dict):
         if not matching_existing_resource_with_same_url:
             msg = "resource access url changed: {}".format(resource.get("url"))
             return True, msg
-        matching_existing_resource = matching_existing_resource_with_same_url[0]
+        matching_existing_resource = matching_existing_resource_with_same_url[
+            0
+        ]
         download_url_changed = matching_existing_resource.get(
             "download_url"
         ) != resource.get("download_url")
@@ -91,9 +99,12 @@ def check_package_change(existing_pkg, dataset_dict):
             )
             return True, msg
         if _changes_in_date(
-            matching_existing_resource.get("modified"), resource.get("modified")
+            matching_existing_resource.get("modified"),
+            resource.get("modified"),
         ):
-            msg = "resource modified date changed: {}".format(resource.get("modified"))
+            msg = "resource modified date changed: {}".format(
+                resource.get("modified")
+            )
             return True, msg
     return False, None
 

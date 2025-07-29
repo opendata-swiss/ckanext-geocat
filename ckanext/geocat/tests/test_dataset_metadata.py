@@ -10,7 +10,9 @@ from nose.tools import *  # noqa
 
 from ckanext.geocat.utils import csw_mapping
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__))
+)
 
 
 class TestGeocatDcatDatasetMetadata(unittest.TestCase):
@@ -21,7 +23,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             geocat_perma_label="some label",
             legal_basis_url="",
             default_rights="",
-            valid_identifiers=["8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo"],
+            valid_identifiers=[
+                "8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo"
+            ],
         )
         self.geocat_identifier = "93814e81-2466-4690-b54d-c1d958f1c3b8"
 
@@ -82,25 +86,31 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # identifier
         self.assertEqual(
-            "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo", dataset.get("identifier")
+            "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo",
+            dataset.get("identifier"),
         )
 
         # title
         self.assertEqual(
-            "L\xe4rmbelastung durch Eisenbahnverkehr Nacht", dataset["title"]["de"]
+            "L\xe4rmbelastung durch Eisenbahnverkehr Nacht",
+            dataset["title"]["de"],
         )
         self.assertEqual(
-            "Exposition au bruit du trafic ferroviaire, nuit", dataset["title"]["fr"]
+            "Exposition au bruit du trafic ferroviaire, nuit",
+            dataset["title"]["fr"],
         )
         self.assertEqual(
             "Esposizione al rumore del traffico ferroviario, notte",
             dataset["title"]["it"],
         )
-        self.assertEqual("Nighttime railway noise exposure", dataset["title"]["en"])
+        self.assertEqual(
+            "Nighttime railway noise exposure", dataset["title"]["en"]
+        )
 
         # description
         self.assertIn(
-            "Die Karte zeigt, welcher L\xe4rmbelastung", dataset["description"]["de"]
+            "Die Karte zeigt, welcher L\xe4rmbelastung",
+            dataset["description"]["de"],
         )
         self.assertIn("", dataset["description"]["fr"])
         self.assertIn("", dataset["description"]["it"])
@@ -133,7 +143,11 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # language
         self.assertEqual(
-            set(["http://publications.europa.eu/resource/authority/language/DEU"]),
+            set(
+                [
+                    "http://publications.europa.eu/resource/authority/language/DEU"
+                ]
+            ),
             set(dataset.get("language")),
         )
 
@@ -162,7 +176,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIsNotNone(relation["description"])
             # Node with protocol OPENDATA:SWISS should not be mapped
             self.assertNotEqual(
-                relation["description"], "Permalink to dataset on opendata.swiss"
+                relation["description"],
+                "Permalink to dataset on opendata.swiss",
             )
             self.assertIsNotNone(relation["url"])
 
@@ -214,7 +229,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             ],
         }
         for lang in ["de", "fr", "it", "en"]:
-            self.assertEqual(set(keywords[lang]), set(dataset["keywords"][lang]))
+            self.assertEqual(
+                set(keywords[lang]), set(dataset["keywords"][lang])
+            )
 
         # url
         self.assertEqual("http://www.bafu.admin.ch/laerm/", dataset.get("url"))
@@ -245,12 +262,14 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # identifier
         self.assertEqual(
-            "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo", dataset.get("identifier")
+            "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo",
+            dataset.get("identifier"),
         )
 
         # title
         self.assertEqual(
-            "L\xe4rmbelastung durch Eisenbahnverkehr Nacht", dataset["title"]["de"]
+            "L\xe4rmbelastung durch Eisenbahnverkehr Nacht",
+            dataset["title"]["de"],
         )
         self.assertEqual("", dataset["title"]["fr"])
         self.assertEqual("", dataset["title"]["it"])
@@ -258,7 +277,8 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # description
         self.assertIn(
-            "Die Karte zeigt, welcher L\xe4rmbelastung", dataset["description"]["de"]
+            "Die Karte zeigt, welcher L\xe4rmbelastung",
+            dataset["description"]["de"],
         )
         self.assertIn("", dataset["description"]["fr"])
         self.assertIn("", dataset["description"]["it"])
@@ -266,7 +286,11 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # language
         self.assertEqual(
-            set(["http://publications.europa.eu/resource/authority/language/DEU"]),
+            set(
+                [
+                    "http://publications.europa.eu/resource/authority/language/DEU"
+                ]
+            ),
             set(dataset.get("language")),
         )
 
@@ -287,7 +311,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             "en": [],
         }
         for lang in ["de", "fr", "it", "en"]:
-            self.assertEqual(set(keywords[lang]), set(dataset["keywords"][lang]))
+            self.assertEqual(
+                set(keywords[lang]), set(dataset["keywords"][lang])
+            )
 
     def test_date_revision(self):
         xml = self._load_xml("revision_date.xml")

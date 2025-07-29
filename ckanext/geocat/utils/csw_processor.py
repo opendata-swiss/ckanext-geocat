@@ -17,13 +17,17 @@ class GeocatCatalogueServiceWeb(object):
         self.csw = CatalogueServiceWeb(url)
         self.schema = CHE_SCHEMA
 
-    def get_geocat_id_from_csw(self, cql=None, cql_query=None, cql_search_term=None):
+    def get_geocat_id_from_csw(
+        self, cql=None, cql_query=None, cql_search_term=None
+    ):
         nextrecord = 0
         record_ids = []
         csw_args = {"maxrecords": 50, "startposition": nextrecord}
 
         if cql_query and cql_search_term:
-            csw_args["constraints"] = [PropertyIsEqualTo(cql_query, cql_search_term)]
+            csw_args["constraints"] = [
+                PropertyIsEqualTo(cql_query, cql_search_term)
+            ]
         elif cql:
             csw_args["cql"] = cql
         else:
@@ -41,7 +45,11 @@ class GeocatCatalogueServiceWeb(object):
                     )
                 )
             if self.csw.results["returned"] > 0:
-                if 0 < self.csw.results["nextrecord"] <= self.csw.results["matches"]:
+                if (
+                    0
+                    < self.csw.results["nextrecord"]
+                    <= self.csw.results["matches"]
+                ):
                     nextrecord = self.csw.results["nextrecord"]
                 else:
                     nextrecord = None
