@@ -57,11 +57,11 @@ class GeocatCommand(CkanCommand):
             self.help_command()
 
     def help_command(self):
-        print(self.__doc__)
+        print((self.__doc__))
 
     def list_command(self, url=None):
         if len(self.args) >= 2:
-            url = unicode(self.args[1])
+            url = str(self.args[1])
         else:
             print("Expected remote url")
             self.help_command()
@@ -75,19 +75,19 @@ class GeocatCommand(CkanCommand):
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)
             search_result = csw_data.get_geocat_id_from_csw(
                 cql_query=cqlquery, cql_search_term=cqlterm)
-            print("Search result for %r" % url)
-            print("CQL query: %s: %s" % (cqlquery, cqlterm))
+            print(("Search result for %r" % url))
+            print(("CQL query: %s: %s" % (cqlquery, cqlterm)))
             for record_id in search_result:
-                print('geocat_id: %r' % record_id)
+                print(('geocat_id: %r' % record_id))
         except Exception as e:
-            print("Got error %r when searching remote url %r" % (e, url))
+            print(("Got error %r when searching remote url %r" % (e, url)))
             self.help_command()
             sys.exit(1)
 
     def dataset_command(self, url=None, id=None):
         if len(self.args) >= 3:
-            url = unicode(self.args[1])
-            id = unicode(self.args[2])
+            url = str(self.args[1])
+            id = str(self.args[2])
         else:
             print("Expected remote url and record id")
             self.help_command()
@@ -107,7 +107,7 @@ class GeocatCommand(CkanCommand):
             )
             dataset = self.csw_map.get_metadata(xml, id)
         except Exception as e:
-            print("Got error %r when searching at remote url %r for record id %r" % (e, url, id))  # noqa
+            print(("Got error %r when searching at remote url %r for record id %r" % (e, url, id)))  # noqa
             self.help_command()
             sys.exit(1)
 

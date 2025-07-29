@@ -44,7 +44,7 @@ def map_to_ogdch_datetime(datetime_value):
 def map_to_ogdch_keywords(geocat_keywords):
     ogdch_keywords = {'fr': [], 'de': [], 'en': [], 'it': []}
     for keyword in geocat_keywords:
-        for lang, geocat_keyword in keyword.items():
+        for lang, geocat_keyword in list(keyword.items()):
             if geocat_keyword != \
                     'opendata.swiss' and lang in ['fr', 'de', 'en', 'it']:
                 if geocat_keyword:
@@ -175,7 +175,7 @@ def get_geocat_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
 
 def get_ogdch_permalink(identifier):
     site_url = tk.config.get('ckan.site_url')
-    return u'{0}/perma/{1}'.format(site_url, identifier)
+    return '{0}/perma/{1}'.format(site_url, identifier)
 
 
 def get_legal_basis_link(legal_basis_url):
@@ -282,11 +282,11 @@ def map_service(geocat_service, issued, modified, description, rights):
 
 def _map_geocat_resource_format_to_valid_format(geocat_format):
     valid_formats = mu.get_format_values()
-    for key, value in valid_formats.items():
+    for key, value in list(valid_formats.items()):
         if geocat_format.replace(' ', '_') == key:
             return value
     valid_media_types = mu.get_iana_media_type_values()
-    for key, value in valid_media_types.items():
+    for key, value in list(valid_media_types.items()):
         if geocat_format.replace(' ', '_') == key:
             return value
     return geocat_format

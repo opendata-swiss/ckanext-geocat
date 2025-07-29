@@ -56,7 +56,7 @@ class MetadataFormatError(Exception):
 
 def get_terms_of_use():
     g = rdflib.Graph()
-    for prefix, namespace in namespaces.items():
+    for prefix, namespace in list(namespaces.items()):
         g.bind(prefix, namespace)
     file = os.path.join(__location__, 'geocat-terms-of-use.xml')
     g.parse(file, format='xml')
@@ -79,7 +79,7 @@ def get_excluded_protocols():
 
 def get_format_values():
     g = rdflib.Graph()
-    for prefix, namespace in format_namespaces.items():
+    for prefix, namespace in list(format_namespaces.items()):
         g.bind(prefix, namespace)
     file = os.path.join(__location__, 'formats.xml')
     g.parse(file, format='xml')

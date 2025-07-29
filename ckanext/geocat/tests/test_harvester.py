@@ -98,7 +98,7 @@ class FunctionalHarvestTest(object):
                 pass
 
     def _gather_queue(self, num_jobs=1):
-        for job in xrange(num_jobs):
+        for job in range(num_jobs):
             # Pop one item off the queue (the job id) and run the callback
             reply = self.gather_consumer.basic_get(
                 queue='ckan.harvest.gather.test')
@@ -111,7 +111,7 @@ class FunctionalHarvestTest(object):
             queue.gather_callback(self.gather_consumer, *reply)
 
     def _fetch_queue(self, num_objects=1):
-        for _object in xrange(num_objects):
+        for _object in range(num_objects):
             # Pop item from the fetch queues (object ids) and run the callback,
             # one for each object created
             reply = self.fetch_consumer.basic_get(
@@ -159,13 +159,13 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
     def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
         path = os.path.join(__location__, 'fixtures', 'test_harvesters', 'capabilities.xml')
         with open(path) as xml:
-            capabilities = unicode(xml.read(), 'utf-8')
+            capabilities = str(xml.read(), 'utf-8')
 
         mocker.get(mock_capabilities_url, text=capabilities)
 
         path = os.path.join(__location__, 'fixtures', 'test_harvesters',  all_results_filename)
         with open(path) as xml:
-            all_results = unicode(xml.read(), 'utf-8')
+            all_results = str(xml.read(), 'utf-8')
 
         mocker.post(mock_record_url, text=all_results)
 
@@ -173,7 +173,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         for filename in single_results_filenames:
             path = os.path.join(__location__, 'fixtures', 'test_harvesters', filename)
             with open(path) as xml:
-                result = unicode(xml.read(), 'utf-8')
+                result = str(xml.read(), 'utf-8')
 
             responses.append({'text': result})
 

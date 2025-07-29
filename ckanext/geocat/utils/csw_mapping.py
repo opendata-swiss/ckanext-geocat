@@ -431,7 +431,7 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
         geocat_rights_dict = \
             xpath_utils.xpath_get_rights_dict_form_rights_node(rights_node)
         if geocat_rights_dict:
-            for lang, rights_value in geocat_rights_dict.items():
+            for lang, rights_value in list(geocat_rights_dict.items()):
                 rights_literal = Literal(rights_value, lang=lang)
                 for rights_uri in terms_of_use.subjects(object=rights_literal):
                     for mapping_object in terms_of_use.objects(predicate=SKOS.mappingRelation, subject=rights_uri):  # noqa

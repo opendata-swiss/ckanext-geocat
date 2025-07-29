@@ -156,7 +156,7 @@ class GeocatHarvester(HarvesterBase):
              for geocat_identifier in gathered_geocat_identifiers]
 
         all_ogdch_identifiers = \
-            set(gathered_ogdch_identifiers + existing_dataset_infos.keys())
+            set(gathered_ogdch_identifiers + list(existing_dataset_infos.keys()))
 
         packages_to_delete = search_utils.get_packages_to_delete(
             existing_dataset_infos=existing_dataset_infos,
@@ -346,7 +346,7 @@ class GeocatHarvester(HarvesterBase):
                 log.debug("No package found, create a new one!")
 
                 # generate an id to reference it in the harvest_object
-                pkg_dict['id'] = unicode(uuid.uuid4())
+                pkg_dict['id'] = str(uuid.uuid4())
 
                 log.info('Package with GUID %s does not exist, '
                          'let\'s create it' % harvest_object.guid)

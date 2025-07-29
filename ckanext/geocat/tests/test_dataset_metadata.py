@@ -70,9 +70,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIn(field, dataset)
 
         # make sure only the defined fields are on the dataset
-        self.assertEquals(sorted(fields), sorted(dataset.keys()))
+        self.assertEqual(sorted(fields), sorted(dataset.keys()))
 
-        for key, value in dataset.iteritems():
+        for key, value in dataset.items():
             pprint(value)
             self.assertIn(key, fields)
 
@@ -85,37 +85,37 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         # identifier
-        self.assertEquals('93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo', dataset.get('identifier'))
+        self.assertEqual('93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo', dataset.get('identifier'))
 
         # title
-        self.assertEquals(u'L\xe4rmbelastung durch Eisenbahnverkehr Nacht', dataset['title']['de'])
-        self.assertEquals('Exposition au bruit du trafic ferroviaire, nuit', dataset['title']['fr'])
-        self.assertEquals('Esposizione al rumore del traffico ferroviario, notte', dataset['title']['it'])
-        self.assertEquals('Nighttime railway noise exposure', dataset['title']['en'])
+        self.assertEqual('L\xe4rmbelastung durch Eisenbahnverkehr Nacht', dataset['title']['de'])
+        self.assertEqual('Exposition au bruit du trafic ferroviaire, nuit', dataset['title']['fr'])
+        self.assertEqual('Esposizione al rumore del traffico ferroviario, notte', dataset['title']['it'])
+        self.assertEqual('Nighttime railway noise exposure', dataset['title']['en'])
 
         # description
-        self.assertIn(u'Die Karte zeigt, welcher L\xe4rmbelastung', dataset['description']['de'])
+        self.assertIn('Die Karte zeigt, welcher L\xe4rmbelastung', dataset['description']['de'])
         self.assertIn('', dataset['description']['fr'])
         self.assertIn('', dataset['description']['it'])
         self.assertIn('', dataset['description']['en'])
 
         # dates
         issued_modified_date = '2011-12-31T00:00:00'
-        self.assertEquals(issued_modified_date, dataset['issued'])
-        self.assertEquals(issued_modified_date, dataset['modified'])
+        self.assertEqual(issued_modified_date, dataset['issued'])
+        self.assertEqual(issued_modified_date, dataset['modified'])
 
         # publisher
         publisher = json.loads(dataset['publisher'])
         self.assertTrue(isinstance(publisher, dict))
-        self.assertEquals(u'Bundesamt f\xfcr Umwelt', publisher['name']['de'])
-        self.assertEquals(u'http://www.bafu.admin.ch/abteilung-laerm-nis', publisher['url'])
+        self.assertEqual('Bundesamt f\xfcr Umwelt', publisher['name']['de'])
+        self.assertEqual('http://www.bafu.admin.ch/abteilung-laerm-nis', publisher['url'])
 
         # contact points
         self.assertTrue(hasattr(dataset['contact_points'], '__iter__'))
-        self.assertEquals(1, len(dataset['contact_points']))
+        self.assertEqual(1, len(dataset['contact_points']))
         for contact_point in dataset['contact_points']:
-            self.assertEquals('noise@bafu.admin.ch', contact_point['name'])
-            self.assertEquals('noise@bafu.admin.ch', contact_point['email'])
+            self.assertEqual('noise@bafu.admin.ch', contact_point['name'])
+            self.assertEqual('noise@bafu.admin.ch', contact_point['email'])
 
         # groups
         groups = ['regi', 'envi']
@@ -123,35 +123,35 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             self.assertIn(group['name'], groups)
 
         # language
-        self.assertEquals(set(['http://publications.europa.eu/resource/authority/language/DEU']), set(dataset.get('language')))
+        self.assertEqual(set(['http://publications.europa.eu/resource/authority/language/DEU']), set(dataset.get('language')))
 
         # conforms to
-        self.assertEquals(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
+        self.assertEqual(["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"],
                           dataset['conforms_to'])
-        self.assertEquals(1, len(dataset['conforms_to']))
+        self.assertEqual(1, len(dataset['conforms_to']))
         self.assertIsInstance(dataset['conforms_to'], list)
 
         # relations
         self.assertTrue(hasattr(dataset['relations'], '__iter__'))
-        self.assertEquals(2, len(dataset['relations']))
+        self.assertEqual(2, len(dataset['relations']))
         for relation in dataset['relations']:
             self.assertIsNotNone(relation['label'])
             self.assertIsNotNone(relation['url'])
 
         # resources
         self.assertTrue(hasattr(dataset['resources'], '__iter__'))
-        self.assertEquals(4, len(dataset['resources']))
+        self.assertEqual(4, len(dataset['resources']))
         for relation in dataset['resources']:
             self.assertIsNotNone(relation['title'])
             self.assertIsNotNone(relation['description'])
             # Node with protocol OPENDATA:SWISS should not be mapped
-            self.assertNotEquals(
+            self.assertNotEqual(
                 relation['description'], 'Permalink to dataset on opendata.swiss')
             self.assertIsNotNone(relation['url'])
 
         # temporals
         self.assertTrue(hasattr(dataset['temporals'], '__iter__'))
-        self.assertEquals(0, len(dataset['temporals']))
+        self.assertEqual(0, len(dataset['temporals']))
 
         # keywords
         keywords = {
@@ -197,24 +197,24 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             ],
         }
         for lang in ['de', 'fr', 'it', 'en']:
-            self.assertEquals(set(keywords[lang]), set(dataset['keywords'][lang]))
+            self.assertEqual(set(keywords[lang]), set(dataset['keywords'][lang]))
 
         # url
-        self.assertEquals('http://www.bafu.admin.ch/laerm/', dataset.get('url'))
+        self.assertEqual('http://www.bafu.admin.ch/laerm/', dataset.get('url'))
 
         # spatial
-        self.assertEquals('Schweiz', dataset.get('spatial'))
+        self.assertEqual('Schweiz', dataset.get('spatial'))
 
         # coverage
-        self.assertEquals('', dataset.get('coverage'))
+        self.assertEqual('', dataset.get('coverage'))
 
         # accrual periodicity
-        self.assertEquals('', dataset.get('accrual_periodicity'))
+        self.assertEqual('', dataset.get('accrual_periodicity'))
 
         # qualified relations
         self.assertTrue(hasattr(dataset['qualified_relations'], '__iter__'))
-        self.assertEquals(1, len(dataset['qualified_relations']))
-        self.assertEquals(
+        self.assertEqual(1, len(dataset['qualified_relations']))
+        self.assertEqual(
             {
                 'relation': 'http://test.ckan.net/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo',
                 'had_role': 'http://www.iana.org/assignments/relation/related',
@@ -227,22 +227,22 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         # identifier
-        self.assertEquals('93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo', dataset.get('identifier'))
+        self.assertEqual('93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo', dataset.get('identifier'))
 
         # title
-        self.assertEquals(u'L\xe4rmbelastung durch Eisenbahnverkehr Nacht', dataset['title']['de'])
-        self.assertEquals('', dataset['title']['fr'])
-        self.assertEquals('', dataset['title']['it'])
-        self.assertEquals('', dataset['title']['en'])
+        self.assertEqual('L\xe4rmbelastung durch Eisenbahnverkehr Nacht', dataset['title']['de'])
+        self.assertEqual('', dataset['title']['fr'])
+        self.assertEqual('', dataset['title']['it'])
+        self.assertEqual('', dataset['title']['en'])
 
         # description
-        self.assertIn(u'Die Karte zeigt, welcher L\xe4rmbelastung', dataset['description']['de'])
+        self.assertIn('Die Karte zeigt, welcher L\xe4rmbelastung', dataset['description']['de'])
         self.assertIn('', dataset['description']['fr'])
         self.assertIn('', dataset['description']['it'])
         self.assertIn('', dataset['description']['en'])
 
         # language
-        self.assertEquals(set(['http://publications.europa.eu/resource/authority/language/DEU']), set(dataset.get('language')))
+        self.assertEqual(set(['http://publications.europa.eu/resource/authority/language/DEU']), set(dataset.get('language')))
 
         # keywords
         keywords = {
@@ -261,37 +261,37 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             'en': [],
         }
         for lang in ['de', 'fr', 'it', 'en']:
-            self.assertEquals(set(keywords[lang]), set(dataset['keywords'][lang]))
+            self.assertEqual(set(keywords[lang]), set(dataset['keywords'][lang]))
 
     def test_date_revision(self):
         xml = self._load_xml('revision_date.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         revision_date = '2011-12-31T00:00:00'
-        self.assertEquals(revision_date, dataset['issued'])
-        self.assertEquals(revision_date, dataset['modified'])
+        self.assertEqual(revision_date, dataset['issued'])
+        self.assertEqual(revision_date, dataset['modified'])
 
     def test_date_publication(self):
         xml = self._load_xml('publication_date.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        self.assertEquals('2010-12-30T00:00:00', dataset['issued'])
-        self.assertEquals('2011-12-31T00:00:00', dataset['modified'])
+        self.assertEqual('2010-12-30T00:00:00', dataset['issued'])
+        self.assertEqual('2011-12-31T00:00:00', dataset['modified'])
 
-        self.assertNotEquals(dataset['issued'], dataset['modified'])
+        self.assertNotEqual(dataset['issued'], dataset['modified'])
 
     def test_date_issued_before_1900(self):
         xml = self._load_xml('publication_date_before_1900.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        self.assertEquals(dataset['issued'], '1891-12-30T00:00:00')
-        self.assertEquals(dataset['modified'], '1891-12-31T00:00:00')
+        self.assertEqual(dataset['issued'], '1891-12-30T00:00:00')
+        self.assertEqual(dataset['modified'], '1891-12-31T00:00:00')
 
     def test_documentation(self):
         xml = self._load_xml('geocat-testdata.xml')
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        self.assertEquals(
+        self.assertEqual(
             sorted(dataset['documentation']),
             [
                 "https://example.org/documentation/1",

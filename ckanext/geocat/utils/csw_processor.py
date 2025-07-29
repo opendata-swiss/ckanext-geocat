@@ -49,7 +49,7 @@ class GeocatCatalogueServiceWeb(object):
                     nextrecord = self.csw.results['nextrecord']
                 else:
                     nextrecord = None
-                for id in self.csw.records.keys():
+                for id in list(self.csw.records.keys()):
                     record_ids.append(id)
         return record_ids
 
