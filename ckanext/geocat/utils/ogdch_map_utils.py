@@ -2,10 +2,12 @@
 
 import json
 from datetime import datetime
-from ckan.lib.munge import munge_tag
-from ckanext.geocat.utils import xpath_utils  # noqa
+
 import ckan.plugins.toolkit as tk
+from ckan.lib.munge import munge_tag
+
 import ckanext.geocat.utils.mapping_utils as mu
+from ckanext.geocat.utils import xpath_utils  # noqa
 
 ORGANIZATION_URI_BASE = "https://opendata.swiss/organization/"
 MAP_PROTOCOL_PREFIX = "Map (Preview)"

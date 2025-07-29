@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import re
 from urllib.parse import urlparse
 
 from lxml import etree
-
-import logging
 
 log = logging.getLogger(__name__)
 

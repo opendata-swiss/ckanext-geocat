@@ -1,8 +1,10 @@
 """Tests for xpath utils """
-from ckanext.geocat.utils import xpath_utils
 import os
 import unittest
+
 from lxml import etree
+
+from ckanext.geocat.utils import xpath_utils
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

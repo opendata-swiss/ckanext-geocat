@@ -1,11 +1,11 @@
+import logging
 import os
-import rdflib
-import yaml
-from rdflib.namespace import Namespace, RDF, SKOS
-from lxml import etree
 import xml.etree.ElementTree as ET
 
-import logging
+import rdflib
+import yaml
+from lxml import etree
+from rdflib.namespace import RDF, SKOS, Namespace
 
 log = logging.getLogger(__name__)
 

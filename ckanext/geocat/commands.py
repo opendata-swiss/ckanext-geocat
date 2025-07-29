@@ -1,11 +1,13 @@
 import sys
 from pprint import pprint
+
 from ckan.lib.cli import CkanCommand
-from ckanext.geocat.utils import csw_processor, csw_mapping
-from ckanext.geocat.harvester import (
-    DEFAULT_PERMA_LINK_URL,
+
+from ckanext.geocat.harvester import (  # noqa
     DEFAULT_PERMA_LINK_LABEL,
-)  # noqa
+    DEFAULT_PERMA_LINK_URL,
+)
+from ckanext.geocat.utils import csw_mapping, csw_processor
 
 
 class GeocatCommand(CkanCommand):

@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 import json
-import nose
+import logging
 import os
 
+import ckantoolkit.tests.helpers as h
+import nose
 import requests
 import requests_mock
-
-import ckantoolkit.tests.helpers as h
 from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
-
-import logging
 
 log = logging.getLogger(__name__)
 

@@ -1,9 +1,10 @@
-import ckan.plugins.toolkit as tk
-import ckan.model as model
-from dateutil.parser import parse as dateutil_parse, ParserError
-from dateutil.tz import tz
-
 import logging
+
+import ckan.model as model
+import ckan.plugins.toolkit as tk
+from dateutil.parser import ParserError
+from dateutil.parser import parse as dateutil_parse
+from dateutil.tz import tz
 
 log = logging.getLogger(__name__)
 

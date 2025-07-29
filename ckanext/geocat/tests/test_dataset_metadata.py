@@ -1,13 +1,14 @@
 """Tests for metadata """
-from ckanext.geocat.utils import csw_mapping
-from nose.tools import *  # noqa
-import os
 import json
-from datetime import datetime
+import os
 import time
 import unittest
+from datetime import datetime
 from pprint import pprint
 
+from nose.tools import *  # noqa
+
+from ckanext.geocat.utils import csw_mapping
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

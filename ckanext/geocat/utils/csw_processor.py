@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from owslib.csw import CatalogueServiceWeb
 from owslib.fes import PropertyIsEqualTo
-
-import logging
 
 log = logging.getLogger(__name__)
 

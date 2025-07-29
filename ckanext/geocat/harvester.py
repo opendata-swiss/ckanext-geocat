@@ -1,30 +1,30 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import traceback
+import uuid
 
-from ckan.lib.helpers import json
-from ckan.lib.plugins import lookup_package_plugin
-from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
-from ckanext.harvest.harvesters import HarvesterBase
-from ckanext.geocat.utils import (
-    search_utils,
-    csw_processor,
-    ogdch_map_utils,
-    csw_mapping,
-)  # noqa
-from ckanext.geocat.utils.mapping_utils import VALID_TERMS_OF_USE, DEFAULT_TERMS_OF_USE
-from ckan.lib.navl.validators import ignore
 import ckan.plugins.toolkit as tk
 from ckan import model
+from ckan.lib.helpers import json
+from ckan.lib.navl.validators import ignore
+from ckan.lib.plugins import lookup_package_plugin
 from ckan.model import Session
-import uuid
+
+from ckanext.geocat.utils import (  # noqa
+    csw_mapping,
+    csw_processor,
+    ogdch_map_utils,
+    search_utils,
+)
 from ckanext.geocat.utils.harvest_helper import (
-    map_resources_to_ids,
     check_package_change,
     create_activity,
+    map_resources_to_ids,
 )
-
-import logging
+from ckanext.geocat.utils.mapping_utils import DEFAULT_TERMS_OF_USE, VALID_TERMS_OF_USE
+from ckanext.harvest.harvesters import HarvesterBase
+from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 
 log = logging.getLogger(__name__)
 
