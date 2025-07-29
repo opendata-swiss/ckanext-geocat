@@ -1,7 +1,7 @@
 # This file lists the dependencies of this extension.
 # Install with a command like: pip install -r requirements.txt
 black==25.1.0
-flake8==3.0.4
+flake8>=5.0.0
 isort==6.0.1
 requests-mock==1.9.3
 ckantoolkit>=0.0.7
