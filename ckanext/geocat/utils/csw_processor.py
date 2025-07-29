@@ -2,7 +2,7 @@
 
 import logging
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.catalogue.csw2 import CatalogueServiceWeb
 from owslib.fes import PropertyIsEqualTo
 
 log = logging.getLogger(__name__)
