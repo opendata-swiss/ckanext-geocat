@@ -3,7 +3,6 @@ import logging
 import os
 
 import ckantoolkit.tests.helpers as h
-import nose
 import requests
 import requests_mock
 from ckan.common import config
@@ -12,10 +11,6 @@ import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
 
 log = logging.getLogger(__name__)
-
-eq_ = nose.tools.eq_
-assert_true = nose.tools.assert_true
-assert_raises = nose.tools.assert_raises
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -150,7 +145,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         # Check that correct amount of datasets were created
         fq = f"+type:dataset harvest_source_id:{harvest_source['id']}"
         results = h.call_action("package_search", {}, fq=fq)
-        eq_(results["count"], expected_packages)
+        assert results["count"] == expected_packages
 
         return results
 
@@ -229,7 +224,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         harvest_source = self._get_or_create_harvest_source(config=test_config_deleted)
 
         last_job_status = harvest_source["status"]["last_job"]
-        eq_(last_job_status["status"], "Finished")
+        assert last_job_status["status"] == "Finished"
 
         error_count = len(last_job_status["object_error_summary"])
-        eq_(error_count, 0)
+        assert error_count == 0
