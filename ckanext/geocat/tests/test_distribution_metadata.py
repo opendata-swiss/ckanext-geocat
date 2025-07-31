@@ -51,10 +51,14 @@ class TestGeocatDeprecatedDistributionProtocols(TestGeocatDistributionProtocols)
     def test_resources_are_picked_up_correctly_with_dataset_fields(self):
         assert 4 == len(self.distributions)
         for distribution in self.distributions:
-            assert distribution.get("rights") == \
-                   "https://opendata.swiss/terms-of-use#terms_open"
-            assert distribution.get("license") == \
-                   "https://opendata.swiss/terms-of-use#terms_open"
+            assert (
+                distribution.get("rights")
+                == "https://opendata.swiss/terms-of-use#terms_open"
+            )
+            assert (
+                distribution.get("license")
+                == "https://opendata.swiss/terms-of-use#terms_open"
+            )
 
             assert distribution.get("issued") == self.dataset.get("issued")
             assert distribution.get("modified") == self.dataset.get("modified")
@@ -110,10 +114,14 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
     def test_fields_that_come_from_the_dataset(self):
         assert 6 == len(self.distributions)
         for distribution in self.distributions:
-            assert distribution.get("rights") == \
-                   "https://opendata.swiss/terms-of-use#terms_by"
-            assert distribution.get("license") == \
-                   "https://opendata.swiss/terms-of-use#terms_by"
+            assert (
+                distribution.get("rights")
+                == "https://opendata.swiss/terms-of-use#terms_by"
+            )
+            assert (
+                distribution.get("license")
+                == "https://opendata.swiss/terms-of-use#terms_by"
+            )
             assert distribution.get("issued") == self.dataset.get("issued")
             assert distribution.get("modified") == self.dataset.get("modified")
             self._is_multi_lang(distribution["title"])

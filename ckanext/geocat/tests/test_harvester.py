@@ -1,14 +1,15 @@
 import json
 import logging
 import os
+
 import ckan.plugins.toolkit as toolkit
-import ckanext.harvest.plugin
 import ckantoolkit.tests.helpers as h
 import pytest
 import requests_mock
 from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
+import ckanext.harvest.plugin
 from ckanext.harvest import queue
 
 log = logging.getLogger(__name__)
@@ -99,7 +100,13 @@ class FunctionalHarvestTest:
 
 class TestGeocatHarvestFunctional(FunctionalHarvestTest):
     @pytest.fixture(autouse=True)
-    def _setup(self, harvest_env, gather_consumer, fetch_consumer,test_user_and_org,):
+    def _setup(
+        self,
+        harvest_env,
+        gather_consumer,
+        fetch_consumer,
+        test_user_and_org,
+    ):
         self.gather_consumer = gather_consumer
         self.fetch_consumer = fetch_consumer
         self.user_name, self.org_id = test_user_and_org
@@ -128,21 +135,16 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         return results
 
     def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
-        base_path = os.path.join(
-            __location__, "fixtures", "test_harvesters"
-        )
-        with open(os.path.join(base_path, "capabilities.xml"),
-                  encoding="utf-8") as f:
+        base_path = os.path.join(__location__, "fixtures", "test_harvesters")
+        with open(os.path.join(base_path, "capabilities.xml"), encoding="utf-8") as f:
             mocker.get(mock_capabilities_url, text=f.read())
 
-        with open(os.path.join(base_path, all_results_filename),
-                  encoding="utf-8") as f:
+        with open(os.path.join(base_path, all_results_filename), encoding="utf-8") as f:
             mocker.post(mock_record_url, text=f.read())
 
         responses = []
         for filename in single_results_filenames:
-            with open(os.path.join(base_path, filename),
-                      encoding="utf-8") as f:
+            with open(os.path.join(base_path, filename), encoding="utf-8") as f:
                 responses.append({"text": f.read()})
         mocker.get(mock_record_url, responses)
 

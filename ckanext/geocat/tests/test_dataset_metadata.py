@@ -79,17 +79,25 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # identifier
         assert "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo" == dataset.get(
-            "identifier")
+            "identifier"
+        )
 
         # title
 
         assert "L\xe4rmbelastung durch Eisenbahnverkehr Nacht" == dataset["title"]["de"]
-        assert "Exposition au bruit du trafic ferroviaire, nuit" == dataset["title"]["fr"]
-        assert "Esposizione al rumore del traffico ferroviario, notte" == dataset["title"]["it"]
+        assert (
+            "Exposition au bruit du trafic ferroviaire, nuit" == dataset["title"]["fr"]
+        )
+        assert (
+            "Esposizione al rumore del traffico ferroviario, notte"
+            == dataset["title"]["it"]
+        )
         assert "Nighttime railway noise exposure" == dataset["title"]["en"]
 
         # description
-        assert "Die Karte zeigt, welcher L\xe4rmbelastung" in dataset["description"]["de"]
+        assert (
+            "Die Karte zeigt, welcher L\xe4rmbelastung" in dataset["description"]["de"]
+        )
         assert "" in dataset["description"]["fr"]
         assert "" in dataset["description"]["it"]
         assert "" in dataset["description"]["en"]
@@ -118,12 +126,14 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             assert group["name"] in groups
 
         # language
-        assert set(["http://publications.europa.eu/resource/authority/language/DEU"]) == \
-               set(dataset.get("language"))
+        assert set(
+            ["http://publications.europa.eu/resource/authority/language/DEU"]
+        ) == set(dataset.get("language"))
 
         # conforms to
-        assert ["https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"
-                ] == dataset["conforms_to"]
+        assert [
+            "https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"
+        ] == dataset["conforms_to"]
         assert 1 == len(dataset["conforms_to"])
         assert isinstance(dataset["conforms_to"], list)
 
@@ -134,8 +144,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             assert relation["title"] is not None
             assert relation["description"] is not None
             # Node with protocol OPENDATA:SWISS should not be mapped
-            assert relation["description"] != \
-                   "Permalink to dataset on opendata.swiss"
+            assert relation["description"] != "Permalink to dataset on opendata.swiss"
             assert relation["url"] is not None
 
         # keywords
@@ -200,35 +209,37 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         assert hasattr(dataset["qualified_relations"], "__iter__")
         assert 1 == len(dataset["qualified_relations"])
         assert {
-                 "relation": "http://test.ckan.net/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo",
-                 "had_role": "http://www.iana.org/assignments/relation/related",
-               } == dataset["qualified_relations"][0]
+            "relation": "http://test.ckan.net/perma/8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo",
+            "had_role": "http://www.iana.org/assignments/relation/related",
+        } == dataset["qualified_relations"][0]
 
     def test_fields_values_de_only(self):
         xml = self._load_xml("only_de.xml")
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
         # identifier
-        assert "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo" == \
-               dataset.get("identifier")
+        assert "93814e81-2466-4690-b54d-c1d958f1c3b8@swisstopo" == dataset.get(
+            "identifier"
+        )
 
         # title
-        assert "L\xe4rmbelastung durch Eisenbahnverkehr Nacht" == \
-               dataset["title"]["de"]
+        assert "L\xe4rmbelastung durch Eisenbahnverkehr Nacht" == dataset["title"]["de"]
         assert "" == dataset["title"]["fr"]
         assert "" == dataset["title"]["it"]
         assert "" == dataset["title"]["en"]
 
         # description
-        assert "Die Karte zeigt, welcher L\xe4rmbelastung" in \
-               dataset["description"]["de"]
+        assert (
+            "Die Karte zeigt, welcher L\xe4rmbelastung" in dataset["description"]["de"]
+        )
         assert "" in dataset["description"]["fr"]
         assert "" in dataset["description"]["it"]
         assert "" in dataset["description"]["en"]
 
         # language
-        assert set(["http://publications.europa.eu/resource/authority/language/DEU"]) \
-               == set(dataset.get("language"))
+        assert set(
+            ["http://publications.europa.eu/resource/authority/language/DEU"]
+        ) == set(dataset.get("language"))
 
         # keywords
         keywords = {
@@ -277,11 +288,10 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
         xml = self._load_xml("geocat-testdata.xml")
         dataset = self.csw_map.get_metadata(xml, self.geocat_identifier)
 
-        assert sorted(dataset["documentation"]) == \
-               [
-                    "https://example.org/documentation/1",
-                    "https://example.org/documentation/2",
-               ]
+        assert sorted(dataset["documentation"]) == [
+            "https://example.org/documentation/1",
+            "https://example.org/documentation/2",
+        ]
 
 
 if __name__ == "__main__":

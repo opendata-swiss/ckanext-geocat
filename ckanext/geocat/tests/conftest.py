@@ -1,11 +1,12 @@
 import logging
+
+import ckantoolkit.tests.helpers as h
 import pytest
 import requests
-import ckantoolkit.tests.helpers as h
+from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
-from ckan.common import config
 
 log = logging.getLogger(__name__)
 
@@ -33,9 +34,9 @@ def harvest_env():
     queue.purge_queues()
     # Optional: avoid Solr dependency for isolated tests
     try:
-	    requests.get(clear_solr_url, timeout=2)
+        requests.get(clear_solr_url, timeout=2)
     except requests.ConnectionError:
-	    print("Solr not available on localhost:8983 — skipping Solr clearing.")
+        print("Solr not available on localhost:8983 — skipping Solr clearing.")
     yield
     h.reset_db()
     queue.purge_queues()
