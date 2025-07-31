@@ -14,17 +14,11 @@ pip install -e git+https://github.com/ckan/ckanext-fluent.git#egg=ckanext-fluent
 pip install -e git+https://github.com/ckan/ckanext-hierarchy.git#egg=ckanext-hierarchy
 pip install -e git+https://github.com/ckan/ckanext-xloader.git#egg=ckanext-xloader
 pip install -r https://raw.githubusercontent.com/ckan/ckanext-xloader/master/requirements.txt
-
-# Last commit before support for Python 2 was dropped
-pip install -e git+https://github.com/ckan/ckanext-harvest.git@v1.4.2#egg=ckanext-harvest
-pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/v1.4.2/requirements.txt
-
-# Last commit before support for Python 2 was dropped
-pip install -e git+https://github.com/ckan/ckanext-dcat.git@0c26bed5b7a3a7fca8e7b78e338aace096e0ebf6#egg=ckanext-dcat
-pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/0c26bed5b7a3a7fca8e7b78e338aace096e0ebf6/requirements-py2.txt
-
-# Last commit before support for Python 2 was dropped
-pip install -e git+https://github.com/ckan/ckanext-showcase.git@v1.5.2#egg=ckanext-showcase
+pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/master/requirements.txt
+pip install -e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
+pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/master/requirements-py2.txt
+pip install -e git+https://github.com/ckan/ckanext-showcase.git#egg=ckanext-showcase
 
 # Our ckanexts
 pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git#egg=ckanext-dcatapchharvest
