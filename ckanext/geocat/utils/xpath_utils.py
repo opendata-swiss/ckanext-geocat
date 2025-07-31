@@ -341,18 +341,16 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol):
         node=resource_node, path=GMD_RESOURCE_NAME
     )
     if name_node:
-        distribution[
-            "name"
-        ] = xpath_get_language_dict_from_geocat_multilanguage_node(name_node)
+        distribution["name"] = path_get_language_dict_from_geocat_multilanguage_node(  # noqa
+            name_node
+        )
     else:
         distribution["name"] = {"en": "", "it": "", "de": "", "fr": ""}
     description_node = xpath_get_single_sub_node_for_node_and_path(
         node=resource_node, path=GMD_RESOURCE_DESCRIPTION
     )
     if description_node is not None:
-        distribution[
-            "description"
-        ] = xpath_get_language_dict_from_geocat_multilanguage_node(
+        distribution[ "description"] = xpath_get_language_dict_from_geocat_multilanguage_node(  # noqa
             description_node
         )
     else:
@@ -420,9 +418,7 @@ def xpath_get_geocat_services(node):
     if service_nodes:
         for service_node in service_nodes:
             geocat_service = {}
-            geocat_service[
-                "name"
-            ] = xpath_get_single_sub_node_for_node_and_path(  # noqa
+            geocat_service["name"] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_SERVICE_TITLE
             )
             (
@@ -431,9 +427,7 @@ def xpath_get_geocat_services(node):
             ) = xpath_get_first_of_values_from_path_list(
                 node=service_node, path_list=GMD_SERVICE_URLS
             )
-            geocat_service[
-                "media_type"
-            ] = xpath_get_single_sub_node_for_node_and_path(  # noqa
+            geocat_service["media_type"] = xpath_get_single_sub_node_for_node_and_path(  # noqa
                 node=service_node, path=GMD_MEDIA_TYPE
             )
             geocat_services.append(geocat_service)

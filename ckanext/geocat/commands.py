@@ -11,7 +11,6 @@ from ckanext.geocat.utils import csw_mapping, csw_processor
 
 
 class GeocatCommand(CkanCommand):
-
     """Command to query geocat
 
     Usage::
