@@ -67,7 +67,7 @@ jobs:
     - name: Create ckan container
       run: |
         docker create --name test_ckan --network ${{ job.container.network }} --network-alias ckan \
-          -e "HOME=/github/home" -e GITHUB_ACTIONS=true -e CI=true -e CKAN_SITE_URL=http://test.ckan.net \
+          -e "HOME=/github/home" -e GITHUB_ACTIONS=true -e CI=true --user root -e CKAN_SITE_URL=http://test.ckan.net \
           -v "/var/run/docker.sock":"/var/run/docker.sock" \
           -v "/home/runner/work":"/__w" -v "/home/runner/work/_temp":"/__w/_temp" \
           -v "/home/runner/work/_actions":"/__w/_actions" -v "/opt/hostedtoolcache":"/__t" \
@@ -77,7 +77,7 @@ jobs:
         docker start test_ckan
     - name: Install requirements and set up database
       run: |
-        docker exec test_ckan -u root $WORKDIR/bin/install_test_requirements.sh ${{ matrix.ckan-version }}
+        docker exec test_ckan $WORKDIR/bin/install_test_requirements.sh ${{ matrix.ckan-version }}
     - name: Run tests
       run: | 
         docker exec test_ckan nosetests --ckan --with-pylons=$WORKDIR/test.ini \
