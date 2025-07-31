@@ -33,9 +33,7 @@ def map_resources_to_ids(pkg_dict, package_id):
 
 
 def create_activity(package_id, message):
-    notification_user = tk.get_action("user_show")(
-        {}, {"id": NOTIFICATION_USER}
-    )
+    notification_user = tk.get_action("user_show")({}, {"id": NOTIFICATION_USER})
     activity_dict = {
         "user_id": notification_user["id"],
         "object_id": package_id,
@@ -63,9 +61,7 @@ def check_package_change(existing_pkg, dataset_dict):
         return True, msg
 
     # Check if the modified date has changed
-    if _changes_in_date(
-        existing_pkg.get("modified"), dataset_dict.get("modified")
-    ):
+    if _changes_in_date(existing_pkg.get("modified"), dataset_dict.get("modified")):
         msg = f"dataset modified date changed: {dataset_dict.get('modified')}"
         return True, msg
 
@@ -85,17 +81,12 @@ def check_package_change(existing_pkg, dataset_dict):
         if not matching_existing_resource_with_same_url:
             msg = f"resource access url changed: {resource.get('url')}"
             return True, msg
-        matching_existing_resource = matching_existing_resource_with_same_url[
-            0
-        ]
+        matching_existing_resource = matching_existing_resource_with_same_url[0]
         download_url_changed = matching_existing_resource.get(
             "download_url"
         ) != resource.get("download_url")
         if download_url_changed:
-            msg = (
-                f"resource download url changed: "
-                f"{resource.get('download_url')}"
-            )
+            msg = f"resource download url changed: " f"{resource.get('download_url')}"
             return True, msg
         if _changes_in_date(
             matching_existing_resource.get("modified"),
@@ -133,8 +124,7 @@ def _changes_in_date(existing_datetime, new_datetime):
             )
     except (ParserError, OverflowError) as e:
         log.info(
-            f"Error when parsing dates {existing_datetime}, {new_datetime}: "
-            f"{e}"
+            f"Error when parsing dates {existing_datetime}, {new_datetime}: " f"{e}"
         )
         return False
 

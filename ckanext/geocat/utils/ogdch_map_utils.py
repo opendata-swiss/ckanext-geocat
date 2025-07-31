@@ -26,18 +26,14 @@ def map_to_ogdch_publisher(geocat_publisher, organization_slug):
         return
     ogdch_publisher = {
         "name": geocat_publisher.get("name"),
-        "url": geocat_publisher.get(
-            "url", _get_organization_url(organization_slug)
-        ),
+        "url": geocat_publisher.get("url", _get_organization_url(organization_slug)),
     }
     return json.dumps(ogdch_publisher)
 
 
 def map_to_ogdch_datetime(datetime_value):
     try:
-        d = datetime.strptime(
-            datetime_value[0 : len("YYYY-MM-DD")], "%Y-%m-%d"
-        )
+        d = datetime.strptime(datetime_value[0 : len("YYYY-MM-DD")], "%Y-%m-%d")
         return datetime.isoformat(d)
     except (ValueError, KeyError, TypeError, IndexError):
         raise ValueError("Could not parse datetime")

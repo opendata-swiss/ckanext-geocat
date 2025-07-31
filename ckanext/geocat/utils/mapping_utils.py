@@ -37,9 +37,7 @@ namespaces = {
     "dc": DCT,
 }
 
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__))
-)
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 def get_elem_tree_from_string(xml_string):
@@ -107,7 +105,5 @@ def get_iana_media_type_values():
             continue
         name = record.find("ns:name", media_types_namespaces).text
         file_value = record.find("ns:file", media_types_namespaces).text
-        media_type_values[name] = (
-            media_types_namespaces["ns"] + "/" + file_value
-        )
+        media_type_values[name] = media_types_namespaces["ns"] + "/" + file_value
     return media_type_values

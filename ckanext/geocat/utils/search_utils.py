@@ -32,9 +32,7 @@ def get_packages_to_delete(existing_dataset_infos, gathered_ogdch_identifiers):
     ]
 
 
-def get_double_packages(
-    existing_dataset_infos, gathered_ogdch_identifiers
-):  # noqa
+def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
     return [
         (identifier, info)
         for identifier, info in list(existing_dataset_infos.items())

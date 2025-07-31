@@ -18,9 +18,7 @@ eq_ = nose.tools.eq_
 assert_true = nose.tools.assert_true
 assert_raises = nose.tools.assert_raises
 
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__))
-)
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 mock_url = "http://mock-geocat.ch"
 mock_record_url = "http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM"
@@ -55,9 +53,7 @@ class FunctionalHarvestTest(object):
         )
         org_context = {"user": user_dict["name"], "return_id_only": True}
         org_data_dict = {"name": "geocat_org"}
-        self.org_id = h.call_action(
-            "organization_create", org_context, **org_data_dict
-        )
+        self.org_id = h.call_action("organization_create", org_context, **org_data_dict)
 
     def teardown(self):
         h.reset_db()
@@ -76,13 +72,9 @@ class FunctionalHarvestTest(object):
         source_dict.update(**kwargs)
 
         try:
-            harvest_source = h.call_action(
-                "harvest_source_show", {}, **source_dict
-            )
+            harvest_source = h.call_action("harvest_source_show", {}, **source_dict)
         except Exception as e:
-            harvest_source = h.call_action(
-                "harvest_source_create", {}, **source_dict
-            )
+            harvest_source = h.call_action("harvest_source_create", {}, **source_dict)
 
         return harvest_source
 
@@ -103,9 +95,7 @@ class FunctionalHarvestTest(object):
     def _gather_queue(self, num_jobs=1):
         for job in range(num_jobs):
             # Pop one item off the queue (the job id) and run the callback
-            reply = self.gather_consumer.basic_get(
-                queue="ckan.harvest.gather.test"
-            )
+            reply = self.gather_consumer.basic_get(queue="ckan.harvest.gather.test")
 
             # Make sure something was sent to the gather queue
             assert reply[2], "Empty gather queue"
@@ -118,9 +108,7 @@ class FunctionalHarvestTest(object):
         for _object in range(num_objects):
             # Pop item from the fetch queues (object ids) and run the callback,
             # one for each object created
-            reply = self.fetch_consumer.basic_get(
-                queue="ckan.harvest.fetch.test"
-            )
+            reply = self.fetch_consumer.basic_get(queue="ckan.harvest.fetch.test")
 
             # Make sure something was sent to the fetch queue
             assert reply[2], "Empty fetch queue, the gather stage failed"
@@ -154,9 +142,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         mocker,
         **kwargs,
     ):
-        self._mock_csw_results(
-            all_results_filename, single_results_filenames, mocker
-        )
+        self._mock_csw_results(all_results_filename, single_results_filenames, mocker)
 
         harvest_source = self._get_or_create_harvest_source(**kwargs)
 
@@ -169,9 +155,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         return results
 
-    def _mock_csw_results(
-        self, all_results_filename, single_results_filenames, mocker
-    ):
+    def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
         path = os.path.join(
             __location__, "fixtures", "test_harvesters", "capabilities.xml"
         )
@@ -190,9 +174,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
 
         responses = []
         for filename in single_results_filenames:
-            path = os.path.join(
-                __location__, "fixtures", "test_harvesters", filename
-            )
+            path = os.path.join(__location__, "fixtures", "test_harvesters", filename)
             with open(path) as xml:
                 result = str(xml.read(), "utf-8")
 
@@ -245,9 +227,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         self._run_jobs()
 
         # Get the harvest source with the updated status
-        harvest_source = self._get_or_create_harvest_source(
-            config=test_config_deleted
-        )
+        harvest_source = self._get_or_create_harvest_source(config=test_config_deleted)
 
         last_job_status = harvest_source["status"]["last_job"]
         eq_(last_job_status["status"], "Finished")

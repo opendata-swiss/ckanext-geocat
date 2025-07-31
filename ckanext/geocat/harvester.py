@@ -11,9 +11,9 @@ from ckan.lib.navl.validators import ignore
 from ckan.lib.plugins import lookup_package_plugin
 from ckan.model import Session
 
-from ckanext.geocat.utils import (  # noqa
+from ckanext.geocat.utils import (
     csw_mapping,
-    csw_processor,
+    csw_processor,  # noqa
     ogdch_map_utils,
     search_utils,
 )
@@ -22,8 +22,8 @@ from ckanext.geocat.utils.harvest_helper import (
     create_activity,
     map_resources_to_ids,
 )
-from ckanext.geocat.utils.mapping_utils import (  # noqa
-    DEFAULT_TERMS_OF_USE,
+from ckanext.geocat.utils.mapping_utils import (
+    DEFAULT_TERMS_OF_USE,  # noqa
     VALID_TERMS_OF_USE,
 )
 from ckanext.harvest.harvesters import HarvesterBase
@@ -31,7 +31,9 @@ from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 
 log = logging.getLogger(__name__)
 
-DEFAULT_PERMA_LINK_URL = "https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/"  # noqa
+DEFAULT_PERMA_LINK_URL = (
+    "https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/"  # noqa
+)
 DEFAULT_PERMA_LINK_LABEL = "geocat.ch Permalink"
 HARVEST_USER = "harvest"
 
@@ -56,9 +58,7 @@ class GeocatHarvester(HarvesterBase):
         try:
             config_obj = json.loads(config)
         except Exception as e:
-            raise ValueError(
-                f"Configuration could not be parsed. An error {e} occured"
-            )
+            raise ValueError(f"Configuration could not be parsed. An error {e} occured")
 
         if "delete_missing_datasets" in config_obj:
             if not isinstance(config_obj["delete_missing_datasets"], bool):
@@ -66,9 +66,7 @@ class GeocatHarvester(HarvesterBase):
 
         if "rights" in config_obj:
             if not config_obj["rights"] in VALID_TERMS_OF_USE:
-                raise ValueError(
-                    f"{config_obj['rights']} is not valid as terms of use"
-                )
+                raise ValueError(f"{config_obj['rights']} is not valid as terms of use")
         return config
 
     def _set_config(self, config_str, harvest_source_id):
@@ -121,14 +119,10 @@ class GeocatHarvester(HarvesterBase):
             ),
         )
 
-        self.config["legal_basis_url"] = self.config.get(
-            "legal_basis_url", None
-        )
+        self.config["legal_basis_url"] = self.config.get("legal_basis_url", None)
 
-        organization_slug = (
-            search_utils.get_organization_slug_for_harvest_source(
-                harvest_source_id
-            )
+        organization_slug = search_utils.get_organization_slug_for_harvest_source(
+            harvest_source_id
         )
         self.config["organization"] = organization_slug
 
@@ -156,11 +150,9 @@ class GeocatHarvester(HarvesterBase):
             return []
 
         try:
-            existing_dataset_infos = (
-                search_utils.get_dataset_infos_for_organization(
-                    organization_name=self.config["organization"],
-                    harvest_source_id=harvest_job.source_id,
-                )
+            existing_dataset_infos = search_utils.get_dataset_infos_for_organization(
+                organization_name=self.config["organization"],
+                harvest_source_id=harvest_job.source_id,
             )
         except Exception as e:
             self._save_gather_error(
@@ -218,17 +210,13 @@ class GeocatHarvester(HarvesterBase):
 
         return harvest_obj_ids
 
-    def delete_geocat_ids(
-        self, harvest_job, harvest_obj_ids, packages_to_delete
-    ):
+    def delete_geocat_ids(self, harvest_job, harvest_obj_ids, packages_to_delete):
         delete_harvest_obj_ids = []
         for package_info in packages_to_delete:
             obj = HarvestObject(
                 guid=package_info[1].name,
                 job=harvest_job,
-                extras=[
-                    HarvestObjectExtra(key="import_action", value="delete")
-                ],
+                extras=[HarvestObjectExtra(key="import_action", value="delete")],
             )
             obj.save()
             delete_harvest_obj_ids.append(obj.id)
@@ -261,9 +249,7 @@ class GeocatHarvester(HarvesterBase):
                     continue
 
                 try:
-                    dataset_dict = csw_map.get_metadata(
-                        csw_record_as_string, geocat_id
-                    )
+                    dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
                 except Exception as e:
                     self._save_gather_error(
                         "Error when mapping csw data to dcat: %s %r / %s"
@@ -299,9 +285,7 @@ class GeocatHarvester(HarvesterBase):
 
         if not harvest_object:
             log.error("No harvest object received")
-            self._save_object_error(
-                "No harvest object received", harvest_object
-            )
+            self._save_object_error("No harvest object received", harvest_object)
             return False
 
         import_action = search_utils.get_value_from_object_extra(
@@ -331,9 +315,7 @@ class GeocatHarvester(HarvesterBase):
             )
             return False
 
-        pkg_info = search_utils.find_package_for_identifier(
-            harvest_object.guid
-        )
+        pkg_info = search_utils.find_package_for_identifier(harvest_object.guid)
         context = {
             "ignore_auth": True,
             "user": HARVEST_USER,
@@ -349,22 +331,16 @@ class GeocatHarvester(HarvesterBase):
                 schema["__junk"] = [ignore]
                 pkg_dict["name"] = pkg_info.name
                 pkg_dict["id"] = pkg_info.package_id
-                existing_package = map_resources_to_ids(
-                    pkg_dict, pkg_info.package_id
-                )
+                existing_package = map_resources_to_ids(pkg_dict, pkg_info.package_id)
 
                 # Ensure 'url' is set to "" if it is not in pkg_dict
                 if "url" in existing_package and "url" not in pkg_dict:
                     pkg_dict["url"] = ""
 
-                package_changed, msg = check_package_change(
-                    existing_package, pkg_dict
-                )
+                package_changed, msg = check_package_change(existing_package, pkg_dict)
                 if package_changed:
                     create_activity(package_id=pkg_dict["id"], message=msg)
-                updated_pkg = tk.get_action("package_update")(
-                    context, pkg_dict
-                )
+                updated_pkg = tk.get_action("package_update")(context, pkg_dict)
                 harvest_object.current = True
                 harvest_object.package_id = updated_pkg["id"]
                 harvest_object.save()
@@ -373,8 +349,7 @@ class GeocatHarvester(HarvesterBase):
                 flat_title = _derive_flat_title(pkg_dict["title"])
                 if not flat_title:
                     self._save_object_error(
-                        f"Unable to derive name from title"
-                        f" {pkg_dict['title']}",
+                        f"Unable to derive name from title" f" {pkg_dict['title']}",
                         harvest_object,
                         "Import",
                     )
@@ -402,9 +377,7 @@ class GeocatHarvester(HarvesterBase):
                 )
                 model.Session.flush()
 
-                created_pkg = tk.get_action("package_create")(
-                    context, pkg_dict
-                )
+                created_pkg = tk.get_action("package_create")(context, pkg_dict)
 
                 log.debug(f"Created PKG: {created_pkg}")
 
@@ -413,10 +386,7 @@ class GeocatHarvester(HarvesterBase):
 
         except Exception as e:
             self._save_object_error(
-                (
-                    f"Exception in import stage: {e!r} /"
-                    f" {traceback.format_exc()}"
-                ),
+                (f"Exception in import stage: {e!r} /" f" {traceback.format_exc()}"),
                 harvest_object,
             )
             return False

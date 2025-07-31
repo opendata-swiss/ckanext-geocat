@@ -3,8 +3,8 @@ from pprint import pprint
 
 from ckan.lib.cli import CkanCommand
 
-from ckanext.geocat.harvester import (  # noqa
-    DEFAULT_PERMA_LINK_LABEL,
+from ckanext.geocat.harvester import (
+    DEFAULT_PERMA_LINK_LABEL,  # noqa
     DEFAULT_PERMA_LINK_URL,
 )
 from ckanext.geocat.utils import csw_mapping, csw_processor
@@ -81,9 +81,7 @@ class GeocatCommand(CkanCommand):
             sys.exit(1)
 
         cqlquery = self.options.cql_query or csw_processor.CQL_QUERY_DEFAULT
-        cqlterm = (
-            self.options.cql_term or csw_processor.CQL_SEARCH_TERM_DEFAULT
-        )
+        cqlterm = self.options.cql_term or csw_processor.CQL_SEARCH_TERM_DEFAULT
 
         try:
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)

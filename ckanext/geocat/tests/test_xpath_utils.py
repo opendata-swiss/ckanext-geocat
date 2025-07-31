@@ -7,9 +7,7 @@ from lxml import etree
 
 from ckanext.geocat.utils import xpath_utils
 
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__))
-)
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 class TestXpathUtils(unittest.TestCase):

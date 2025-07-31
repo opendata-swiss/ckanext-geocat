@@ -11,9 +11,7 @@ from nose.tools import *  # noqa
 
 from ckanext.geocat.utils import csw_mapping
 
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__))
-)
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 class TestGeocatDcatDatasetMetadata(unittest.TestCase):
@@ -24,9 +22,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             geocat_perma_label="some label",
             legal_basis_url="",
             default_rights="",
-            valid_identifiers=[
-                "8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo"
-            ],
+            valid_identifiers=["8454f7d9-e3f2-4cc7-be6d-a82196660ccd@swisstopo"],
         )
         self.geocat_identifier = "93814e81-2466-4690-b54d-c1d958f1c3b8"
 
@@ -104,9 +100,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             "Esposizione al rumore del traffico ferroviario, notte",
             dataset["title"]["it"],
         )
-        self.assertEqual(
-            "Nighttime railway noise exposure", dataset["title"]["en"]
-        )
+        self.assertEqual("Nighttime railway noise exposure", dataset["title"]["en"])
 
         # description
         self.assertIn(
@@ -144,11 +138,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # language
         self.assertEqual(
-            set(
-                [
-                    "http://publications.europa.eu/resource/authority/language/DEU"
-                ]
-            ),
+            set(["http://publications.europa.eu/resource/authority/language/DEU"]),
             set(dataset.get("language")),
         )
 
@@ -230,9 +220,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             ],
         }
         for lang in ["de", "fr", "it", "en"]:
-            self.assertEqual(
-                set(keywords[lang]), set(dataset["keywords"][lang])
-            )
+            self.assertEqual(set(keywords[lang]), set(dataset["keywords"][lang]))
 
         # url
         self.assertEqual("http://www.bafu.admin.ch/laerm/", dataset.get("url"))
@@ -287,11 +275,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
 
         # language
         self.assertEqual(
-            set(
-                [
-                    "http://publications.europa.eu/resource/authority/language/DEU"
-                ]
-            ),
+            set(["http://publications.europa.eu/resource/authority/language/DEU"]),
             set(dataset.get("language")),
         )
 
@@ -312,9 +296,7 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             "en": [],
         }
         for lang in ["de", "fr", "it", "en"]:
-            self.assertEqual(
-                set(keywords[lang]), set(dataset["keywords"][lang])
-            )
+            self.assertEqual(set(keywords[lang]), set(dataset["keywords"][lang]))
 
     def test_date_revision(self):
         xml = self._load_xml("revision_date.xml")
