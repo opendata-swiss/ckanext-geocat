@@ -70,7 +70,7 @@ class GeocatCommand(CkanCommand):
             self.help_command()
 
     def help_command(self):
-        print((self.__doc__))
+        print(self.__doc__)
 
     def list_command(self, url=None):
         if len(self.args) >= 2:
