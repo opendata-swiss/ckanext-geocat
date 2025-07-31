@@ -1,9 +1,10 @@
 import json
 import logging
 import os
-
+import ckan.plugins.toolkit as toolkit
+import ckanext.harvest.plugin
 import ckantoolkit.tests.helpers as h
-import requests
+import pytest
 import requests_mock
 from ckan.common import config
 
@@ -25,46 +26,17 @@ clear_solr_url = (
 )
 
 
-class FunctionalHarvestTest(object):
-    @classmethod
-    def setup_class(cls):
-        h.reset_db()
-
-        cls.gather_consumer = queue.get_gather_consumer()
-        cls.fetch_consumer = queue.get_fetch_consumer()
-
-    def setup(self):
-        harvest_model.setup()
-
-        queue.purge_queues()
-        requests.get(clear_solr_url)
-
-        user_dict = h.call_action(
-            "user_create",
-            name="testuser",
-            email="testuser@example.com",
-            password="password",
-        )
-        org_context = {"user": user_dict["name"], "return_id_only": True}
-        org_data_dict = {"name": "geocat_org"}
-        self.org_id = h.call_action("organization_create", org_context, **org_data_dict)
-
-    def teardown(self):
-        h.reset_db()
-        queue.purge_queues()
-        requests.get(clear_solr_url)
-
-    def _get_or_create_harvest_source(self, **kwargs):
+class FunctionalHarvestTest:
+    def _get_or_create_harvest_source(self, org_id, **kwargs):
         source_dict = {
             "title": "Geocat harvester",
             "name": "geocat-harvester",
             "url": mock_url,
             "source_type": "geocat_harvester",
-            "owner_org": self.org_id,
+            "owner_org": org_id,
         }
 
         source_dict.update(**kwargs)
-
         try:
             harvest_source = h.call_action("harvest_source_show", {}, **source_dict)
         except Exception as e:
@@ -126,6 +98,12 @@ class FunctionalHarvestTest(object):
 
 
 class TestGeocatHarvestFunctional(FunctionalHarvestTest):
+    @pytest.fixture(autouse=True)
+    def _setup(self, harvest_env, gather_consumer, fetch_consumer,test_user_and_org,):
+        self.gather_consumer = gather_consumer
+        self.fetch_consumer = fetch_consumer
+        self.user_name, self.org_id = test_user_and_org
+
     @requests_mock.Mocker(real_http=True)
     def _test_harvest_create(
         self,
@@ -138,7 +116,7 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
     ):
         self._mock_csw_results(all_results_filename, single_results_filenames, mocker)
 
-        harvest_source = self._get_or_create_harvest_source(**kwargs)
+        harvest_source = self._get_or_create_harvest_source(self.org_id, **kwargs)
 
         self._run_full_job(harvest_source["id"], num_objects=num_objects)
 
@@ -150,30 +128,22 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         return results
 
     def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
-        path = os.path.join(
-            __location__, "fixtures", "test_harvesters", "capabilities.xml"
+        base_path = os.path.join(
+            __location__, "fixtures", "test_harvesters"
         )
-        with open(path, encoding="utf-8") as xml:
-            capabilities = xml.read()
+        with open(os.path.join(base_path, "capabilities.xml"),
+                  encoding="utf-8") as f:
+            mocker.get(mock_capabilities_url, text=f.read())
 
-        mocker.get(mock_capabilities_url, text=capabilities)
-
-        path = os.path.join(
-            __location__, "fixtures", "test_harvesters", all_results_filename
-        )
-        with open(path, encoding="utf-8") as xml:
-            all_results = xml.read()
-
-        mocker.post(mock_record_url, text=all_results)
+        with open(os.path.join(base_path, all_results_filename),
+                  encoding="utf-8") as f:
+            mocker.post(mock_record_url, text=f.read())
 
         responses = []
         for filename in single_results_filenames:
-            path = os.path.join(__location__, "fixtures", "test_harvesters", filename)
-            with open(path, encoding="utf-8") as xml:
-                result = xml.read()
-
-            responses.append({"text": result})
-
+            with open(os.path.join(base_path, filename),
+                      encoding="utf-8") as f:
+                responses.append({"text": f.read()})
         mocker.get(mock_record_url, responses)
 
     def test_harvest_create_simple(self):
