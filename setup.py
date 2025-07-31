@@ -22,7 +22,7 @@ setup(
     url="https://github.com/ogdch/ckanext-geocat",
     # Author details
     author="""Liip AG""",
-    author_email="""ogd@liip.ch""",
+    author_email="""ogdch@liip.ch""",
     # Choose your license
     license="AGPL",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
