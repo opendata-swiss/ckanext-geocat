@@ -9,7 +9,7 @@ The source format is ISO-19139_che (Swiss version of ISO-19139), the target form
 
 ## Requirements
 
-CKAN >= 2.4
+CKAN >= 2.11
 
 ## Installation
 
