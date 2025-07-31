@@ -101,6 +101,10 @@ LINKED_DATA_SERVICE = "Linked Data Service"
 
 def get_elem_tree_from_string(xml_string):
     try:
+        # If input is str and starts with XML declaration, encode to bytes
+        if isinstance(xml_string, str) and xml_string.lstrip().startswith(
+                '<?xml'):
+            xml_string = xml_string.encode('utf-8')
         xml_elem_tree = etree.fromstring(xml_string)
     except etree.XMLSyntaxError as e:
         raise MetadataFormatError(f"Could not parse XML: {e!r}")
