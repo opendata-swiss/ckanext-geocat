@@ -342,7 +342,7 @@ def xpath_get_distribution_from_distribution_node(resource_node, protocol):
     )
     if name_node:
         distribution["name"] = (
-            path_get_language_dict_from_geocat_multilanguage_node(name_node)
+            xpath_get_language_dict_from_geocat_multilanguage_node(name_node)
         )
     else:
         distribution["name"] = {"en": "", "it": "", "de": "", "fr": ""}
