@@ -2,12 +2,8 @@
 
 import json
 import os
-import time
 import unittest
-from datetime import datetime
 from pprint import pprint
-
-import pytest
 
 from ckanext.geocat.utils import csw_mapping
 
