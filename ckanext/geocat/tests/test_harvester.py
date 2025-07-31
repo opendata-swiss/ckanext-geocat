@@ -153,24 +153,24 @@ class TestGeocatHarvestFunctional(FunctionalHarvestTest):
         path = os.path.join(
             __location__, "fixtures", "test_harvesters", "capabilities.xml"
         )
-        with open(path) as xml:
-            capabilities = str(xml.read(), "utf-8")
+        with open(path, encoding="utf-8") as xml:
+            capabilities = xml.read()
 
         mocker.get(mock_capabilities_url, text=capabilities)
 
         path = os.path.join(
             __location__, "fixtures", "test_harvesters", all_results_filename
         )
-        with open(path) as xml:
-            all_results = str(xml.read(), "utf-8")
+        with open(path, encoding="utf-8") as xml:
+            all_results = xml.read()
 
         mocker.post(mock_record_url, text=all_results)
 
         responses = []
         for filename in single_results_filenames:
             path = os.path.join(__location__, "fixtures", "test_harvesters", filename)
-            with open(path) as xml:
-                result = str(xml.read(), "utf-8")
+            with open(path, encoding="utf-8") as xml:
+                result = xml.read()
 
             responses.append({"text": result})
 
