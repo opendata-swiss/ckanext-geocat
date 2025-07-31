@@ -1,4 +1,4 @@
-"""Tests for xpath utils """
+"""Tests for xpath utils"""
 
 import os
 import unittest

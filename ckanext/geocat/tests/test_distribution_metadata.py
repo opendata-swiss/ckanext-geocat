@@ -1,4 +1,4 @@
-"""Tests for metadata """
+"""Tests for metadata"""
 
 import os
 import time

@@ -1,4 +1,4 @@
-"""Tests for metadata """
+"""Tests for metadata"""
 
 import json
 import os
