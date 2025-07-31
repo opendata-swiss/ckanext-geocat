@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
+import logging
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.catalogue.csw2 import CatalogueServiceWeb
 from owslib.fes import PropertyIsEqualTo
 
-import logging
 log = logging.getLogger(__name__)
 
-CHE_SCHEMA = 'http://www.geocat.ch/2008/che'
-CQL_QUERY_DEFAULT = 'subject'
-CQL_SEARCH_TERM_DEFAULT = 'opendata.swiss'
+CHE_SCHEMA = "http://www.geocat.ch/2008/che"
+CQL_QUERY_DEFAULT = "subject"
+CQL_SEARCH_TERM_DEFAULT = "opendata.swiss"
 
 
 class GeocatCatalogueServiceWeb(object):
@@ -16,19 +15,13 @@ class GeocatCatalogueServiceWeb(object):
         self.csw = CatalogueServiceWeb(url)
         self.schema = CHE_SCHEMA
 
-    def get_geocat_id_from_csw(self, cql=None, cql_query=None,
-                               cql_search_term=None):
+    def get_geocat_id_from_csw(self, cql=None, cql_query=None, cql_search_term=None):
         nextrecord = 0
         record_ids = []
-        csw_args = {
-            "maxrecords": 50,
-            "startposition": nextrecord
-        }
+        csw_args = {"maxrecords": 50, "startposition": nextrecord}
 
         if cql_query and cql_search_term:
-            csw_args["constraints"] = [
-                PropertyIsEqualTo(cql_query, cql_search_term)
-            ]
+            csw_args["constraints"] = [PropertyIsEqualTo(cql_query, cql_search_term)]
         elif cql:
             csw_args["cql"] = cql
         else:
@@ -39,17 +32,17 @@ class GeocatCatalogueServiceWeb(object):
         while nextrecord is not None:
             csw_args["startposition"] = nextrecord
             self.csw.getrecords2(**csw_args)
-            if self.csw.response is None or self.csw.results['matches'] == 0:
+            if self.csw.response is None or self.csw.results["matches"] == 0:
                 raise CswNotFoundError(
-                    "No dataset found for url {} with arguments {}"
-                    .format(self.csw.url, csw_args))
-            if self.csw.results['returned'] > 0:
-                if 0 < self.csw.results['nextrecord']\
-                        <= self.csw.results['matches']:
-                    nextrecord = self.csw.results['nextrecord']
+                    f"No dataset found for url {self.csw.url} with arguments "
+                    f"{csw_args}"
+                )
+            if self.csw.results["returned"] > 0:
+                if 0 < self.csw.results["nextrecord"] <= self.csw.results["matches"]:
+                    nextrecord = self.csw.results["nextrecord"]
                 else:
                     nextrecord = None
-                for id in self.csw.records.keys():
+                for id in list(self.csw.records.keys()):
                     record_ids.append(id)
         return record_ids
 
