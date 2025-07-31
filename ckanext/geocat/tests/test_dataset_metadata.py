@@ -7,7 +7,7 @@ import unittest
 from datetime import datetime
 from pprint import pprint
 
-from nose.tools import *  # noqa
+from nose.tools import *
 
 from ckanext.geocat.utils import csw_mapping
 

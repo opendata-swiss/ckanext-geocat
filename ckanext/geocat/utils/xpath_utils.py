@@ -37,18 +37,16 @@ gmd_namespaces = {
 }
 
 GMD_URL_LABEL = ".//gmd:description"
-GMD_SERVICE_NODES = "//gmd:identificationInfo//srv:containsOperations/srv:SV_OperationMetadata[.//srv:operationName//gco:CharacterString/text()]"  # noqa
+GMD_SERVICE_NODES = "//gmd:identificationInfo//srv:containsOperations/srv:SV_OperationMetadata[.//srv:operationName//gco:CharacterString/text()]"
 GMD_SERVICE_URLS = [
-    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#DE" and ./text()]/text()',  # noqa
-    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#FR" and ./text()]/text()',  # noqa
-    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#EN" and ./text()]/text()',  # noqa
-    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#IT" and ./text()]/text()',  # noqa
-    ".//srv:connectPoint//gmd:linkage//che:LocalisedURL[./text()]/text()",  # noqa
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#DE" and ./text()]/text()',
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#FR" and ./text()]/text()',
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#EN" and ./text()]/text()',
+    './/srv:connectPoint//gmd:linkage//che:LocalisedURL[@locale = "#IT" and ./text()]/text()',
+    ".//srv:connectPoint//gmd:linkage//che:LocalisedURL[./text()]/text()",
 ]
-GMD_MEDIA_TYPE = (
-    "//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()"  # noqa
-)
-GMD_SERVICE_TITLE = ".//srv:operationName/gco:CharacterString/text()"  # noqa
+GMD_MEDIA_TYPE = "//gmd:identificationInfo//srv:serviceType/gco:LocalName/text()"
+GMD_SERVICE_TITLE = ".//srv:operationName/gco:CharacterString/text()"
 URL_PATH_LIST = [
     './/gmd:linkage//che:LocalisedURL[@locale="#DE"]/text()',
     './/gmd:linkage//che:LocalisedURL[@locale="#FR"]/text()',
@@ -58,13 +56,15 @@ URL_PATH_LIST = [
     ".//gmd:URL/text()",
 ]
 
-CHE_DATA_MODEL_NODE = ".//gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel/text()"  # noqa
+CHE_DATA_MODEL_NODE = (
+    ".//gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel/text()"
+)
 CONFORMS_TO_URL_PATH_LIST = [
-    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#DE"]/text()',  # noqa
-    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURLL[@locale="#FR"]/text()',  # noqa
-    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#EN"]/text()',  # noqa
-    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#IT"]/text()',  # noqa
-    ".//gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL/text()",  # noqa
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#DE"]/text()',
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURLL[@locale="#FR"]/text()',
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#EN"]/text()',
+    './/gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL[@locale="#IT"]/text()',
+    ".//gmd:contentInfo//che:CHE_MD_FeatureCatalogueDescription//che:dataModel//che:PT_FreeURL//che:URLGroup//che:LocalisedURL/text()",
 ]
 
 GMD_RESOURCE_NAME = ".//gmd:name"
@@ -161,7 +161,7 @@ def xpath_get_language_dict_from_geocat_multilanguage_node(node):
     localised_string_found = False
     for locale in LOCALES:
         value_locale = node.xpath(
-            './/gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]/text()'.format(  # noqa
+            './/gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]/text()'.format(
                 locale
             ),
             namespaces=gmd_namespaces,
@@ -226,7 +226,7 @@ def xpath_get_rights_dict_form_rights_node(node):
     try:
         for locale in LOCALES:
             value_locale = node.xpath(
-                './/gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]'.format(  # noqa
+                './/gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]'.format(
                     locale
                 )
                 + "/text()",
@@ -245,7 +245,7 @@ def xpath_get_one_value_from_geocat_multilanguage_node(node):
         return value
     for locale in LOCALES:
         value_locale = node.xpath(
-            './/gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]'.format(  # noqa
+            './/gmd:textGroup/gmd:LocalisedCharacterString[@locale="#{}"]'.format(
                 locale
             )
             + "/text()",
@@ -404,10 +404,8 @@ def xpath_get_geocat_services(node):
     if service_nodes:
         for service_node in service_nodes:
             geocat_service = {}
-            geocat_service["name"] = (
-                xpath_get_single_sub_node_for_node_and_path(  # noqa
-                    node=service_node, path=GMD_SERVICE_TITLE
-                )
+            geocat_service["name"] = xpath_get_single_sub_node_for_node_and_path(
+                node=service_node, path=GMD_SERVICE_TITLE
             )
             (
                 geocat_service["url"],
@@ -415,10 +413,8 @@ def xpath_get_geocat_services(node):
             ) = xpath_get_first_of_values_from_path_list(
                 node=service_node, path_list=GMD_SERVICE_URLS
             )
-            geocat_service["media_type"] = (
-                xpath_get_single_sub_node_for_node_and_path(  # noqa
-                    node=service_node, path=GMD_MEDIA_TYPE
-                )
+            geocat_service["media_type"] = xpath_get_single_sub_node_for_node_and_path(
+                node=service_node, path=GMD_MEDIA_TYPE
             )
             geocat_services.append(geocat_service)
     return geocat_services

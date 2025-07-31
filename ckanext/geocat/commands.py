@@ -3,8 +3,8 @@ from pprint import pprint
 
 from ckan.lib.cli import CkanCommand
 
-from ckanext.geocat.harvester import DEFAULT_PERMA_LINK_LABEL  # noqa
 from ckanext.geocat.harvester import (
+    DEFAULT_PERMA_LINK_LABEL,
     DEFAULT_PERMA_LINK_URL,
 )
 from ckanext.geocat.utils import csw_mapping, csw_processor
@@ -32,7 +32,7 @@ class GeocatCommand(CkanCommand):
     The 'dataset' command uses the same mapping as the harvester, except some extras as the geocat-permalink and
     some other fields that are taken from the harvester config when harvesting and just get defaults when
     the command is used.
-    """  # noqa
+    """
 
     summary = __doc__.split("\n")[0]
     usage = __doc__

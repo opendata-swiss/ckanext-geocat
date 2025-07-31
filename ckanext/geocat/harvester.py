@@ -11,9 +11,9 @@ from ckan.lib.navl.validators import ignore
 from ckan.lib.plugins import lookup_package_plugin
 from ckan.model import Session
 
-from ckanext.geocat.utils import csw_processor  # noqa
 from ckanext.geocat.utils import (
     csw_mapping,
+    csw_processor,
     ogdch_map_utils,
     search_utils,
 )
@@ -22,8 +22,8 @@ from ckanext.geocat.utils.harvest_helper import (
     create_activity,
     map_resources_to_ids,
 )
-from ckanext.geocat.utils.mapping_utils import DEFAULT_TERMS_OF_USE  # noqa
 from ckanext.geocat.utils.mapping_utils import (
+    DEFAULT_TERMS_OF_USE,
     VALID_TERMS_OF_USE,
 )
 from ckanext.harvest.harvesters import HarvesterBase
@@ -32,7 +32,7 @@ from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 log = logging.getLogger(__name__)
 
 DEFAULT_PERMA_LINK_URL = (
-    "https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/"  # noqa
+    "https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/"
 )
 DEFAULT_PERMA_LINK_LABEL = "geocat.ch Permalink"
 HARVEST_USER = "harvest"

@@ -36,51 +36,55 @@ gmd_namespaces = {
     "xlink": "http://www.w3.org/1999/xlink",
 }
 GMD_PROTOCOL = ".//gmd:protocol/gco:CharacterString/text()"
-GMD_RESOURCES = "//gmd:distributionInfo/gmd:MD_Distribution//gmd:transferOptions//gmd:CI_OnlineResource"  # noqa
+GMD_RESOURCES = "//gmd:distributionInfo/gmd:MD_Distribution//gmd:transferOptions//gmd:CI_OnlineResource"
 GMD_IDENTIFIER = ".//gmd:fileIdentifier/gco:CharacterString/text()"
 GMD_TITLE = "//gmd:identificationInfo//gmd:citation//gmd:title"
 GMD_ISSUED = [
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "publication"]//gco:DateTime',  # noqa
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "publication"]//gco:Date',  # noqa
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "creation"]//gco:DateTime',  # noqa
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "creation"]//gco:Date',  # noqa
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "publication"]//gco:DateTime',
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "publication"]//gco:Date',
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "creation"]//gco:DateTime',
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "creation"]//gco:Date',
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',
 ]
 GMD_DESCRIPTION = "//gmd:identificationInfo//gmd:abstract"
 GMD_RIGHTS = ".//gmd:resourceConstraints//gmd:otherConstraints"
-GMD_QUALIFIED_RELATIONS = "//gmd:identificationInfo//gmd:aggregationInfo//gmd:aggregateDataSetIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString/text()"  # noqa
-GMD_TEMPORAL_START = "//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:beginPosition/text()"  # noqa
-GMD_TEMPORAL_END = "//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:endPosition/text()"  # noqa
+GMD_QUALIFIED_RELATIONS = "//gmd:identificationInfo//gmd:aggregationInfo//gmd:aggregateDataSetIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString/text()"
+GMD_TEMPORAL_START = "//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:beginPosition/text()"
+GMD_TEMPORAL_END = "//gmd:identificationInfo//gmd:extent//gmd:temporalElement//gml:TimePeriod/gml:endPosition/text()"
 GMD_LANGUAGE = [
-    "//gmd:identificationInfo//gmd:language/gco:CharacterString/text()",  # noqa
+    "//gmd:identificationInfo//gmd:language/gco:CharacterString/text()",
     "//gmd:language/gmd:LanguageCode/@codeListValue",
 ]
-GMD_SPATIAL = "//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()"  # noqa
+GMD_SPATIAL = (
+    "//gmd:identificationInfo//gmd:extent//gmd:description/gco:CharacterString/text()"
+)
 GMD_PUBLISHER = [
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',  # noqa
-    "//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName",  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:organisationName',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:organisationName',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:organisationName',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:organisationName',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:organisationName',
+    "//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:organisationName",
 ]
 GMD_CONTACT_POINT = [
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
-    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',  # noqa
-    "//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:address//gmd:electronicMailAddress/gco:CharacterString",  # noqa
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "pointOfContact"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "owner"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "publisher"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "distributor"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',
+    '//gmd:identificationInfo//gmd:pointOfContact[.//gmd:CI_RoleCode/@codeListValue = "custodian"]//gmd:address//gmd:electronicMailAddress/gco:CharacterString',
+    "//gmd:contact//che:CHE_CI_ResponsibleParty//gmd:address//gmd:electronicMailAddress/gco:CharacterString",
 ]
 GMD_PUBLISHER_NAME = "//gmd:organisationName"
 GMD_MODIFIED = [
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',  # noqa
-    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',  # noqa
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:DateTime',
+    '//gmd:identificationInfo//gmd:citation//gmd:CI_Date[.//gmd:CI_DateTypeCode/@codeListValue = "revision"]//gco:Date',
 ]
-GMD_KEYWORDS = "//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword"  # noqa
-GMD_THEME = "//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()"  # noqa
-GMD_ACCRUAL_PERIODICITY = "//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue"  # noqa
+GMD_KEYWORDS = "//gmd:identificationInfo//gmd:descriptiveKeywords//gmd:keyword"
+GMD_THEME = (
+    "//gmd:identificationInfo//gmd:topicCategory/gmd:MD_TopicCategoryCode/text()"
+)
+GMD_ACCRUAL_PERIODICITY = "//gmd:identificationInfo//che:CHE_MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue"
 
 EMPTY_PUBLISHER = {
     "url": "",
@@ -178,7 +182,7 @@ class GeoMetadataMapping(object):
         # Map legal basis link as relation
         if self.legal_basis_url:
             dataset_dict["relations"].append(
-                ogdch_map_utils.get_legal_basis_link(  # noqa
+                ogdch_map_utils.get_legal_basis_link(
                     legal_basis_url=self.legal_basis_url,
                 )
             )
@@ -206,8 +210,10 @@ class GeoMetadataMapping(object):
             url_with_label = xpath_utils.xpath_get_url_with_label(resource_node)
             if url_with_label:
                 # Fetch multilingual label from the resource node
-                multilingual_label = xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(  # noqa
-                    resource_node
+                multilingual_label = (
+                    xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(
+                        resource_node
+                    )
                 )
                 if not multilingual_label or not isinstance(multilingual_label, dict):
                     # Ensure we always have a proper multilingual structure
@@ -256,7 +262,7 @@ def _map_dataset_title(node):
     if title_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(
             title_node
-        )  # noqa
+        )
     return {"en": "", "it": "", "de": "", "fr": ""}
 
 
@@ -267,7 +273,7 @@ def _map_dataset_description(node):
     if description_node is not None:
         return xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(
             description_node
-        )  # noqa
+        )
     return {"en": "", "it": "", "de": "", "fr": ""}
 
 
@@ -333,7 +339,7 @@ def _map_dataset_keywords(node):
     for node in keyword_nodes:
         keyword_dict = (
             xpath_utils.xpath_get_language_dict_from_geocat_multilanguage_node(node)
-        )  # noqa
+        )
         geocat_keywords.append(keyword_dict)
     if geocat_keywords:
         return ogdch_map_utils.map_to_ogdch_keywords(geocat_keywords)
@@ -421,7 +427,7 @@ def _map_dataset_rights(node, terms_of_use, default_rights):
                 for rights_uri in terms_of_use.subjects(object=rights_literal):
                     for mapping_object in terms_of_use.objects(
                         predicate=SKOS.mappingRelation, subject=rights_uri
-                    ):  # noqa
+                    ):
                         ogdch_rights = str(mapping_object)
                         if ogdch_rights:
                             return ogdch_rights

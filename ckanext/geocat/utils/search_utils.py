@@ -27,17 +27,15 @@ def get_packages_to_delete(existing_dataset_infos, gathered_ogdch_identifiers):
     return [
         (identifier, info)
         for identifier, info in list(existing_dataset_infos.items())
-        if info.belongs_to_harvester
-        and identifier not in gathered_ogdch_identifiers  # noqa
+        if info.belongs_to_harvester and identifier not in gathered_ogdch_identifiers
     ]
 
 
-def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):  # noqa
+def get_double_packages(existing_dataset_infos, gathered_ogdch_identifiers):
     return [
         (identifier, info)
         for identifier, info in list(existing_dataset_infos.items())
-        if not info.belongs_to_harvester
-        and identifier in gathered_ogdch_identifiers  # noqa
+        if not info.belongs_to_harvester and identifier in gathered_ogdch_identifiers
     ]
 
 
@@ -60,7 +58,7 @@ def find_package_for_identifier(identifier):
     except Exception as e:
         print(
             (
-                "Error occured while searching for packages with fq: {}, error: {}".format(  # noqa
+                "Error occured while searching for packages with fq: {}, error: {}".format(
                     fq, e
                 )
             )

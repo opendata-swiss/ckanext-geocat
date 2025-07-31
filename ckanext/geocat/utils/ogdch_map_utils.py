@@ -100,18 +100,18 @@ def map_to_ogdch_categories(geocat_categories):
 
 def map_frequency(geocat_frequency):
     frequency_mapping = {
-        "continual": "http://publications.europa.eu/resource/authority/frequency/CONT",  # noqa
-        "daily": "http://publications.europa.eu/resource/authority/frequency/DAILY",  # noqa
-        "weekly": "http://publications.europa.eu/resource/authority/frequency/WEEKLY",  # noqa
-        "fortnightly": "http://publications.europa.eu/resource/authority/frequency/BIWEEKLY",  # noqa
-        "monthly": "http://publications.europa.eu/resource/authority/frequency/MONTHLY",  # noqa
-        "quarterly": "http://publications.europa.eu/resource/authority/frequency/QUARTERLY",  # noqa
-        "biannually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2",  # noqa
-        "annually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL",  # noqa
-        "asNeeded": "http://publications.europa.eu/resource/authority/frequency/IRREG",  # noqa
-        "irregular": "http://publications.europa.eu/resource/authority/frequency/IRREG",  # noqa
-        "notPlanned": "http://publications.europa.eu/resource/authority/frequency/NEVER",  # noqa
-        "unknown": "http://publications.europa.eu/resource/authority/frequency/UNKNOWN",  # noqa
+        "continual": "http://publications.europa.eu/resource/authority/frequency/CONT",
+        "daily": "http://publications.europa.eu/resource/authority/frequency/DAILY",
+        "weekly": "http://publications.europa.eu/resource/authority/frequency/WEEKLY",
+        "fortnightly": "http://publications.europa.eu/resource/authority/frequency/BIWEEKLY",
+        "monthly": "http://publications.europa.eu/resource/authority/frequency/MONTHLY",
+        "quarterly": "http://publications.europa.eu/resource/authority/frequency/QUARTERLY",
+        "biannually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2",
+        "annually": "http://publications.europa.eu/resource/authority/frequency/ANNUAL",
+        "asNeeded": "http://publications.europa.eu/resource/authority/frequency/IRREG",
+        "irregular": "http://publications.europa.eu/resource/authority/frequency/IRREG",
+        "notPlanned": "http://publications.europa.eu/resource/authority/frequency/NEVER",
+        "unknown": "http://publications.europa.eu/resource/authority/frequency/UNKNOWN",
     }
     return frequency_mapping.get(geocat_frequency, "")
 
