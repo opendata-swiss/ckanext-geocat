@@ -81,5 +81,5 @@ jobs:
         docker exec test_ckan $WORKDIR/bin/install_test_requirements.sh ${{ matrix.ckan-version }}
     - name: Run tests
       run: | 
-        docker exec test_ckan pytest --ckan-ini=test.ini --cov=ckanext.geocat \
+        docker exec test_ckan pytest --ckan-ini=$WORKDIR/test.ini --cov=ckanext.geocat \
           --cov-config=$WORKDIR/.coveragerc --disable-warnings $WORKDIR/ckanext/geocat/tests
