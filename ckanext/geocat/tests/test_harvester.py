@@ -25,7 +25,11 @@ clear_solr_url = (
     + "/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true"
 )
 
-
+@pytest.mark.ckan_config(
+    "ckan.plugins",
+    "ogdch ogdch_pkg harvest ckan_harvester geocat_harvester scheming_datasets fluent",
+)
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 @pytest.fixture(scope="class")
 def gather_fetch_consumers():
     helpers.reset_db()
