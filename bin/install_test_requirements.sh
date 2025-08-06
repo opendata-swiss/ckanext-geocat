@@ -22,12 +22,12 @@ pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/master/requir
 pip install -e git+https://github.com/ckan/ckanext-showcase.git#egg=ckanext-showcase
 
 # Our ckanexts
-pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git#egg=ckanext-dcatapchharvest
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-dcatapchharvest/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-harvester_dashboard.git#egg=ckanext-harvester_dashboard
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-harvester_dashboard/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-password-policy.git#egg=ckanext-password-policy
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-password-policy/master/requirements.txt
+pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git@feat/upgrade_to_py3#egg=ckanext-dcatapchharvest
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-dcatapchharvest/feat/upgrade_to_py3/requirements.txt
+pip install -e git+https://github.com/opendata-swiss/ckanext-harvester_dashboard.git@feat/upgrade_to_py3#egg=ckanext-harvester_dashboard
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-harvester_dashboard/feat/upgrade_to_py3/requirements.txt
+pip install -e git+https://github.com/opendata-swiss/ckanext-password-policy.git@feat/upgrade_to_py3#egg=ckanext-password-policy
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-password-policy/feat/upgrade_to_py3/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-subscribe.git#egg=ckanext-subscribe
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-subscribe/master/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git@upgrade_to_python3_ckan2_11#egg=ckanext-switzerland
