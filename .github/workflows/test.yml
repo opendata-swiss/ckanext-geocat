@@ -44,6 +44,7 @@ jobs:
       CKAN_REDIS_URL: redis://redis:6379/1
       CKAN_SITE_URL: http://test.ckan.net
       WORKDIR: /__w/ckanext-geocat/ckanext-geocat
+      SOLR_CONFIG_DIR: /opt/solr/server/solr/configsets
       SOLR_CONFIG_CKAN_DIR: /opt/solr/server/solr/ckan/conf
 
     steps:
@@ -55,20 +56,19 @@ jobs:
           --workdir $WORKDIR --publish 8983:8983 \
           -e SOLR_HEAP=1024m -e "SOLR_SCHEMA_FILE=$SOLR_CONFIG_CKAN_DIR/managed-schema" \
           -e GITHUB_ACTIONS=true -e CI=true -v "${{ github.workspace }}/solr/schema.xml":"$SOLR_CONFIG_CKAN_DIR/managed-schema" \
-          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/schema.xml":"$SOLR_CONFIG_CKAN_DIR/schema.xml" \
-          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_en.txt":"$SOLR_CONFIG_CKAN_DIR/lang/stopwords_en.txt" \
-          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/fr_elision.txt":"$SOLR_CONFIG_CKAN_DIR/lang/fr_elision.txt" \
-          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_fr.txt":"$SOLR_CONFIG_CKAN_DIR/lang/stopwords_fr.txt" \
           -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/german_dictionary.txt":"$SOLR_CONFIG_CKAN_DIR/german_dictionary.txt" \
-          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_de.txt":"$SOLR_CONFIG_CKAN_DIR/lang/stopwords_de.txt" \
-          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_it.txt":"$SOLR_CONFIG_CKAN_DIR/lang/stopwords_it.txt" \
           -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/solrconfig.xml":"$SOLR_CONFIG_CKAN_DIR/solrconfig.xml" \
+          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_en.txt":"$SOLR_CONFIG_DIR/ckan/lang/stopwords_en.txt" \
+          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/fr_elision.txt":"$SOLR_CONFIG_DIR/ckan/lang/fr_elision.txt" \
+          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_fr.txt":"$SOLR_CONFIG_DIR/ckan/lang/stopwords_fr.txt" \
+          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_de.txt":"$SOLR_CONFIG_DIR/ckan/lang/stopwords_de.txt" \
+          -v "${{ github.workspace }}/ckanext-switzerland-ng/solr/lang/stopwords_it.txt":"$SOLR_CONFIG_DIR/ckan/lang/stopwords_it.txt" \
           ckan/ckan-solr:${{ matrix.ckan-version }}-solr9
         docker start test_solr
     - name: Create ckan container
       run: |
-        docker create --name test_ckan --network ${{ job.container.network }} --network-alias ckan \
-          -e "HOME=/github/home" -e GITHUB_ACTIONS=true -e CI=true --user root -e CKAN_SITE_URL=http://test.ckan.net \
+        /usr/bin/docker create --name test_ckan --network ${{ job.container.network }} --network-alias ckan \
+          -e "HOME=/github/home" -e GITHUB_ACTIONS=true -e CI=true -e CKAN_SITE_URL=http://test.ckan.net --user root \
           -v "/var/run/docker.sock":"/var/run/docker.sock" \
           -v "/home/runner/work":"/__w" -v "/home/runner/work/_temp":"/__w/_temp" \
           -v "/home/runner/work/_actions":"/__w/_actions" -v "/opt/hostedtoolcache":"/__t" \
