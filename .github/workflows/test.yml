@@ -78,6 +78,8 @@ jobs:
         docker start test_ckan
     - name: Install requirements and set up database
       run: |
+        docker exec test_ckan $WORKDIR/bin/install_test_requirements.sh ${{ matrix.ckan-version }}
     - name: Run tests
+      run: | 
         docker exec test_ckan pytest --ckan -v --with-pylons=$WORKDIR/test.ini \
           --with-coverage --cover-package=ckanext.geocat --cover-inclusive --cover-erase --cover-tests $WORKDIR/ckanext/geocat
