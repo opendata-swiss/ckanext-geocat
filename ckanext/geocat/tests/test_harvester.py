@@ -1,202 +1,184 @@
 import json
-import logging
 import os
-
-import ckan.plugins.toolkit as toolkit
-import ckantoolkit.tests.helpers as h
+import logging
 import pytest
+import requests
 import requests_mock
-from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
-import ckanext.harvest.plugin
 from ckanext.harvest import queue
+import ckantoolkit.tests.helpers as helpers
+from ckan.common import config
 
 log = logging.getLogger(__name__)
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+__location__ = os.path.realpath(
+    os.path.join(
+        os.getcwd(),
+        os.path.dirname(__file__)
+    )
+)
 
 mock_url = "http://mock-geocat.ch"
 mock_record_url = "http://mock-geocat.ch/geonetwork/srv/eng/csw-BAKOM"
-mock_capabilities_url = (
-    "http://mock-geocat.ch/?version=2.0.2&request=GetCapabilities&service=CSW"
-)
-clear_solr_url = (
-    config.get("solr_url")
-    + "/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true"
-)
+mock_capabilities_url = "http://mock-geocat.ch/?version=2.0.2&request=GetCapabilities&service=CSW"
+clear_solr_url = config.get('solr_url') + '/update?stream.body=%3Cdelete%3E%3Cquery%3Ename:geocat-harvester%20OR%20organization:geocat_org%3C/query%3E%3C/delete%3E&commit=true'
 
 
-class FunctionalHarvestTest:
-    def _get_or_create_harvest_source(self, org_id, **kwargs):
-        source_dict = {
-            "title": "Geocat harvester",
-            "name": "geocat-harvester",
-            "url": mock_url,
-            "source_type": "geocat_harvester",
-            "owner_org": org_id,
-        }
-
-        source_dict.update(**kwargs)
-        try:
-            harvest_source = h.call_action("harvest_source_show", {}, **source_dict)
-        except Exception as e:
-            harvest_source = h.call_action("harvest_source_create", {}, **source_dict)
-
-        return harvest_source
-
-    def _create_harvest_job(self, harvest_source_id):
-        harvest_job = h.call_action(
-            "harvest_job_create", {}, source_id=harvest_source_id
-        )
-
-        return harvest_job
-
-    def _run_jobs(self, harvest_source_id=None):
-        try:
-            h.call_action("harvest_jobs_run", {}, source_id=harvest_source_id)
-        except Exception as e:
-            if str(e) == "There are no new harvesting jobs":
-                pass
-
-    def _gather_queue(self, num_jobs=1):
-        for job in range(num_jobs):
-            # Pop one item off the queue (the job id) and run the callback
-            reply = self.gather_consumer.basic_get(queue="ckan.harvest.gather.test")
-
-            # Make sure something was sent to the gather queue
-            assert reply[2], "Empty gather queue"
-
-            # Send the item to the gather callback, which will call the
-            # harvester gather_stage
-            queue.gather_callback(self.gather_consumer, *reply)
-
-    def _fetch_queue(self, num_objects=1):
-        for _object in range(num_objects):
-            # Pop item from the fetch queues (object ids) and run the callback,
-            # one for each object created
-            reply = self.fetch_consumer.basic_get(queue="ckan.harvest.fetch.test")
-
-            # Make sure something was sent to the fetch queue
-            assert reply[2], "Empty fetch queue, the gather stage failed"
-
-            # Send the item to the fetch callback, which will call the
-            # harvester fetch_stage and import_stage
-            queue.fetch_callback(self.fetch_consumer, *reply)
-
-    def _run_full_job(self, harvest_source_id, num_jobs=1, num_objects=1):
-        # Create new job for the source
-        self._create_harvest_job(harvest_source_id)
-
-        # Run the job
-        self._run_jobs(harvest_source_id)
-
-        # Handle the gather queue
-        self._gather_queue(num_jobs)
-
-        # Handle the fetch queue
-        self._fetch_queue(num_objects)
+@pytest.fixture(scope="class")
+def gather_fetch_consumers():
+    helpers.reset_db()
+    yield {
+        "gather": queue.get_gather_consumer(),
+        "fetch": queue.get_fetch_consumer()
+    }
+    helpers.reset_db()
+    queue.purge_queues()
+    requests.get(clear_solr_url)
 
 
-class TestGeocatHarvestFunctional(FunctionalHarvestTest):
-    @pytest.fixture(autouse=True)
-    def _setup(
-        self,
-        harvest_env,
-        gather_consumer,
-        fetch_consumer,
-        test_user_and_org,
-    ):
-        self.gather_consumer = gather_consumer
-        self.fetch_consumer = fetch_consumer
-        self.user_name, self.org_id = test_user_and_org
+@pytest.fixture
+def org():
+    user_dict = helpers.call_action(
+        'user_create',
+        name='testuser',
+        email='testuser@example.com',
+        password='password'
+    )
+    context = {'user': user_dict['name'], 'return_id_only': True}
+    org_dict = {'name': 'geocat_org'}
+    return helpers.call_action('organization_create', context, **org_dict)
 
-    @requests_mock.Mocker(real_http=True)
-    def _test_harvest_create(
-        self,
-        all_results_filename,
-        single_results_filenames,
-        num_objects,
-        expected_packages,
-        mocker,
-        **kwargs,
-    ):
-        self._mock_csw_results(all_results_filename, single_results_filenames, mocker)
 
-        harvest_source = self._get_or_create_harvest_source(self.org_id, **kwargs)
+@pytest.fixture(autouse=True)
+def clean_environment():
+    harvest_model.setup()
+    queue.purge_queues()
+    requests.get(clear_solr_url)
+    yield
+    helpers.reset_db()
+    queue.purge_queues()
+    requests.get(clear_solr_url)
 
-        self._run_full_job(harvest_source["id"], num_objects=num_objects)
 
-        # Check that correct amount of datasets were created
-        fq = f"+type:dataset harvest_source_id:{harvest_source['id']}"
-        results = h.call_action("package_search", {}, fq=fq)
-        assert results["count"] == expected_packages
+def get_or_create_harvest_source(org_id, **kwargs):
+    source_dict = {
+        'title': 'Geocat harvester',
+        'name': 'geocat-harvester',
+        'url': mock_url,
+        'source_type': 'geocat_harvester',
+        'owner_org': org_id
+    }
+    source_dict.update(**kwargs)
+    try:
+        return helpers.call_action('harvest_source_show', {}, **source_dict)
+    except Exception:
+        return helpers.call_action('harvest_source_create', {}, **source_dict)
 
-        return results
 
-    def _mock_csw_results(self, all_results_filename, single_results_filenames, mocker):
-        base_path = os.path.join(__location__, "fixtures", "test_harvesters")
-        with open(os.path.join(base_path, "capabilities.xml"), encoding="utf-8") as f:
-            mocker.get(mock_capabilities_url, text=f.read())
+def create_harvest_job(source_id):
+    return helpers.call_action('harvest_job_create', {}, source_id=source_id)
 
-        with open(os.path.join(base_path, all_results_filename), encoding="utf-8") as f:
-            mocker.post(mock_record_url, text=f.read())
 
-        responses = []
-        for filename in single_results_filenames:
-            with open(os.path.join(base_path, filename), encoding="utf-8") as f:
-                responses.append({"text": f.read()})
-        mocker.get(mock_record_url, responses)
+def run_jobs(source_id=None):
+    try:
+        helpers.call_action('harvest_jobs_run', {}, source_id=source_id)
+    except Exception as e:
+        if str(e) != 'There are no new harvesting jobs':
+            raise
 
-    def test_harvest_create_simple(self):
-        self._test_harvest_create(
-            "response_all_results.xml",
+
+def process_gather_queue(gather_consumer, num_jobs=1):
+    for _ in range(num_jobs):
+        reply = gather_consumer.basic_get(queue='ckan.harvest.gather.test')
+        assert reply[2], "Empty gather queue"
+        queue.gather_callback(gather_consumer, *reply)
+
+
+def process_fetch_queue(fetch_consumer, num_objects=1):
+    for _ in range(num_objects):
+        reply = fetch_consumer.basic_get(queue='ckan.harvest.fetch.test')
+        assert reply[2], "Empty fetch queue, the gather stage failed"
+        queue.fetch_callback(fetch_consumer, *reply)
+
+
+def run_full_job(source_id, gather_consumer, fetch_consumer, num_jobs=1, num_objects=1):
+    create_harvest_job(source_id)
+    run_jobs(source_id)
+    process_gather_queue(gather_consumer, num_jobs)
+    process_fetch_queue(fetch_consumer, num_objects)
+
+
+def mock_csw_results(all_results_filename, single_results_filenames, mocker):
+    cap_path = os.path.join(__location__, 'fixtures', 'test_harvesters', 'capabilities.xml')
+    with open(cap_path) as xml:
+        mocker.get(mock_capabilities_url, text=xml.read())
+
+    all_path = os.path.join(__location__, 'fixtures', 'test_harvesters', all_results_filename)
+    with open(all_path) as xml:
+        mocker.post(mock_record_url, text=xml.read())
+
+    responses = []
+    for filename in single_results_filenames:
+        path = os.path.join(__location__, 'fixtures', 'test_harvesters', filename)
+        with open(path) as xml:
+            responses.append({'text': xml.read()})
+    mocker.get(mock_record_url, responses)
+
+    @pytest.mark.usefixtures("clean_environment")
+    class TestGeocatHarvestFunctional:
+        @pytest.mark.parametrize(
+            "all_results_filename,single_results_filenames,num_objects,expected_packages",
             [
-                "result_1.xml",
-                "result_2.xml",
-            ],
-            2,
-            2,
-        )
+                ("response_all_results.xml", ["result_1.xml", "result_2.xml"],
+                 2, 2),
+            ])
+        def test_harvest_create_simple(self, org, gather_fetch_consumers,
+                                       requests_mock,
+                                       all_results_filename,
+                                       single_results_filenames,
+                                       num_objects, expected_packages):
+            mock_csw_results(all_results_filename, single_results_filenames,
+                             requests_mock)
 
-    def test_harvest_deleted_dataset(self):
-        test_config_deleted = json.dumps({"delete_missing_datasets": True})
+            source = get_or_create_harvest_source(org)
+            run_full_job(source["id"], gather_fetch_consumers["gather"],
+                         gather_fetch_consumers["fetch"], num_jobs=1,
+                         num_objects=num_objects)
 
-        # Import two datasets
-        results = self._test_harvest_create(
-            "response_all_results.xml",
-            [
-                "result_1.xml",
-                "result_2.xml",
-            ],
-            2,
-            2,
-            config=test_config_deleted,
-        )
+            fq = f"+type:dataset harvest_source_id:{source['id']}"
+            results = helpers.call_action('package_search', {}, fq=fq)
+            assert results["count"] == expected_packages
 
-        # Run jobs to mark the old job finished
-        self._run_jobs()
+        def test_harvest_deleted_dataset(self, org, gather_fetch_consumers,
+                                         requests_mock):
+            config_deleted = json.dumps({'delete_missing_datasets': True})
 
-        # Import again, this time with only one dataset
-        results = self._test_harvest_create(
-            "response_just_one_result.xml",
-            ["result_1.xml"],
-            2,
-            1,
-            config=test_config_deleted,
-        )
-        assert (
-            results["results"][0]["name"]
-            == "larmbelastung-durch-eisenbahnverkehr-nacht"
-        )
+            # Import two datasets
+            mock_csw_results('response_all_results.xml',
+                             ['result_1.xml', 'result_2.xml'], requests_mock)
+            source = get_or_create_harvest_source(org, config=config_deleted)
+            run_full_job(source['id'], gather_fetch_consumers['gather'],
+                         gather_fetch_consumers['fetch'], num_objects=2)
 
-        self._run_jobs()
+            # Mark old job as finished
+            run_jobs()
 
-        # Get the harvest source with the updated status
-        harvest_source = self._get_or_create_harvest_source(config=test_config_deleted)
+            # Import again with only one result
+            mock_csw_results('response_just_one_result.xml', ['result_1.xml'],
+                             requests_mock)
+            run_full_job(source['id'], gather_fetch_consumers['gather'],
+                         gather_fetch_consumers['fetch'], num_objects=2)
 
-        last_job_status = harvest_source["status"]["last_job"]
-        assert last_job_status["status"] == "Finished"
+            results = helpers.call_action('package_search', {},
+                                    fq=f"harvest_source_id:{source['id']}")
+            assert results['results'][0][
+                       'name'] == 'larmbelastung-durch-eisenbahnverkehr-nacht'
 
-        error_count = len(last_job_status["object_error_summary"])
-        assert error_count == 0
+            run_jobs()
+
+            updated_source = get_or_create_harvest_source(org,
+                                                          config=config_deleted)
+            last_status = updated_source['status']['last_job']
+            assert last_status['status'] == 'Finished'
+            assert len(last_status['object_error_summary']) == 0
