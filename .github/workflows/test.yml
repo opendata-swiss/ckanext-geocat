@@ -76,9 +76,6 @@ jobs:
           -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" \
           --entrypoint "tail" ckan/ckan-dev:${{ matrix.ckan-version }} "-f" "/dev/null"
         docker start test_ckan
-    - name: Install ckanext-switzerland-ng in CKAN container
-        run: |
-         docker exec test_ckan pip install -e /__w/ckanext-geocat/ckanext-switzerland-ng
     - name: Install requirements and set up database
       run: |
         docker exec test_ckan $WORKDIR/bin/install_test_requirements.sh ${{ matrix.ckan-version }}

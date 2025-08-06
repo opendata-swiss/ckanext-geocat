@@ -30,8 +30,8 @@ pip install -e git+https://github.com/opendata-swiss/ckanext-password-policy.git
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-password-policy/master/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-subscribe.git#egg=ckanext-subscribe
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-subscribe/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git#egg=ckanext-switzerland-ng
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/master/requirements.txt
+pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git@upgrade_to_python3_ckan2_11#egg=ckanext-switzerland-ng
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/upgrade_to_python3_ckan2_11/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-scheming.git#egg=ckanext-scheming
 
 # Replace default path to CKAN core config file with the one on the container
