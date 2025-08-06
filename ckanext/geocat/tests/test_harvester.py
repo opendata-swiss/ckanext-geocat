@@ -1,14 +1,15 @@
 import json
-import os
 import logging
+import os
+
+import ckantoolkit.tests.helpers as helpers
 import pytest
 import requests
 import requests_mock
+from ckan.common import config
 
 import ckanext.harvest.model as harvest_model
 from ckanext.harvest import queue
-import ckantoolkit.tests.helpers as helpers
-from ckan.common import config
 
 log = logging.getLogger(__name__)
 
