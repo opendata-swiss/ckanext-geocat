@@ -5,6 +5,7 @@ WORKDIR=/__w/ckanext-geocat/ckanext-geocat
 pip install --upgrade pip
 
 # Install ckanext-geocat
+echo "Install ckanext-geocat"
 pip install -r "$WORKDIR"/requirements.txt
 pip install -r "$WORKDIR"/dev-requirements.txt
 pip install -e "$WORKDIR"/
@@ -37,7 +38,7 @@ pip install -e git+https://github.com/opendata-swiss/ckanext-scheming.git#egg=ck
 sed -i -e 's/use = config:.*/use = config:\/srv\/app\/src\/ckan\/test-core.ini/' "$WORKDIR"/test.ini
 
 # Init db and enable required plugins
-paster --plugin=ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = "
-paster --plugin=ckan db init -c "$WORKDIR"/test.ini
-paster --plugin=ckanext-harvest harvester initdb -c "$WORKDIR"/test.ini
-paster --plugin=ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = harvest ckan_harvester geocat_harvester ogdch ogdch_pkg scheming_datasets fluent"
+ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = "
+ckan db init -c "$WORKDIR"/test.ini
+ckan harvester initdb -c "$WORKDIR"/test.ini
+ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = harvest ckan_harvester geocat_harvester ogdch ogdch_pkg scheming_datasets fluent"
