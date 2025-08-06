@@ -9,5 +9,6 @@ pytest>=7.0
 pytest-ckan
 pytest-cov>=4.0.0
 pytest-factoryboy>=2.7.0
-requests>=2.30,<3.0
+requests==2.25.1
+responses<0.22
 pysolr==3.9.0
