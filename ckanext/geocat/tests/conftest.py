@@ -1,3 +1,4 @@
+import json
 import os.path
 
 import pytest
@@ -54,4 +55,5 @@ def harvest_source(org):
         url="http://mock-geocat.ch",
         source_type="geocat_harvester",
         owner_org=org["id"],
+        config=json.dumps({"delete_missing_datasets": True}),
     )
