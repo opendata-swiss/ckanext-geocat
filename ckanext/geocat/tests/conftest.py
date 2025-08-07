@@ -5,5 +5,3 @@ import pytest
 def clean_db(reset_db, migrate_db_for):
     reset_db()
     migrate_db_for("harvest")
-
-
