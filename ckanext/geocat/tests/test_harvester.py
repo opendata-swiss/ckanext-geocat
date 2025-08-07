@@ -74,8 +74,7 @@ class TestGeocatHarvestFunctional:
         queue.purge_queues()
         requests.get(clear_solr_url)
 
-    @pytest.fixture(autouse=True)
-    def _get_or_create_harvest_source(self, setup, **kwargs):
+    def _get_or_create_harvest_source(self, **kwargs):
         source_dict = {
             "title": "Geocat harvester",
             "name": "geocat-harvester",
