@@ -32,21 +32,16 @@ def clean_db(reset_db, migrate_db_for):
 
 
 @pytest.fixture
-def user():
-    return factories.Sysadmin(
-        name="test_admin",
-        email="testuser@example.com",
-        password="password",
-    )
-
-
-@pytest.fixture
 def org():
     return factories.Organization(name="test-org")
 
 
 @pytest.fixture
 def harvest_source(org):
+    """Create a harvest source with the required url. We don't call it correctly, but
+    this means that when we call ckanext.harvest.tests.lib.run_harvest and specify the
+    same url, the harvest source we create here will be used every time.
+    """
     return harvest_factories.HarvestSource(
         title="Geocat harvester",
         name="geocat-harvester",

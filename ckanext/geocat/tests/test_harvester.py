@@ -64,9 +64,7 @@ def _test_harvest_create(
 )
 @pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index", "clean_queues")
 class TestGeocatHarvestFunctional:
-    def test_harvest_create_simple(
-        self, ogdch_requests_mock, user, org, harvest_source
-    ):
+    def test_harvest_create_simple(self, ogdch_requests_mock, harvest_source):
         _test_harvest_create(
             "response_all_results.xml",
             [
@@ -78,9 +76,7 @@ class TestGeocatHarvestFunctional:
             harvest_source=harvest_source,
         )
 
-    def test_harvest_deleted_dataset(
-        self, ogdch_requests_mock, user, org, harvest_source
-    ):
+    def test_harvest_deleted_dataset(self, ogdch_requests_mock, harvest_source):
         # Import two datasets
         _test_harvest_create(
             "response_all_results.xml",
