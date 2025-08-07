@@ -83,7 +83,7 @@ class TestGeocatHarvestFunctional:
         source_dict.update(**kwargs)
 
         try:
-            harvest_source = tk.get_action("harvest_source_show", {}, source_dict)
+            harvest_source = tk.get_action("harvest_source_show") ({}, source_dict)
         except Exception as e:
             harvest_source = tk.get_action("harvest_source_create")(
                 context, source_dict
