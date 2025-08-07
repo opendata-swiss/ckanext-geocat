@@ -36,8 +36,6 @@ class TestGeocatHarvestFunctional:
     @classmethod
     @pytest.fixture(autouse=True, scope="class")
     def setup_class(cls):
-        h.reset_db()
-
         cls.gather_consumer = queue.get_gather_consumer()
         cls.fetch_consumer = queue.get_fetch_consumer()
 
@@ -67,12 +65,6 @@ class TestGeocatHarvestFunctional:
         }
         org = tk.get_action("organization_create")(org_context, org_data_dict)
         self.org_id = org["id"]
-
-        yield
-
-        h.reset_db()
-        queue.purge_queues()
-        requests.get(clear_solr_url)
 
     def _get_or_create_harvest_source(self, **kwargs):
         source_dict = {
