@@ -151,7 +151,6 @@ class TestGeocatHarvestFunctional:
         # Handle the fetch queue
         self._fetch_queue(num_objects)
 
-    @requests_mock.Mocker(real_http=True)
     def _test_harvest_create(
         self,
         all_results_filename,
@@ -201,7 +200,7 @@ class TestGeocatHarvestFunctional:
 
         mocker.get(mock_record_url, responses)
 
-    def test_harvest_create_simple(self):
+    def test_harvest_create_simple(self, requests_mock):
         self._test_harvest_create(
             "response_all_results.xml",
             [
@@ -210,6 +209,7 @@ class TestGeocatHarvestFunctional:
             ],
             num_objects=2,
             expected_packages=2,
+            mocker=requests_mock,
         )
 
     def test_harvest_deleted_dataset(self):
