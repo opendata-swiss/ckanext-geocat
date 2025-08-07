@@ -20,6 +20,7 @@ pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/master/req
 pip install -e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
 pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/master/requirements-py2.txt
 pip install -e git+https://github.com/ckan/ckanext-showcase.git#egg=ckanext-showcase
+pip install -e git+https://github.com/ckan/ckanext-scheming.git@master#egg=ckanext-scheming
 
 # Our ckanexts
 pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git@feat/upgrade_to_py3#egg=ckanext-dcatapchharvest
@@ -32,7 +33,6 @@ pip install -e git+https://github.com/opendata-swiss/ckanext-subscribe.git#egg=c
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-subscribe/master/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git@upgrade_to_python3_ckan2_11#egg=ckanext-switzerland
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/upgrade_to_python3_ckan2_11/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-scheming.git#egg=ckanext-scheming
 # Replace default path to CKAN core config file with the one on the container
 sed -i -e 's/use = config:.*/use = config:\/srv\/app\/src\/ckan\/test-core.ini/' "$WORKDIR"/test.ini
 
