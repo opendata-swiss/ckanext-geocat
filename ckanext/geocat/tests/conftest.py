@@ -2,10 +2,8 @@ import json
 import os.path
 
 import pytest
-import requests_mock
 from ckan.tests import factories
 
-from ckanext.harvest import queue
 from ckanext.harvest.tests import factories as harvest_factories
 
 location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))

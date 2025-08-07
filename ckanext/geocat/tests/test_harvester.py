@@ -3,13 +3,8 @@ import os
 
 import ckantoolkit.tests.helpers as h
 import pytest
-import requests_mock
-from ckan import model
-from ckan.common import config
 
 from ckanext.geocat.harvester import GeocatHarvester
-from ckanext.harvest import queue
-from ckanext.harvest.tests import factories as harvest_factories
 from ckanext.harvest.tests.lib import run_harvest
 
 log = logging.getLogger(__name__)
