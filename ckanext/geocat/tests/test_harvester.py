@@ -1,7 +1,7 @@
 import logging
 import os
 
-import ckantoolkit.tests.helpers as h
+import ckan.plugins.toolkit as tk
 import pytest
 
 from ckanext.geocat.harvester import GeocatHarvester
@@ -52,7 +52,7 @@ def _test_harvest_create(
 
     # Check that correct amount of datasets were created
     fq = "+type:dataset harvest_source_id:{0}".format(harvest_source["id"])
-    results = h.call_action("package_search", {}, fq=fq)
+    results = tk.get_action("package_search")({}, {"fq": fq})
     assert results["count"] == expected_packages
 
     return results

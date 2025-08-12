@@ -4,7 +4,6 @@ black==25.1.0
 flake8>=5.0.0
 isort==6.0.1
 requests-mock==1.9.3
-ckantoolkit>=0.0.7
 pytest>=7.0
 pytest-ckan
 pytest-cov>=4.0.0
