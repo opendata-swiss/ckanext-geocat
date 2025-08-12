@@ -52,6 +52,9 @@ jobs:
     - name: Create solr container
       run: |
         git clone https://github.com/opendata-swiss/ckanext-switzerland-ng.git
+        ls -lah ${{ github.workspace }}/ckanext-switzerland-ng/solr
+        ls -lah ${{ github.workspace }}/ckanext-switzerland-ng/solr/lang
+        cat ${{ github.workspace }}/ckanext-switzerland-ng/solr/schema.xml
         /usr/bin/docker create --name test_solr --network ${{ job.container.network }} --network-alias solr \
           --workdir $WORKDIR --publish 8983:8983 \
           -e "SOLR_HEAP=1024m" -e "SOLR_SCHEMA_FILE=$SOLR_CONFIG_CKAN_DIR/managed-schema" \
