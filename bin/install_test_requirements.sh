@@ -23,6 +23,7 @@ pip install -e git+https://github.com/ckan/ckanext-showcase.git#egg=ckanext-show
 pip install -e git+https://github.com/ckan/ckanext-scheming.git@master#egg=ckanext-scheming
 
 # Our ckanexts
+# TODO: require main branch of all of these once they are updated to Python 3 and CKAN 2.11
 pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git@feat/upgrade_to_py3#egg=ckanext-dcatapchharvest
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-dcatapchharvest/feat/upgrade_to_py3/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-harvester_dashboard.git@feat/upgrade_to_py3#egg=ckanext-harvester_dashboard
@@ -33,11 +34,12 @@ pip install -e git+https://github.com/opendata-swiss/ckanext-subscribe.git#egg=c
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-subscribe/master/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git@upgrade_to_python3_ckan2_11#egg=ckanext-switzerland
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/upgrade_to_python3_ckan2_11/requirements.txt
-# Replace default path to CKAN core config file with the one on the container
+
+echo "Replace default path to CKAN core config file with the one on the container"
 sed -i -e 's/use = config:.*/use = config:\/srv\/app\/src\/ckan\/test-core.ini/' "$WORKDIR"/test.ini
 
-# Init db and enable required plugins
-ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = "
-ckan db init -c "$WORKDIR"/test.ini
-ckan harvester initdb -c "$WORKDIR"/test.ini
-ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = harvest ckan_harvester geocat_harvester ogdch ogdch_pkg scheming_datasets fluent"
+echo "Replace default database url with the one for the postgres service"
+sed -i -e 's/sqlalchemy.url = .*/sqlalchemy.url = postgresql:\/\/ckan_default:pass@postgres\/ckan_test/' "$WORKDIR"/test.ini
+
+echo "Init db"
+ckan -c "$WORKDIR"/test.ini db init
