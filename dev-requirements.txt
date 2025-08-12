@@ -1,13 +1,11 @@
-# This file lists the dependencies of this extension.
-# Install with a command like: pip install -r requirements.txt
-black==25.1.0
-flake8>=5.0.0
-isort==6.0.1
-requests-mock==1.9.3
-pytest>=7.0
-pytest-ckan
-pytest-cov>=4.0.0
-pytest-factoryboy>=2.7.0
-requests==2.25.1
-responses<0.22
-pysolr==3.9.0
+black>=25.1.0
+flake8>=7.3.0
+isort>=6.0.1
+requests-mock>=1.12.1
+pytest>=8.4.1
+pytest-ckan>=0.0.12
+pytest-cov>=6.2.1
+pytest-factoryboy>=2.8.1
+requests>=2.32.4
+responses>=0.25.3
+pysolr>=3.10.0
