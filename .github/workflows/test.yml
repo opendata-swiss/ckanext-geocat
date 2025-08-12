@@ -51,7 +51,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Create solr container
       run: |
-        git clone https://github.com/opendata-swiss/ckanext-switzerland-ng.git
+        git clone -b upgrade_to_python3_ckan2_11 --single-branch https://github.com/opendata-swiss/ckanext-switzerland-ng.git
         ls -lah ${{ github.workspace }}/ckanext-switzerland-ng/solr
         ls -lah ${{ github.workspace }}/ckanext-switzerland-ng/solr/lang
         cat ${{ github.workspace }}/ckanext-switzerland-ng/solr/schema.xml
