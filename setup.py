@@ -22,7 +22,7 @@ setup(
     url="https://github.com/ogdch/ckanext-geocat",
     # Author details
     author="""Liip AG""",
-    author_email="""ogd@liip.ch""",
+    author_email="""ogdch@liip.ch""",
     # Choose your license
     license="AGPL",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -36,8 +36,7 @@ setup(
         "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
     ],
     # What does your project relate to?
     keywords="""CKAN harvester geocat dcat iso19139 iso19139_che""",

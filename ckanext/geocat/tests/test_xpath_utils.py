@@ -22,4 +22,4 @@ class TestXpathUtils(unittest.TestCase):
         value = xpath_utils.xpath_get_single_sub_node_for_node_and_path(
             path=path_identifier, node=self.root
         )
-        self.assertEqual(value, data_identifier)
+        assert value == data_identifier
