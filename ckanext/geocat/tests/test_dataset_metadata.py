@@ -147,6 +147,9 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             assert relation["description"] != "Permalink to dataset on opendata.swiss"
             assert relation["url"] is not None
 
+        # temporals
+        assert dataset["temporals"] == []
+
         # keywords
         keywords = {
             "de": [
