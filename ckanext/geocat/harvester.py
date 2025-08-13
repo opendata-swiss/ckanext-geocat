@@ -36,6 +36,7 @@ DEFAULT_PERMA_LINK_LABEL = "geocat.ch Permalink"
 HARVEST_USER = "harvest"
 
 
+@tk.blanket.config_declarations
 class GeocatHarvester(HarvesterBase):
     """
     The harvester for geocat
