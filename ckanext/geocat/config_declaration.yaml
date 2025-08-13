@@ -1,0 +1,25 @@
+version: 1
+
+groups:
+  - annotation: GeocatHarvester settings
+    options:
+      - key: ckanext.geocat.permalink_title_de
+        default: "geocat.ch Permalink"
+        description: Title for permalinks in German
+        required: false
+      - key: ckanext.geocat.permalink_title_en
+        default: "geocat.ch Permalink"
+        description: Title for permalinks in English
+        required: false
+      - key: ckanext.geocat.permalink_title_fr
+        default: "geocat.ch Permalink"
+        description: Title for permalinks in French
+        required: false
+      - key: ckanext.geocat.permalink_title_it
+        default: "geocat.ch Permalink"
+        description: Title for permalinks in Italian
+        required: false
+      - key: ckanext.geocat.geocat_perma_link_url
+        default: "https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/"
+        description:
+        required: false
