@@ -10,6 +10,8 @@ from ckanext.geocat.harvester import (
 from ckanext.geocat.utils import csw_mapping, csw_processor
 
 
+# TODO: Update these commands to use the IClick interface:
+# https://docs.ckan.org/en/2.11/extensions/plugin-interfaces.html#ckan.plugins.interfaces.IClick
 class GeocatCommand(CkanCommand):
     """Command to query geocat
 
