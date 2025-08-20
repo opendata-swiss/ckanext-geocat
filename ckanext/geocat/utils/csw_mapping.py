@@ -165,6 +165,7 @@ class GeoMetadataMapping(object):
                     modified=dataset_dict.get("modified", ""),
                     description=dataset_dict["description"],
                     rights=rights,
+                    license=rights,
                 )
                 dataset_dict["resources"].append(ogdch_service)
 

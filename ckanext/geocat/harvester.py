@@ -249,10 +249,6 @@ class GeocatHarvester(HarvesterBase):
 
                 try:
                     dataset_dict = csw_map.get_metadata(csw_record_as_string, geocat_id)
-                    # Ensure every resource has a license
-                    for resource in dataset_dict.get("resources", []):
-                        if "license" not in resource or not resource["license"]:
-                            resource["license"] = self.config["rights"]
                 except Exception as e:
                     self._save_gather_error(
                         "Error when mapping csw data to dcat: %s %r / %s"
