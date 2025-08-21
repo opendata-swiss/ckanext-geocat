@@ -262,7 +262,7 @@ def _remove_duplicate_term_in_name(name, term):
     return name.lstrip(term)
 
 
-def map_service(geocat_service, issued, modified, description, rights):
+def map_service(geocat_service, issued, modified, description, rights, license):
     return {
         "description": description,
         "issued": issued,
@@ -270,6 +270,7 @@ def map_service(geocat_service, issued, modified, description, rights):
         "rights": rights,
         "media_type": geocat_service.get("media_type", ""),
         "url": geocat_service.get("url", ""),
+        "license": license,
     }
 
 
