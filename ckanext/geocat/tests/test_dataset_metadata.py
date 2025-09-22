@@ -126,9 +126,12 @@ class TestGeocatDcatDatasetMetadata(unittest.TestCase):
             assert group["name"] in groups
 
         # language
-        assert {"http://publications.europa.eu/resource/authority/language/DEU"} == set(
-            dataset.get("language")
-        )
+        assert {
+            "http://publications.europa.eu/resource/authority/language/DEU",
+            "http://publications.europa.eu/resource/authority/language/FRA",
+            "http://publications.europa.eu/resource/authority/language/ITA",
+            "http://publications.europa.eu/resource/authority/language/ENG",
+        } == set(dataset.get("language"))
 
         # conforms to
         assert [
