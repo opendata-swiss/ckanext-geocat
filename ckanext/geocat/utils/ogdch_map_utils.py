@@ -121,6 +121,12 @@ def map_contact_points(geocat_contact_point):
 
 def map_language(geocat_language):
     language_mapping = {
+        # 2-letter legacy
+        "de": "http://publications.europa.eu/resource/authority/language/DEU",
+        "fr": "http://publications.europa.eu/resource/authority/language/FRA",
+        "en": "http://publications.europa.eu/resource/authority/language/ENG",
+        "it": "http://publications.europa.eu/resource/authority/language/ITA",
+        # 3-letter legacy
         "ger": "http://publications.europa.eu/resource/authority/language/DEU",
         "fre": "http://publications.europa.eu/resource/authority/language/FRA",
         "fra": "http://publications.europa.eu/resource/authority/language/FRA",
