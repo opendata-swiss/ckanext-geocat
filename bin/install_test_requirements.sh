@@ -6,9 +6,7 @@ pip install --upgrade pip
 
 # Install ckanext-geocat
 echo "Install ckanext-geocat"
-pip install -r "$WORKDIR"/requirements.txt
-pip install -r "$WORKDIR"/dev-requirements.txt
-pip install -e "$WORKDIR"/
+pip install -e "$WORKDIR"/[dev]
 
 # Install ckanext dependencies
 pip install -e git+https://github.com/ckan/ckanext-fluent.git#egg=ckanext-fluent
@@ -24,6 +22,7 @@ pip install -e git+https://github.com/ckan/ckanext-scheming.git@master#egg=ckane
 
 # Our ckanexts
 # TODO: require main branch of all of these once they are updated to Python 3 and CKAN 2.11
+# TODO: remove installing requirements.txt once these are switched to pyproject.toml (also check dependencies above)
 pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git@feat/upgrade_to_py3#egg=ckanext-dcatapchharvest
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-dcatapchharvest/feat/upgrade_to_py3/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-harvester_dashboard.git@feat/upgrade_to_py3#egg=ckanext-harvester_dashboard
