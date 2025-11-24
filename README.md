@@ -122,8 +122,6 @@ https://geonetwork-opensource.org/manuals/2.10.4/eng/developer/xml_services/csw_
 To install ckanext-geocat for development, activate your CKAN virtualenv and
 do::
 
-    git clone https://github.com/ogdch/ckanext-geocat.git
+    git clone https://github.com/opendata-swiss/ckanext-geocat.git
     cd ckanext-geocat
-    python setup.py develop
-    pip install -r dev-requirements.txt
-    pip install -r requirements.txt
+    pip install -e .[dev]
