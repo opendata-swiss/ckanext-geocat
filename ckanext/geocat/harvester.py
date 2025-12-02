@@ -278,7 +278,7 @@ class GeocatHarvester(HarvesterBase):
     def fetch_stage(self, harvest_object):
         return True
 
-    def import_stage(self, harvest_object):
+    def import_stage(self, harvest_object):  # noqa C901
 
         log.debug("In GeocatHarvester import_stage")
 
