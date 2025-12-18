@@ -1,0 +1,51 @@
+publiccodeYmlVersion: 0.5.0
+name: ckanext-geocat
+url: https://github.com/opendata-swiss/ckanext-geocat
+releaseDate: 2015-10-27
+logo: https://opendata.swiss/images/logo_horizontal.png
+platforms:
+  - web
+categories:
+  - data-collection
+organisation:
+  uri: https://opendata.swiss
+usedBy:
+  - Swiss Federal Statistical Office
+developmentStatus: stable
+softwareType: addon
+dependsOn:
+  open:
+    - name: CKAN
+      versionMin: "2.11"
+    - name: ckanext-dcat
+      versionMin: "2.4.2"
+    - name: ckanext-harvest
+      versionMin: "1.6.2"
+description:
+  en:
+    localisedName: ckanext-geocat
+    shortDescription: CKAN extension implementing harvesting from geocat.ch for opendata.swiss
+    longDescription: ckanext-geocat harvests data from the Swiss CSW service geocat.ch to the Swiss open data portal opendata.swiss. The source format is ISO-19139_che (Swiss version of ISO-19139) and the target format is DCAT-AP Switzerland.
+    features:
+      - implementing harvesting from geocat.ch
+legal:
+  license: AGPL-3.0-or-later
+maintenance:
+  type: contract
+  contractors:
+    - name: Liip AG
+      until: 2030-12-01
+      email: opendata@liip.ch
+      website: https://www.liip.ch/
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - de
+    - en
+    - fr
+    - it
+intendedAudience:
+  scope:
+    - government
+    - local-authorities
+    - research
