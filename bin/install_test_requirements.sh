@@ -5,45 +5,40 @@ WORKDIR=/__w/ckanext-geocat/ckanext-geocat
 pip install --upgrade pip
 
 # Install ckanext-geocat
-pip install -r "$WORKDIR"/requirements.txt
-pip install -r "$WORKDIR"/dev-requirements.txt
-pip install -e "$WORKDIR"/
+echo "Install ckanext-geocat"
+pip install -e "$WORKDIR"/[dev]
 
 # Install ckanext dependencies
 pip install -e git+https://github.com/ckan/ckanext-fluent.git#egg=ckanext-fluent
 pip install -e git+https://github.com/ckan/ckanext-hierarchy.git#egg=ckanext-hierarchy
 pip install -e git+https://github.com/ckan/ckanext-xloader.git#egg=ckanext-xloader
 pip install -r https://raw.githubusercontent.com/ckan/ckanext-xloader/master/requirements.txt
-
-# Last commit before support for Python 2 was dropped
-pip install -e git+https://github.com/ckan/ckanext-harvest.git@v1.4.2#egg=ckanext-harvest
-pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/v1.4.2/requirements.txt
-
-# Last commit before support for Python 2 was dropped
-pip install -e git+https://github.com/ckan/ckanext-dcat.git@0c26bed5b7a3a7fca8e7b78e338aace096e0ebf6#egg=ckanext-dcat
-pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/0c26bed5b7a3a7fca8e7b78e338aace096e0ebf6/requirements-py2.txt
-
-# Last commit before support for Python 2 was dropped
-pip install -e git+https://github.com/ckan/ckanext-showcase.git@v1.5.2#egg=ckanext-showcase
+pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/master/requirements.txt
+pip install -e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
+pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/master/requirements-py2.txt
+pip install -e git+https://github.com/ckan/ckanext-showcase.git#egg=ckanext-showcase
+pip install -e git+https://github.com/ckan/ckanext-scheming.git@master#egg=ckanext-scheming
 
 # Our ckanexts
-pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git#egg=ckanext-dcatapchharvest
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-dcatapchharvest/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-harvester_dashboard.git#egg=ckanext-harvester_dashboard
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-harvester_dashboard/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-password-policy.git#egg=ckanext-password-policy
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-password-policy/master/requirements.txt
+# TODO: require main branch of all of these once they are updated to Python 3 and CKAN 2.11
+# TODO: remove installing requirements.txt once these are switched to pyproject.toml (also check dependencies above)
+pip install -e git+https://github.com/opendata-swiss/ckanext-dcatapchharvest.git@feat/upgrade_to_py3#egg=ckanext-dcatapchharvest
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-dcatapchharvest/feat/upgrade_to_py3/requirements.txt
+pip install -e git+https://github.com/opendata-swiss/ckanext-harvester_dashboard.git@feat/upgrade_to_py3#egg=ckanext-harvester_dashboard
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-harvester_dashboard/feat/upgrade_to_py3/requirements.txt
+pip install -e git+https://github.com/opendata-swiss/ckanext-password-policy.git@feat/upgrade_to_py3#egg=ckanext-password-policy
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-password-policy/feat/upgrade_to_py3/requirements.txt
 pip install -e git+https://github.com/opendata-swiss/ckanext-subscribe.git#egg=ckanext-subscribe
 pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-subscribe/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git#egg=ckanext-switzerland-ng
-pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/master/requirements.txt
-pip install -e git+https://github.com/opendata-swiss/ckanext-scheming.git#egg=ckanext-scheming
+pip install -e git+https://github.com/opendata-swiss/ckanext-switzerland-ng.git@upgrade_to_python3_ckan2_11#egg=ckanext-switzerland
+pip install -r https://raw.githubusercontent.com/opendata-swiss/ckanext-switzerland-ng/upgrade_to_python3_ckan2_11/requirements.txt
 
-# Replace default path to CKAN core config file with the one on the container
+echo "Replace default path to CKAN core config file with the one on the container"
 sed -i -e 's/use = config:.*/use = config:\/srv\/app\/src\/ckan\/test-core.ini/' "$WORKDIR"/test.ini
 
-# Init db and enable required plugins
-paster --plugin=ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = "
-paster --plugin=ckan db init -c "$WORKDIR"/test.ini
-paster --plugin=ckanext-harvest harvester initdb -c "$WORKDIR"/test.ini
-paster --plugin=ckan config-tool "$WORKDIR"/test.ini "ckan.plugins = harvest ckan_harvester geocat_harvester ogdch ogdch_pkg scheming_datasets fluent"
+echo "Replace default database url with the one for the postgres service"
+sed -i -e 's/sqlalchemy.url = .*/sqlalchemy.url = postgresql:\/\/ckan_default:pass@postgres\/ckan_test/' "$WORKDIR"/test.ini
+
+echo "Init db"
+ckan -c "$WORKDIR"/test.ini db init

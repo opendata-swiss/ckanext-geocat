@@ -1,0 +1,48 @@
+[project]
+name = "ckanext-geocat"
+version = "0.0.1"
+dynamic = ["dependencies", "optional-dependencies"]
+description = "CKAN harvester for Geocat"
+authors = [
+    {name = "Liip AG", email = "ogdch@liip.ch"}
+]
+maintainers = [
+    {name = "Liip AG", email = "ogdch@liip.ch"}
+]
+license = {text = "AGPL"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+keywords = [
+    "CKAN",
+    "harvester",
+    "geocat",
+    "iso19139",
+    "iso19139_che",
+    "switzerland",
+]
+
+[project.urls]
+Documentation = "https://github.com/opendata-swiss/ckanext-geocat"
+Repository = "https://github.com/opendata-swiss/ckanext-geocat"
+Issues = "https://github.com/opendata-swiss/ckanext-geocat/issues"
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies = {dev = { file = ["dev-requirements.txt"] }}
+
+[tool.isort]
+profile = "black"
+
+[project.entry-points."ckan.plugins"]
+geocat_harvester = "ckanext.geocat.harvester:GeocatHarvester"

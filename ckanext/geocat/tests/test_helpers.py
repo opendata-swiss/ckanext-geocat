@@ -24,7 +24,10 @@ class TestHarvestHelpersUnit(object):
             ],
         }
 
-        assert check_package_change(existing_package, dataset_dict) == (False, None)
+        assert check_package_change(existing_package, dataset_dict) == (
+            False,
+            None,
+        )
 
     def test_check_package_change_new_modified_time(self):
         existing_package = {
@@ -36,7 +39,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "dataset modified date changed: 2020-01-02T12:00:00"
+            "dataset modified date changed: 2020-01-02T12:00:00",
         )
 
     def test_check_package_change_new_resource_modified_time(self):
@@ -57,7 +60,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "resource modified date changed: 2020-01-02T12:00:00"
+            "resource modified date changed: 2020-01-02T12:00:00",
         )
 
     def test_check_package_change_new_url(self):
@@ -70,7 +73,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "dataset url value changed from 'http://example.org/landing' to 'http://example.org/new/landing'"
+            "dataset url value changed from 'http://example.org/landing' to 'http://example.org/new/landing'",
         )
 
     def test_check_package_change_empty_new_url(self):
@@ -78,12 +81,12 @@ class TestHarvestHelpersUnit(object):
             "url": "http://example.org/landing",
         }
         dataset_dict = {
-            "url": "", 
+            "url": "",
         }
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "dataset url value changed from 'http://example.org/landing' to ''"
+            "dataset url value changed from 'http://example.org/landing' to ''",
         )
 
     def test_check_package_change_new_resource_url(self):
@@ -104,7 +107,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "resource access url changed: http://example.org/new/resource-1"
+            "resource access url changed: http://example.org/new/resource-1",
         )
 
     def test_check_package_change_new_resource_download_url(self):
@@ -125,7 +128,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "resource download url changed: http://example.org/new/resource-1/download"
+            "resource download url changed: http://example.org/new/resource-1/download",
         )
 
     def test_check_package_change_different_resource_count(self):
@@ -155,7 +158,7 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "resource count changed: 1"
+            "resource count changed: 1",
         )
 
     def test_check_package_change_multiple_resources_changed(self):
@@ -194,5 +197,5 @@ class TestHarvestHelpersUnit(object):
 
         assert check_package_change(existing_package, dataset_dict) == (
             True,
-            "resource access url changed: http://example.org/new/resource-1"
+            "resource access url changed: http://example.org/new/resource-1",
         )
