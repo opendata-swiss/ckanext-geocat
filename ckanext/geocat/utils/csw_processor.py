@@ -24,6 +24,40 @@ _GETRECORDBYID_ENVELOPE = (
     "</csw:GetRecordByIdResponse>"
 )
 
+_CSW_SEARCH_RESULTS_NS = {"csw": "http://www.opengis.net/cat/csw/2.0.2"}
+
+
+def _build_cql_params(cql, cql_query, cql_search_term):
+    """Return the CQL constraint parameters to add to a GetRecords request."""
+    if cql_query and cql_search_term:
+        constraint = f"{cql_query} = '{cql_search_term}'"
+    elif cql:
+        constraint = cql
+    else:
+        constraint = f"{CQL_QUERY_DEFAULT} = '{CQL_SEARCH_TERM_DEFAULT}'"
+    return {
+        "CONSTRAINTLANGUAGE": "CQL_TEXT",
+        "CONSTRAINT_LANGUAGE_VERSION": "1.1.0",
+        "CONSTRAINT": constraint,
+    }
+
+
+def _next_record_from_results(root):
+    """Return the next start position from a GetRecords response, or None if done."""
+    sr = root.find(".//csw:SearchResults", _CSW_SEARCH_RESULTS_NS)
+    if sr is None:
+        return None
+    next_record = int(sr.get("nextRecord", 0))
+    matched = int(sr.get("numberOfRecordsMatched", 0))
+    returned = int(sr.get("numberOfRecordsReturned", 0))
+    log.debug(
+        "GetRecords: matched=%s returned=%s nextRecord=%s",
+        matched, returned, next_record,
+    )
+    if next_record == 0 or next_record > matched or returned == 0:
+        return None
+    return next_record
+
 
 class GeocatCatalogueServiceWeb(object):
     def __init__(self, url):
@@ -94,20 +128,7 @@ class GeocatCatalogueServiceWeb(object):
             "RESULTTYPE": "results",
             "MAXRECORDS": str(maxrecords),
         }
-        if cql_query and cql_search_term:
-            params["CONSTRAINTLANGUAGE"] = "CQL_TEXT"
-            params["CONSTRAINT_LANGUAGE_VERSION"] = "1.1.0"
-            params["CONSTRAINT"] = f"{cql_query} = '{cql_search_term}'"
-        elif cql:
-            params["CONSTRAINTLANGUAGE"] = "CQL_TEXT"
-            params["CONSTRAINT_LANGUAGE_VERSION"] = "1.1.0"
-            params["CONSTRAINT"] = cql
-        else:
-            params["CONSTRAINTLANGUAGE"] = "CQL_TEXT"
-            params["CONSTRAINT_LANGUAGE_VERSION"] = "1.1.0"
-            params["CONSTRAINT"] = (
-                f"{CQL_QUERY_DEFAULT} = '{CQL_SEARCH_TERM_DEFAULT}'"
-            )
+        params.update(_build_cql_params(cql, cql_query, cql_search_term))
 
         start = 1
         while True:
@@ -115,10 +136,9 @@ class GeocatCatalogueServiceWeb(object):
             log.debug("GetRecords DCAT batch start=%s url=%s", start, base_url)
             resp = requests.get(base_url, params=params, timeout=60)
             resp.raise_for_status()
-            raw = resp.content  # bytes
 
             try:
-                root = etree.fromstring(raw)
+                root = etree.fromstring(resp.content)
             except etree.XMLSyntaxError as exc:
                 raise CswNotFoundError(f"Could not parse GetRecords response: {exc}")
 
@@ -127,31 +147,16 @@ class GeocatCatalogueServiceWeb(object):
                 break
 
             for dataset_elem in datasets:
-                # Extract dct:identifier
                 id_elem = dataset_elem.find(_DCT_IDENTIFIER_TAG)
                 if id_elem is None or not id_elem.text:
                     log.warning("dcat:Dataset without dct:identifier, skipping")
                     continue
                 geocat_id = id_elem.text.strip()
-
-                # Re-serialise the single dataset element
                 dataset_xml = etree.tostring(dataset_elem, encoding="unicode")
-                wrapped = _GETRECORDBYID_ENVELOPE.format(dataset_xml=dataset_xml)
-                yield geocat_id, wrapped
+                yield geocat_id, _GETRECORDBYID_ENVELOPE.format(dataset_xml=dataset_xml)
 
-            # Pagination: check SearchResults attributes
-            ns = {"csw": "http://www.opengis.net/cat/csw/2.0.2"}
-            sr = root.find(".//csw:SearchResults", ns)
-            if sr is None:
-                break
-            next_record = int(sr.get("nextRecord", 0))
-            matched = int(sr.get("numberOfRecordsMatched", 0))
-            returned = int(sr.get("numberOfRecordsReturned", 0))
-            log.debug(
-                "GetRecords: matched=%s returned=%s nextRecord=%s",
-                matched, returned, next_record,
-            )
-            if next_record == 0 or next_record > matched or returned == 0:
+            next_record = _next_record_from_results(root)
+            if next_record is None:
                 break
             start = next_record
 
