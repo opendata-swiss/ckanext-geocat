@@ -10,7 +10,7 @@ from ckan.lib.plugins import lookup_package_plugin
 from ckan.model import Session
 
 from ckanext.geocat.utils import (
-    csw_mapping,
+    dcat_mapping,
     csw_processor,
     ogdch_map_utils,
     search_utils,
@@ -182,7 +182,7 @@ class GeocatHarvester(HarvesterBase):
             gathered_ogdch_identifiers=gathered_ogdch_identifiers,
         )
 
-        csw_map = csw_mapping.GeoMetadataMapping(
+        csw_map = dcat_mapping.DcatMetadataMapping(
             organization_slug=self.config["organization"],
             geocat_perma_link=self.config["geocat_perma_link_url"],
             geocat_perma_label=self.config["geocat_perma_link_label"],

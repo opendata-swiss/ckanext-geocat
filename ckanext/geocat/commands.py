@@ -7,7 +7,7 @@ from ckanext.geocat.harvester import (
     DEFAULT_PERMA_LINK_LABEL,
     DEFAULT_PERMA_LINK_URL,
 )
-from ckanext.geocat.utils import csw_mapping, csw_processor
+from ckanext.geocat.utils import csw_processor, dcat_mapping
 
 
 # TODO: Update these commands to use the IClick interface:
@@ -112,7 +112,7 @@ class GeocatCommand(CkanCommand):
             csw_data = csw_processor.GeocatCatalogueServiceWeb(url=url)
 
             xml = csw_data.get_record_by_id(id)
-            self.csw_map = csw_mapping.GeoMetadataMapping(
+            self.csw_map = dcat_mapping.DcatMetadataMapping(
                 organization_slug="swisstopo",
                 geocat_perma_link=DEFAULT_PERMA_LINK_URL,
                 geocat_perma_label=DEFAULT_PERMA_LINK_LABEL,
