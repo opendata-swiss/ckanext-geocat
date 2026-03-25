@@ -10,8 +10,8 @@ from ckan.lib.plugins import lookup_package_plugin
 from ckan.model import Session
 
 from ckanext.geocat.utils import (
-    dcat_mapping,
     csw_processor,
+    dcat_mapping,
     ogdch_map_utils,
     search_utils,
 )
