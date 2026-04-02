@@ -162,9 +162,7 @@ class DcatMetadataMapping:
                 raw_identifier, self.organization_slug
             ),
             "title": _filter_ckan_langs(_xml_lang_dict(node, "dct:title")),
-            "description": _filter_ckan_langs(
-                _xml_lang_dict(node, "dct:description")
-            ),
+            "description": _filter_ckan_langs(_xml_lang_dict(node, "dct:description")),
             "publisher": self._map_publisher(node),
             "contact_points": self._map_contact_points(node),
             "issued": self._map_datetime(node, "dct:issued"),
@@ -186,9 +184,7 @@ class DcatMetadataMapping:
 
         # Optionally append legal-basis relation from harvester config
         if self.legal_basis_url:
-            dataset_dict["relations"].append(
-                get_legal_basis_link(self.legal_basis_url)
-            )
+            dataset_dict["relations"].append(get_legal_basis_link(self.legal_basis_url))
 
         return dataset_dict
 
@@ -207,9 +203,7 @@ class DcatMetadataMapping:
     def _map_publisher(self, node):
         agents = node.xpath("dct:publisher/foaf:Agent", namespaces=DCAT_NS)
         if not agents:
-            return json.dumps(
-                {"name": {lang: "" for lang in CKAN_LANGS}, "url": ""}
-            )
+            return json.dumps({"name": {lang: "" for lang in CKAN_LANGS}, "url": ""})
         agent = agents[0]
         url = agent.get(RDF_ABOUT_ATTR) or ""
         name_dict = _filter_ckan_langs(_xml_lang_dict(agent, "foaf:name"))
@@ -252,7 +246,7 @@ class DcatMetadataMapping:
             code = _uri_last_segment(uri).lower()
             if code:
                 groups.add(code)
-        return [{"name": g} for g in sorted(groups)]
+        return [{"name": group_code} for group_code in sorted(groups)]
 
     def _map_dataset_languages(self, node):
         langs = []
@@ -268,9 +262,7 @@ class DcatMetadataMapping:
 
     def _map_temporals(self, node):
         temporals = []
-        for period in node.xpath(
-            "dct:temporal/dct:PeriodOfTime", namespaces=DCAT_NS
-        ):
+        for period in node.xpath("dct:temporal/dct:PeriodOfTime", namespaces=DCAT_NS):
             start_vals = period.xpath("dcat:startDate/text()", namespaces=DCAT_NS)
             end_vals = period.xpath("dcat:endDate/text()", namespaces=DCAT_NS)
             if start_vals:
@@ -285,10 +277,10 @@ class DcatMetadataMapping:
         Falls back to an empty list if the property is absent (common case).
         """
         qualified = []
-        for qr in node.xpath(
+        for relationship in node.xpath(
             "dcat:qualifiedRelation/dcat:Relationship", namespaces=DCAT_NS
         ):
-            uri_elems = qr.xpath("dct:relation", namespaces=DCAT_NS)
+            uri_elems = relationship.xpath("dct:relation", namespaces=DCAT_NS)
             if uri_elems:
                 uri = _rdf_resource(uri_elems[0])
                 if uri:
@@ -320,13 +312,13 @@ class DcatMetadataMapping:
         so no separate permalink injection is needed here.
         """
         relations = []
-        for desc in node.xpath(
+        for relation_desc in node.xpath(
             "dct:relation/rdf:Description", namespaces=DCAT_NS
         ):
-            url = desc.get(RDF_ABOUT_ATTR) or ""
+            url = relation_desc.get(RDF_ABOUT_ATTR) or ""
             if not url:
                 continue
-            labels_raw = _xml_lang_dict(desc, "rdfs:label")
+            labels_raw = _xml_lang_dict(relation_desc, "rdfs:label")
             labels = _filter_ckan_langs(labels_raw)
             # Fill missing CKAN languages with the first available value
             fallback = next(iter(labels_raw.values()), "") if labels_raw else ""
@@ -366,7 +358,9 @@ class DcatMetadataMapping:
 
         # multilingual title (may be absent)
         title_dict = _filter_ckan_langs(_xml_lang_dict(dist, "dct:title"))
-        resource["title"] = title_dict if any(title_dict.values()) else None
+        resource["title"] = (
+            title_dict if any(title_dict.values()) else _filter_ckan_langs({})
+        )
 
         # multilingual description
         resource["description"] = _filter_ckan_langs(
@@ -386,28 +380,22 @@ class DcatMetadataMapping:
         if lic_elems:
             rights = _rdf_resource(lic_elems[0])
         else:
-            rs_elems = dist.xpath(
-                "dct:rights/dct:RightsStatement", namespaces=DCAT_NS
-            )
-            rights = (
-                _rdf_resource(rs_elems[0]) if rs_elems else self.default_rights
-            )
+            rs_elems = dist.xpath("dct:rights/dct:RightsStatement", namespaces=DCAT_NS)
+            rights = _rdf_resource(rs_elems[0]) if rs_elems else self.default_rights
         resource["rights"] = rights
         resource["license"] = rights
 
         # dates
-        resource["issued"] = _normalize_datetime(
-            self._dist_text(dist, "dct:issued")
-        )
+        resource["issued"] = _normalize_datetime(self._dist_text(dist, "dct:issued"))
         resource["modified"] = _normalize_datetime(
             self._dist_text(dist, "dct:modified")
         )
 
         # languages
         resource["language"] = [
-            _eu_lang_to_short(_rdf_resource(le))
-            for le in dist.xpath("dct:language", namespaces=DCAT_NS)
-            if _eu_lang_to_short(_rdf_resource(le))
+            _eu_lang_to_short(_rdf_resource(lang_elem))
+            for lang_elem in dist.xpath("dct:language", namespaces=DCAT_NS)
+            if _eu_lang_to_short(_rdf_resource(lang_elem))
         ]
 
         return resource

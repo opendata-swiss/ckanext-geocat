@@ -17,7 +17,12 @@ def _make_mapper(**overrides):
     defaults = dict(
         organization_slug=ORG_SLUG,
         geocat_perma_link="https://perma-link/",
-        geocat_perma_label={"de": "geocat Permalink", "fr": "geocat lien", "en": "geocat link", "it": "geocat link"},
+        geocat_perma_label={
+            "de": "geocat Permalink",
+            "fr": "geocat lien",
+            "en": "geocat link",
+            "it": "geocat link",
+        },
         legal_basis_url="",
         default_rights="",
         valid_identifiers=[f"{GEOCAT_ID}@{ORG_SLUG}"],
@@ -47,11 +52,26 @@ class TestDcatDatasetMetadataFields(unittest.TestCase):
 
     def test_all_expected_fields_present(self):
         expected = {
-            "identifier", "title", "description", "issued", "modified",
-            "publisher", "contact_points", "groups", "language", "relations",
-            "temporals", "keywords", "url", "spatial", "coverage",
-            "accrual_periodicity", "qualified_relations", "owner_org",
-            "resources", "conforms_to",
+            "identifier",
+            "title",
+            "description",
+            "issued",
+            "modified",
+            "publisher",
+            "contact_points",
+            "groups",
+            "language",
+            "relations",
+            "temporals",
+            "keywords",
+            "url",
+            "spatial",
+            "coverage",
+            "accrual_periodicity",
+            "qualified_relations",
+            "owner_org",
+            "resources",
+            "conforms_to",
         }
         self.assertEqual(expected, set(self.dataset.keys()))
 
@@ -90,9 +110,7 @@ class TestDcatDatasetMetadataValues(unittest.TestCase):
     # --- identifier ---
 
     def test_identifier(self):
-        self.assertEqual(
-            f"{GEOCAT_ID}@{ORG_SLUG}", self.dataset["identifier"]
-        )
+        self.assertEqual(f"{GEOCAT_ID}@{ORG_SLUG}", self.dataset["identifier"])
 
     # --- title ---
 
@@ -205,13 +223,12 @@ class TestDcatDatasetMetadataValues(unittest.TestCase):
 
     def test_relations_contains_permalink(self):
         urls = [r["url"] for r in self.dataset["relations"]]
-        self.assertIn(
-            f"https://www.geocat.ch/datahub/dataset/{GEOCAT_ID}", urls
-        )
+        self.assertIn(f"https://www.geocat.ch/datahub/dataset/{GEOCAT_ID}", urls)
 
     def test_permalink_has_multilang_label(self):
         permalink = next(
-            r for r in self.dataset["relations"]
+            r
+            for r in self.dataset["relations"]
             if r["url"] == f"https://www.geocat.ch/datahub/dataset/{GEOCAT_ID}"
         )
         for lang in CKAN_LANGS:

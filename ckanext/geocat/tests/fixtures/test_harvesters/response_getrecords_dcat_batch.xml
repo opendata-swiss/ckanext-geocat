@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:GetRecordsResponse xmlns:ns0="http://www.opengis.net/cat/csw/2.0.2" xmlns:ns1="http://www.w3.org/ns/dcat#" xmlns:ns3="http://purl.org/dc/terms/" xmlns:ns4="http://xmlns.com/foaf/0.1/" xmlns:ns5="http://www.w3.org/2006/vcard/ns#" xmlns:ns6="http://www.w3.org/2000/01/rdf-schema#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><ns0:SearchResults numberOfRecordsMatched="2" numberOfRecordsReturned="2" nextRecord="0" /><ns1:Dataset rdf:about="https://www.geocat.ch/geonetwork/srv/api/records/2466-4690-b54d-c1d958f1c3b8-93814e81/formatters/dcat-ap-ch">
+    <ns3:identifier>2466-4690-b54d-c1d958f1c3b8-93814e81</ns3:identifier>
+    <ns3:title xml:lang="de">Lärmbelastung durch Eisenbahnverkehr Nacht</ns3:title>
+    <ns3:title xml:lang="fr">Exposition au bruit ferroviaire nuit</ns3:title>
+    <ns3:title xml:lang="it">Esposizione al rumore ferroviario notte</ns3:title>
+    <ns3:title xml:lang="en">Railway noise exposure night</ns3:title>
+    <ns3:description xml:lang="de">Die Karte zeigt die Lärmbelastung durch den Schienenverkehr in der Nacht.</ns3:description>
+    <ns3:description xml:lang="fr">La carte montre l'exposition au bruit ferroviaire la nuit.</ns3:description>
+    <ns3:description xml:lang="it">La mappa mostra l'esposizione al rumore ferroviario di notte.</ns3:description>
+    <ns3:description xml:lang="en">The map shows the railway noise exposure at night.</ns3:description>
+    <ns3:publisher>
+      <ns4:Agent rdf:about="https://www.bafu.admin.ch">
+        <ns4:name xml:lang="de">Bundesamt für Umwelt</ns4:name>
+        <ns4:name xml:lang="fr">Office fédéral de l'environnement</ns4:name>
+        <ns4:name xml:lang="it">Ufficio federale dell'ambiente</ns4:name>
+        <ns4:name xml:lang="en">Federal Office for the Environment</ns4:name>
+      </ns4:Agent>
+    </ns3:publisher>
+    <ns1:contactPoint>
+      <ns5:Organization>
+        <ns5:fn>Bundesamt für Umwelt</ns5:fn>
+        <ns5:hasEmail rdf:resource="mailto:geodata@bafu.admin.ch" />
+      </ns5:Organization>
+    </ns1:contactPoint>
+    <ns1:distribution>
+      <ns1:Distribution>
+        <ns1:accessURL rdf:resource="https://map.geo.admin.ch/?layers=ch.bafu.laerm-bahnlerm_nacht" />
+        <ns3:title xml:lang="de">Vorschau map.geo.admin.ch</ns3:title>
+        <ns3:description xml:lang="de">Vorschau map.geo.admin.ch</ns3:description>
+        <ns3:description xml:lang="fr">Aperçu map.geo.admin.ch</ns3:description>
+        <ns3:description xml:lang="it">Anteprima map.geo.admin.ch</ns3:description>
+        <ns3:description xml:lang="en">Preview map.geo.admin.ch</ns3:description>
+        <ns3:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML" />
+        <ns1:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html" />
+        <ns3:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        <ns3:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:issued>
+        <ns3:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:modified>
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+      </ns1:Distribution>
+    </ns1:distribution>
+    <ns3:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:issued>
+    <ns3:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:modified>
+    <ns1:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/ENVI" />
+    <ns1:landingPage rdf:resource="https://www.bafu.admin.ch/laerm" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+    <ns1:keyword xml:lang="de">Lärm</ns1:keyword>
+    <ns1:keyword xml:lang="fr">bruit</ns1:keyword>
+    <ns1:keyword xml:lang="it">rumore</ns1:keyword>
+    <ns1:keyword xml:lang="en">noise</ns1:keyword>
+    <ns3:spatial>Schweiz</ns3:spatial>
+    <ns3:accrualPeriodicity rdf:resource="http://publications.europa.eu/resource/authority/frequency/ANNUAL" />
+    <ns3:relation>
+      <rdf:Description rdf:about="https://www.geocat.ch/datahub/dataset/2466-4690-b54d-c1d958f1c3b8-93814e81">
+        <ns6:label xml:lang="de">geocat.ch Permalink</ns6:label>
+        <ns6:label xml:lang="fr">geocat.ch permalien</ns6:label>
+        <ns6:label xml:lang="it">geocat.ch link permanente</ns6:label>
+        <ns6:label xml:lang="en">geocat.ch permalink</ns6:label>
+      </rdf:Description>
+    </ns3:relation>
+  </ns1:Dataset>
+<ns1:Dataset rdf:about="https://www.geocat.ch/geonetwork/srv/api/records/93814e81-2466-4690-b54d-c1d958f1c3b8/formatters/dcat-ap-ch">
+    <ns3:identifier>93814e81-2466-4690-b54d-c1d958f1c3b8</ns3:identifier>
+    <ns3:title xml:lang="de">Lärmbelastung durch Eisenbahnverkehr Tag</ns3:title>
+    <ns3:title xml:lang="fr">Exposition au bruit ferroviaire jour</ns3:title>
+    <ns3:title xml:lang="it">Esposizione al rumore ferroviario giorno</ns3:title>
+    <ns3:title xml:lang="en">Railway noise exposure day</ns3:title>
+    <ns3:description xml:lang="de">Die Karte zeigt die Lärmbelastung durch den Schienenverkehr während des Tages.</ns3:description>
+    <ns3:description xml:lang="fr">La carte montre l'exposition au bruit ferroviaire pendant la journée.</ns3:description>
+    <ns3:description xml:lang="it">La mappa mostra l'esposizione al rumore ferroviario durante il giorno.</ns3:description>
+    <ns3:description xml:lang="en">The map shows the railway noise exposure during the day.</ns3:description>
+    <ns3:publisher>
+      <ns4:Agent rdf:about="https://www.bafu.admin.ch">
+        <ns4:name xml:lang="de">Bundesamt für Umwelt</ns4:name>
+        <ns4:name xml:lang="fr">Office fédéral de l'environnement</ns4:name>
+        <ns4:name xml:lang="it">Ufficio federale dell'ambiente</ns4:name>
+        <ns4:name xml:lang="en">Federal Office for the Environment</ns4:name>
+      </ns4:Agent>
+    </ns3:publisher>
+    <ns1:contactPoint>
+      <ns5:Organization>
+        <ns5:fn>Bundesamt für Umwelt</ns5:fn>
+        <ns5:hasEmail rdf:resource="mailto:geodata@bafu.admin.ch" />
+      </ns5:Organization>
+    </ns1:contactPoint>
+    <ns1:distribution>
+      <ns1:Distribution>
+        <ns1:accessURL rdf:resource="https://map.geo.admin.ch/?layers=ch.bafu.laerm-bahnlerm_tag" />
+        <ns3:title xml:lang="de">Vorschau map.geo.admin.ch</ns3:title>
+        <ns3:description xml:lang="de">Vorschau map.geo.admin.ch</ns3:description>
+        <ns3:description xml:lang="fr">Aperçu map.geo.admin.ch</ns3:description>
+        <ns3:description xml:lang="it">Anteprima map.geo.admin.ch</ns3:description>
+        <ns3:description xml:lang="en">Preview map.geo.admin.ch</ns3:description>
+        <ns3:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML" />
+        <ns1:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html" />
+        <ns3:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_by" />
+        <ns3:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:issued>
+        <ns3:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:modified>
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+      </ns1:Distribution>
+    </ns1:distribution>
+    <ns3:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:issued>
+    <ns3:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</ns3:modified>
+    <ns1:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/ENVI" />
+    <ns1:landingPage rdf:resource="https://www.bafu.admin.ch/laerm-tag" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+    <ns3:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+    <ns1:keyword xml:lang="de">Lärm</ns1:keyword>
+    <ns1:keyword xml:lang="fr">bruit</ns1:keyword>
+    <ns1:keyword xml:lang="it">rumore</ns1:keyword>
+    <ns1:keyword xml:lang="en">noise</ns1:keyword>
+    <ns3:spatial>Schweiz</ns3:spatial>
+    <ns3:accrualPeriodicity rdf:resource="http://publications.europa.eu/resource/authority/frequency/ANNUAL" />
+    <ns3:relation>
+      <rdf:Description rdf:about="https://www.geocat.ch/datahub/dataset/93814e81-2466-4690-b54d-c1d958f1c3b8">
+        <ns6:label xml:lang="de">geocat.ch Permalink</ns6:label>
+        <ns6:label xml:lang="fr">geocat.ch permalien</ns6:label>
+        <ns6:label xml:lang="it">geocat.ch link permanente</ns6:label>
+        <ns6:label xml:lang="en">geocat.ch permalink</ns6:label>
+      </rdf:Description>
+    </ns3:relation>
+  </ns1:Dataset>
+</ns0:GetRecordsResponse>

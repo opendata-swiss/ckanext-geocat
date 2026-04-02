@@ -95,9 +95,7 @@ class TestDcatDownloadDistribution(unittest.TestCase):
         xml = _load_xml("geocat-dcat-testdata.xml")
         dataset = mapper.get_metadata(xml, GEOCAT_ID)
         # Identify by presence of download_url
-        self.dist = next(
-            d for d in dataset["resources"] if d.get("download_url")
-        )
+        self.dist = next(d for d in dataset["resources"] if d.get("download_url"))
 
     def test_access_url_equals_download_url(self):
         self.assertEqual(self.dist["url"], self.dist["download_url"])
@@ -140,8 +138,7 @@ class TestDcatServiceDistributions(unittest.TestCase):
 
     def test_wms_distribution_format(self):
         wms = next(
-            d for d in self.services
-            if d.get("format") == FILE_TYPE_BASE + "WMS_SRVC"
+            d for d in self.services if d.get("format") == FILE_TYPE_BASE + "WMS_SRVC"
         )
         self.assertIsNotNone(wms)
         self.assertEqual(
@@ -151,15 +148,13 @@ class TestDcatServiceDistributions(unittest.TestCase):
 
     def test_wmts_distribution_format(self):
         wmts = next(
-            d for d in self.services
-            if d.get("format") == FILE_TYPE_BASE + "WMTS_SRVC"
+            d for d in self.services if d.get("format") == FILE_TYPE_BASE + "WMTS_SRVC"
         )
         self.assertIsNotNone(wmts)
 
     def test_html_preview_distribution_format(self):
         html = next(
-            d for d in self.services
-            if d.get("format") == FILE_TYPE_BASE + "HTML"
+            d for d in self.services if d.get("format") == FILE_TYPE_BASE + "HTML"
         )
         self.assertIsNotNone(html)
         self.assertIn("map.geo.admin.ch", html["url"])
