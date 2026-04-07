@@ -23,3 +23,11 @@ groups:
         default: "https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/"
         description:
         required: false
+      - key: ckanext.geocat.site_url
+        default: ""
+        description:
+          CKAN base URL used when building /perma/{identifier} links for
+          qualified relations via harvester (workaround for ckan.site_url being used for 
+          performance of the xloader-image in productive environments). 
+          When empty, ckan.site_url is used. 
+        required: false
