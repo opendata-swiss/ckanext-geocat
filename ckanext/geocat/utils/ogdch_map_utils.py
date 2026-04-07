@@ -164,7 +164,7 @@ def get_geocat_permalink(geocat_id, geocat_perma_link, geocat_perma_label):
 
 
 def get_ogdch_permalink(identifier):
-    site_url = tk.config.get("ckan.site_url")
+    site_url = tk.config.get("ckanext.geocat.site_url", "ckan.site_url")
     return f"{site_url}/perma/{identifier}"
 
 

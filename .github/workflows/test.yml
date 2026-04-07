@@ -43,6 +43,7 @@ jobs:
       CKAN_SOLR_URL: http://solr:8983/solr/ckan
       CKAN_REDIS_URL: redis://redis:6379/1
       CKAN_SITE_URL: http://test.ckan.net
+      CKANEXT__GEOCAT__SITE_URL: http://test.ckan.net
       WORKDIR: /__w/ckanext-geocat/ckanext-geocat
       SOLR_CONFIG_DIR: /opt/solr/server/solr/configsets
       SOLR_CONFIG_CKAN_DIR: /opt/solr/server/solr/configsets/ckan/conf
