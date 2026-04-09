@@ -10,7 +10,7 @@ from ckanext.harvest.tests.lib import run_harvest
 
 log = logging.getLogger(__name__)
 
-# Canonical DCAT-AP-CH per-record XML: result_1_dcat.xml, result_2_dcat.xml (OCurdy branch).
+# Canonical DCAT-AP-CH per-record XML: result_1_dcat.xml, result_2_dcat.xml.
 # response_getrecords_dcat_*.xml is assembled from those; after edits run:
 #   python3 bin/regen_dcat_harvest_fixtures.py
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
