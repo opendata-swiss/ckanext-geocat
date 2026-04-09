@@ -202,5 +202,12 @@
       </rdf:Description>
     </dct:relation>
 
+    <!-- Relation with only one rdfs:label: mapper should fill fr/it/en via fallback -->
+    <dct:relation>
+      <rdf:Description rdf:about="https://example.org/dcat-relation-fallback-test">
+        <rdfs:label xml:lang="de">Nur deutscher Relationstitel</rdfs:label>
+      </rdf:Description>
+    </dct:relation>
+
   </dcat:Dataset>
 </csw:GetRecordByIdResponse>

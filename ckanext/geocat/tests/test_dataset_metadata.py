@@ -232,9 +232,34 @@ class TestDcatDatasetMetadataValues(unittest.TestCase):
             for r in self.dataset["relations"]
             if r["url"] == f"https://www.geocat.ch/datahub/dataset/{GEOCAT_ID}"
         )
+        label = permalink["label"]
         for lang in CKAN_LANGS:
-            self.assertIn(lang, permalink["label"])
-            self.assertIsInstance(permalink["label"][lang], str)
+            self.assertIn(lang, label)
+            self.assertIsInstance(label[lang], str)
+            self.assertTrue(label[lang].strip(), f"label[{lang}] must be non-empty")
+
+        expected = {
+            "de": "geocat.ch Permalink",
+            "fr": "geocat.ch permalien",
+            "it": "geocat.ch link permanente",
+            "en": "geocat.ch permalink",
+        }
+        self.assertEqual(expected, label)
+
+        # Distinct per-language strings (not a single value copied to all langs)
+        self.assertEqual(len(set(label.values())), 4)
+
+    def test_relation_label_fallback_fills_missing_languages(self):
+        """When rdfs:label exists only for one language, others get the first value."""
+        rel = next(
+            r
+            for r in self.dataset["relations"]
+            if r["url"] == "https://example.org/dcat-relation-fallback-test"
+        )
+        fallback_text = "Nur deutscher Relationstitel"
+        label = rel["label"]
+        for lang in CKAN_LANGS:
+            self.assertEqual(fallback_text, label[lang])
 
     # --- resources ---
 
