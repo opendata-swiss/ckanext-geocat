@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <dcat:Dataset
+      xmlns:dcat="http://www.w3.org/ns/dcat#"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+      xmlns:dct="http://purl.org/dc/terms/"
+      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+      xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+      rdf:about="https://www.geocat.ch/geonetwork/srv/api/records/2466-4690-b54d-c1d958f1c3b8-93814e81/formatters/dcat-ap-ch">
+    <dct:identifier>2466-4690-b54d-c1d958f1c3b8-93814e81</dct:identifier>
+    <dct:title xml:lang="de">Lärmbelastung durch Eisenbahnverkehr Nacht</dct:title>
+    <dct:title xml:lang="fr">Exposition au bruit ferroviaire nuit</dct:title>
+    <dct:title xml:lang="it">Esposizione al rumore ferroviario notte</dct:title>
+    <dct:title xml:lang="en">Railway noise exposure night</dct:title>
+    <dct:description xml:lang="de">Die Karte zeigt die Lärmbelastung durch den Schienenverkehr in der Nacht.</dct:description>
+    <dct:description xml:lang="fr">La carte montre l'exposition au bruit ferroviaire la nuit.</dct:description>
+    <dct:description xml:lang="it">La mappa mostra l'esposizione al rumore ferroviario di notte.</dct:description>
+    <dct:description xml:lang="en">The map shows the railway noise exposure at night.</dct:description>
+    <dct:publisher>
+      <foaf:Agent rdf:about="https://www.bafu.admin.ch">
+        <foaf:name xml:lang="de">Bundesamt für Umwelt</foaf:name>
+        <foaf:name xml:lang="fr">Office fédéral de l'environnement</foaf:name>
+        <foaf:name xml:lang="it">Ufficio federale dell'ambiente</foaf:name>
+        <foaf:name xml:lang="en">Federal Office for the Environment</foaf:name>
+      </foaf:Agent>
+    </dct:publisher>
+    <dcat:contactPoint>
+      <vcard:Organization>
+        <vcard:fn>Bundesamt für Umwelt</vcard:fn>
+        <vcard:hasEmail rdf:resource="mailto:geodata@bafu.admin.ch"/>
+      </vcard:Organization>
+    </dcat:contactPoint>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://map.geo.admin.ch/?layers=ch.bafu.laerm-bahnlerm_nacht"/>
+        <dct:title xml:lang="de">Vorschau map.geo.admin.ch</dct:title>
+        <dct:description xml:lang="de">Vorschau map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="fr">Aperçu map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="it">Anteprima map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="en">Preview map.geo.admin.ch</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML"/>
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html"/>
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open"/>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</dct:issued>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</dct:modified>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+      </dcat:Distribution>
+    </dcat:distribution>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-02-19T00:00:00</dct:modified>
+    <dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/ENVI"/>
+    <dcat:landingPage rdf:resource="https://www.bafu.admin.ch/laerm"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+    <dcat:keyword xml:lang="de">Lärm</dcat:keyword>
+    <dcat:keyword xml:lang="fr">bruit</dcat:keyword>
+    <dcat:keyword xml:lang="it">rumore</dcat:keyword>
+    <dcat:keyword xml:lang="en">noise</dcat:keyword>
+    <dct:spatial>Schweiz</dct:spatial>
+    <dct:accrualPeriodicity rdf:resource="http://publications.europa.eu/resource/authority/frequency/ANNUAL"/>
+    <dct:relation>
+      <rdf:Description rdf:about="https://www.geocat.ch/datahub/dataset/2466-4690-b54d-c1d958f1c3b8-93814e81">
+        <rdfs:label xml:lang="de">geocat.ch Permalink</rdfs:label>
+        <rdfs:label xml:lang="fr">geocat.ch permalien</rdfs:label>
+        <rdfs:label xml:lang="it">geocat.ch link permanente</rdfs:label>
+        <rdfs:label xml:lang="en">geocat.ch permalink</rdfs:label>
+      </rdf:Description>
+    </dct:relation>
+  </dcat:Dataset>
+</csw:GetRecordByIdResponse>

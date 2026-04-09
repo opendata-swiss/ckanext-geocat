@@ -46,3 +46,4 @@ profile = "black"
 
 [project.entry-points."ckan.plugins"]
 geocat_harvester = "ckanext.geocat.harvester:GeocatHarvester"
+geocat_ech0271_harvester = "ckanext.geocat.harvester:GeocatEch0271Harvester"

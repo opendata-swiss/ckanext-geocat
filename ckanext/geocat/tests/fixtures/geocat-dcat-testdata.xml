@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Comprehensive DCAT-AP-CH fixture for unit tests.
+  Mirrors the structure returned by geocat.ch CSW GetRecordById with
+  OUTPUTSCHEMA=http://dcat-ap.ch/schema/dcat-ap-ch/2.0
+-->
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <dcat:Dataset
+      xmlns:dcat="http://www.w3.org/ns/dcat#"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+      xmlns:dct="http://purl.org/dc/terms/"
+      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+      xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+      rdf:about="https://www.geocat.ch/geonetwork/srv/api/records/93814e81-2466-4690-b54d-c1d958f1c3b8/formatters/dcat-ap-ch">
+
+    <dct:identifier>93814e81-2466-4690-b54d-c1d958f1c3b8</dct:identifier>
+
+    <dct:title xml:lang="de">Lärmbelastung durch Eisenbahnverkehr Nacht</dct:title>
+    <dct:title xml:lang="fr">Exposition au bruit du trafic ferroviaire, nuit</dct:title>
+    <dct:title xml:lang="it">Esposizione al rumore del traffico ferroviario, notte</dct:title>
+    <dct:title xml:lang="en">Nighttime railway noise exposure</dct:title>
+
+    <dct:description xml:lang="de">Die Karte zeigt, welcher Lärmbelastung die Bevölkerung durch den Schienenverkehr in der Nacht ausgesetzt ist.</dct:description>
+    <dct:description xml:lang="fr">La carte montre l'exposition de la population au bruit ferroviaire la nuit.</dct:description>
+    <dct:description xml:lang="it">La mappa mostra l'esposizione della popolazione al rumore ferroviario di notte.</dct:description>
+    <dct:description xml:lang="en">The map shows the railway noise exposure at night.</dct:description>
+
+    <dct:publisher>
+      <foaf:Agent rdf:about="http://www.bafu.admin.ch/abteilung-laerm-nis">
+        <foaf:name xml:lang="de">Bundesamt für Umwelt</foaf:name>
+        <foaf:name xml:lang="fr">Office fédéral de l'environnement</foaf:name>
+        <foaf:name xml:lang="it">Ufficio federale dell'ambiente</foaf:name>
+        <foaf:name xml:lang="en">Federal Office for the Environment</foaf:name>
+      </foaf:Agent>
+    </dct:publisher>
+
+    <dcat:contactPoint>
+      <vcard:Organization>
+        <vcard:fn>noise@bafu.admin.ch</vcard:fn>
+        <vcard:hasEmail rdf:resource="mailto:noise@bafu.admin.ch"/>
+      </vcard:Organization>
+    </dcat:contactPoint>
+
+    <!-- Download distribution -->
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://data.bafu.admin.ch/laerm/download"/>
+        <dcat:downloadURL rdf:resource="https://data.bafu.admin.ch/laerm/download"/>
+        <dct:title xml:lang="de">Download Geodaten</dct:title>
+        <dct:title xml:lang="fr">Téléchargement géodonnées</dct:title>
+        <dct:title xml:lang="it">Download geodati</dct:title>
+        <dct:title xml:lang="en">Download geodata</dct:title>
+        <dct:description xml:lang="de">Direktdownload der Geodaten</dct:description>
+        <dct:description xml:lang="fr">Téléchargement direct des géodonnées</dct:description>
+        <dct:description xml:lang="it">Download diretto dei geodati</dct:description>
+        <dct:description xml:lang="en">Direct download of geodata</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/GPKG"/>
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/application/geopackage+sqlite3"/>
+        <dct:license rdf:resource="https://opendata.swiss/terms-of-use#terms_open"/>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:issued>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:modified>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+      </dcat:Distribution>
+    </dcat:distribution>
+
+    <!-- WMS distribution -->
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://wms.geo.admin.ch/?SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetCapabilities"/>
+        <dct:title xml:lang="de">WMS-Dienst</dct:title>
+        <dct:title xml:lang="fr">Service WMS</dct:title>
+        <dct:title xml:lang="it">Servizio WMS</dct:title>
+        <dct:title xml:lang="en">WMS service</dct:title>
+        <dct:description xml:lang="de">WMS-BGDI Dienst</dct:description>
+        <dct:description xml:lang="fr">Service WMS-IFDG</dct:description>
+        <dct:description xml:lang="it">Servizio WMS-IFDG</dct:description>
+        <dct:description xml:lang="en">WMS-FSDI service</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/WMS_SRVC"/>
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/application/xml"/>
+        <dct:license rdf:resource="https://opendata.swiss/terms-of-use#terms_open"/>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:issued>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:modified>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+      </dcat:Distribution>
+    </dcat:distribution>
+
+    <!-- WMTS distribution -->
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://wmts.geo.admin.ch/EPSG/3857/1.0.0/WMTSCapabilities.xml"/>
+        <dct:title xml:lang="de">WMTS-Dienst</dct:title>
+        <dct:title xml:lang="fr">Service WMTS</dct:title>
+        <dct:title xml:lang="it">Servizio WMTS</dct:title>
+        <dct:title xml:lang="en">WMTS service</dct:title>
+        <dct:description xml:lang="de">WMTS-BGDI Dienst</dct:description>
+        <dct:description xml:lang="fr">Service WMTS-IFDG</dct:description>
+        <dct:description xml:lang="it">Servizio WMTS-IFDG</dct:description>
+        <dct:description xml:lang="en">WMTS-FSDI service</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/WMTS_SRVC"/>
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/application/xml"/>
+        <dct:license rdf:resource="https://opendata.swiss/terms-of-use#terms_open"/>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:issued>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:modified>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+      </dcat:Distribution>
+    </dcat:distribution>
+
+    <!-- Preview distribution (no downloadURL, HTML format) -->
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://map.geo.admin.ch/?layers=ch.bafu.laerm-bahnlerm_nacht"/>
+        <dct:title xml:lang="de">Vorschau map.geo.admin.ch</dct:title>
+        <dct:title xml:lang="fr">Aperçu map.geo.admin.ch</dct:title>
+        <dct:title xml:lang="it">Anteprima map.geo.admin.ch</dct:title>
+        <dct:title xml:lang="en">Preview map.geo.admin.ch</dct:title>
+        <dct:description xml:lang="de">Vorschau map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="fr">Aperçu map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="it">Anteprima map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="en">Preview map.geo.admin.ch</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML"/>
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html"/>
+        <dct:license rdf:resource="https://opendata.swiss/terms-of-use#terms_open"/>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:issued>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:modified>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+      </dcat:Distribution>
+    </dcat:distribution>
+
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-31T00:00:00</dct:modified>
+
+    <dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/REGI"/>
+    <dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/ENVI"/>
+
+    <dcat:landingPage rdf:resource="http://www.bafu.admin.ch/laerm/"/>
+
+    <dct:conformsTo rdf:resource="https://www.vs.ch/documents/17311/472431/Reserves_forestieres_Catalogue_objets"/>
+
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+
+    <dcat:keyword xml:lang="de">Lärmbekämpfung</dcat:keyword>
+    <dcat:keyword xml:lang="de">Lärmbelastung</dcat:keyword>
+    <dcat:keyword xml:lang="de">Lärmpegel</dcat:keyword>
+    <dcat:keyword xml:lang="de">Lärmimmission</dcat:keyword>
+    <dcat:keyword xml:lang="de">Verkehrslärm</dcat:keyword>
+    <dcat:keyword xml:lang="de">Lärmwirkung</dcat:keyword>
+    <dcat:keyword xml:lang="de">Gesundheit und Sicherheit</dcat:keyword>
+    <dcat:keyword xml:lang="de">e-geo.ch Geoportal</dcat:keyword>
+    <dcat:keyword xml:lang="fr">impact du bruit</dcat:keyword>
+    <dcat:keyword xml:lang="fr">effet du bruit</dcat:keyword>
+    <dcat:keyword xml:lang="fr">diminution du bruit</dcat:keyword>
+    <dcat:keyword xml:lang="fr">niveau sonore</dcat:keyword>
+    <dcat:keyword xml:lang="fr">polluant sonore</dcat:keyword>
+    <dcat:keyword xml:lang="fr">santé et sécurité des personnes</dcat:keyword>
+    <dcat:keyword xml:lang="fr">geoportail e-geo.ch</dcat:keyword>
+    <dcat:keyword xml:lang="fr">bruit routier</dcat:keyword>
+    <dcat:keyword xml:lang="it">livello del rumore</dcat:keyword>
+    <dcat:keyword xml:lang="it">inquinante acustico</dcat:keyword>
+    <dcat:keyword xml:lang="it">rumore del traffico</dcat:keyword>
+    <dcat:keyword xml:lang="it">effetto del rumore</dcat:keyword>
+    <dcat:keyword xml:lang="it">geoportale e-geo.ch</dcat:keyword>
+    <dcat:keyword xml:lang="it">abbattimento del rumore</dcat:keyword>
+    <dcat:keyword xml:lang="it">salute umana e sicurezza</dcat:keyword>
+    <dcat:keyword xml:lang="it">immissione di rumore</dcat:keyword>
+    <dcat:keyword xml:lang="en">noise pollutant</dcat:keyword>
+    <dcat:keyword xml:lang="en">noise level</dcat:keyword>
+    <dcat:keyword xml:lang="en">noise abatement</dcat:keyword>
+    <dcat:keyword xml:lang="en">noise immission</dcat:keyword>
+    <dcat:keyword xml:lang="en">human health and safety</dcat:keyword>
+    <dcat:keyword xml:lang="en">traffic noise</dcat:keyword>
+    <dcat:keyword xml:lang="en">noise effect</dcat:keyword>
+    <dcat:keyword xml:lang="en">e-geo.ch geoportal</dcat:keyword>
+    <dcat:keyword xml:lang="de">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="fr">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="it">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="en">opendata.swiss</dcat:keyword>
+
+    <dct:spatial>Schweiz</dct:spatial>
+
+    <dct:relation>
+      <rdf:Description rdf:about="https://www.geocat.ch/datahub/dataset/93814e81-2466-4690-b54d-c1d958f1c3b8">
+        <rdfs:label xml:lang="de">geocat.ch Permalink</rdfs:label>
+        <rdfs:label xml:lang="fr">geocat.ch permalien</rdfs:label>
+        <rdfs:label xml:lang="it">geocat.ch link permanente</rdfs:label>
+        <rdfs:label xml:lang="en">geocat.ch permalink</rdfs:label>
+      </rdf:Description>
+    </dct:relation>
+
+    <!-- Relation with only one rdfs:label: mapper should fill fr/it/en via fallback -->
+    <dct:relation>
+      <rdf:Description rdf:about="https://example.org/dcat-relation-fallback-test">
+        <rdfs:label xml:lang="de">Nur deutscher Relationstitel</rdfs:label>
+      </rdf:Description>
+    </dct:relation>
+
+  </dcat:Dataset>
+</csw:GetRecordByIdResponse>

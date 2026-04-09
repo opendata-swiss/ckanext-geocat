@@ -50,3 +50,16 @@ def harvest_source(org):
         owner_org=org["id"],
         config=json.dumps({"delete_missing_datasets": True}),
     )
+
+
+@pytest.fixture
+def harvest_source_ech0271(org):
+    """Harvest source for DCAT-AP-CH / eCH-0271 (``geocat-ech0271``) functional tests."""
+    return harvest_factories.HarvestSource(
+        title="Geocat eCH-0271 harvester",
+        name="geocat-ech0271-harvester",
+        url="http://mock-geocat.ch",
+        source_type="geocat-ech0271",
+        owner_org=org["id"],
+        config=json.dumps({"delete_missing_datasets": True}),
+    )

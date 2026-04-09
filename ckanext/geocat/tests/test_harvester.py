@@ -9,6 +9,7 @@ from ckanext.harvest.tests.lib import run_harvest
 
 log = logging.getLogger(__name__)
 
+# result_1.xml / result_2.xml: CHE/ISO19139.che GetRecordById payloads (opendata-swiss).
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 MOCK_URL = "http://mock-geocat.ch"
