@@ -69,19 +69,20 @@ def _next_record_from_results(root, current_start):
     return next_record
 
 
-class GeocatCatalogueServiceWeb(object):
+class GeocatCswClientBase(object):
     """
-    CSW client for the classic ``geocat_harvester`` (ISO19139.che via OWSLib).
+    Shared OWSLib ``CatalogueServiceWeb`` wrapper for CSW listing.
 
-    Used by opendata-swiss production sources that expect CHE outputSchema and
-    ``csw_mapping.GeoMetadataMapping``.
+    Subclasses set ``schema`` for ``get_record_by_id`` output (CHE vs DCAT-AP-CH).
     """
 
     def __init__(self, url):
         self.csw = CatalogueServiceWeb(url)
-        self.schema = CHE_SCHEMA
 
     def get_geocat_id_from_csw(self, cql=None, cql_query=None, cql_search_term=None):
+        """
+        List dataset identifiers via OWSLib ``getrecords2`` (summary records).
+        """
         nextrecord = 0
         record_ids = []
         csw_args = {"maxrecords": 50, "startposition": nextrecord}
@@ -108,9 +109,22 @@ class GeocatCatalogueServiceWeb(object):
                     nextrecord = self.csw.results["nextrecord"]
                 else:
                     nextrecord = None
-                for id in list(self.csw.records.keys()):
-                    record_ids.append(id)
+                for record_id in list(self.csw.records.keys()):
+                    record_ids.append(record_id)
         return record_ids
+
+
+class GeocatCatalogueServiceWeb(GeocatCswClientBase):
+    """
+    CSW client for the classic ``geocat_harvester`` (ISO19139.che via OWSLib).
+
+    Used for sources that expect CHE outputSchema and
+    ``csw_mapping.GeoMetadataMapping``.
+    """
+
+    def __init__(self, url):
+        super().__init__(url)
+        self.schema = CHE_SCHEMA
 
     def get_record_by_id(self, geocat_id):
         self.csw.getrecordbyid(id=[geocat_id], outputschema=self.schema)
@@ -121,7 +135,7 @@ class GeocatCatalogueServiceWeb(object):
             return None
 
 
-class GeocatDcatCatalogueServiceWeb(object):
+class GeocatDcatCatalogueServiceWeb(GeocatCswClientBase):
     """
     CSW client for ``geocat_ech0271_harvester`` (DCAT-AP-CH / eCH-0271).
 
@@ -130,40 +144,8 @@ class GeocatDcatCatalogueServiceWeb(object):
     """
 
     def __init__(self, url):
-        self.csw = CatalogueServiceWeb(url)
+        super().__init__(url)
         self.schema = DCAT_AP_CH_SCHEMA
-
-    def get_geocat_id_from_csw(self, cql=None, cql_query=None, cql_search_term=None):
-        """List identifiers via OWSLib (summary records); same constraints as classic."""
-        nextrecord = 0
-        record_ids = []
-        csw_args = {"maxrecords": 50, "startposition": nextrecord}
-
-        if cql_query and cql_search_term:
-            csw_args["constraints"] = [PropertyIsEqualTo(cql_query, cql_search_term)]
-        elif cql:
-            csw_args["cql"] = cql
-        else:
-            csw_args["constraints"] = [
-                PropertyIsEqualTo(CQL_QUERY_DEFAULT, CQL_SEARCH_TERM_DEFAULT)
-            ]
-
-        while nextrecord is not None:
-            csw_args["startposition"] = nextrecord
-            self.csw.getrecords2(**csw_args)
-            if self.csw.response is None or self.csw.results["matches"] == 0:
-                raise CswNotFoundError(
-                    f"No dataset found for url {self.csw.url} with arguments "
-                    f"{csw_args}"
-                )
-            if self.csw.results["returned"] > 0:
-                if 0 < self.csw.results["nextrecord"] <= self.csw.results["matches"]:
-                    nextrecord = self.csw.results["nextrecord"]
-                else:
-                    nextrecord = None
-                for id in list(self.csw.records.keys()):
-                    record_ids.append(id)
-        return record_ids
 
     def get_record_by_id(self, geocat_id):
         params = {
