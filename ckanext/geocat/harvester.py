@@ -271,7 +271,7 @@ class GeocatHarvester(GeocatHarvesterBase):
         return {
             "name": "geocat_harvester",
             "title": "Geocat harvester",
-            "description": ("Harvests metadata from geocat (CSW, ISO19139.che)"),
+            "description": "Harvests metadata from geocat (CSW, ISO19139.che)",
             "form_config_interface": "Text",
         }
 
