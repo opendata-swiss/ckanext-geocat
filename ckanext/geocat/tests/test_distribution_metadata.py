@@ -369,7 +369,3 @@ class TestGeocatNormedDistributionProtocols(TestGeocatDistributionProtocols):
         assert distribution is not None
         assert distribution.get("url") == distribution.get("download_url")
         assert "INTERLIS" == distribution.get("media_type")
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -23,7 +23,3 @@ class TestXpathUtils(unittest.TestCase):
             path=path_identifier, node=self.root
         )
         assert value == data_identifier
-
-
-if __name__ == "__main__":
-    unittest.main()
