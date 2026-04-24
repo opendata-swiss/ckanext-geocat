@@ -20,6 +20,45 @@ log = logging.getLogger(__name__)
 
 DCAT_AP_CH_SCHEMA = "http://dcat-ap.ch/schema/dcat-ap-ch/2.0"
 
+# DCAT-AP CH (VOCAB-CH-LICENSE) skos:Concept IRI -> opendata.swiss terms-of-use
+DCAT_VOCAB_LICENSE_TO_OGD = {
+    "http://dcat-ap.ch/vocabulary/licenses/terms_open": (
+        "https://opendata.swiss/terms-of-use#terms_open"
+    ),
+    "http://dcat-ap.ch/vocabulary/licenses/terms_by": (
+        "https://opendata.swiss/terms-of-use#terms_by"
+    ),
+    "http://dcat-ap.ch/vocabulary/licenses/terms_ask": (
+        "https://opendata.swiss/terms-of-use#terms_ask"
+    ),
+    "http://dcat-ap.ch/vocabulary/licenses/terms_by_ask": (
+        "https://opendata.swiss/terms-of-use#terms_by_ask"
+    ),
+}
+_OGD_LICENSE_IRIS = frozenset(DCAT_VOCAB_LICENSE_TO_OGD.values())
+LICENSE_CLOSED = "ClosedData"
+
+
+def _unmapped_license_fallback(default_rights: str) -> str:
+    """If harvester config provided ``default_rights``, use it; else *closed* data."""
+    d = (default_rights or "").strip()
+    return d if d else LICENSE_CLOSED
+
+
+def _dct_license_to_ckan(iri: str, default_rights: str) -> str:
+    """
+    Map ``dct:license`` to a known opendata terms IRI. Empty or unrecognised
+    values use ``_unmapped_license_fallback(default_rights)``.
+    """
+    license_string = (iri or "").strip()
+    if license_string in _OGD_LICENSE_IRIS:
+        return license_string
+    mapped = DCAT_VOCAB_LICENSE_TO_OGD.get(license_string)
+    if mapped is not None:
+        return mapped
+    return _unmapped_license_fallback(default_rights)
+
+
 # XML namespaces present in DCAT-AP-CH responses from geocat.ch
 DCAT_NS = {
     "csw": "http://www.opengis.net/cat/csw/2.0.2",
@@ -342,6 +381,17 @@ class DcatMetadataMapping:
                 resources.append(resource)
         return resources
 
+    def _raw_distribution_license(self, dist):
+        """Literal or ``rdf:resource``/``rdf:about`` from ``dct:license``."""
+        elems = dist.xpath("dct:license", namespaces=DCAT_NS)
+        if not elems:
+            return ""
+        e = elems[0]
+        u = _rdf_resource(e)
+        if u:
+            return u
+        return (e.text or "").strip()
+
     def _map_single_distribution(self, dist):
         resource = {}
 
@@ -375,15 +425,12 @@ class DcatMetadataMapping:
         mt_elems = dist.xpath("dcat:mediaType", namespaces=DCAT_NS)
         resource["media_type"] = _rdf_resource(mt_elems[0]) if mt_elems else ""
 
-        # rights / license
-        lic_elems = dist.xpath("dct:license", namespaces=DCAT_NS)
-        if lic_elems:
-            rights = _rdf_resource(lic_elems[0])
-        else:
-            rs_elems = dist.xpath("dct:rights/dct:RightsStatement", namespaces=DCAT_NS)
-            rights = _rdf_resource(rs_elems[0]) if rs_elems else self.default_rights
-        resource["rights"] = rights
-        resource["license"] = rights
+        # dct:license: known DCAT-AP CH or opendata IRI, else
+        # ``default_rights`` when the harvester set it, else closed data.
+        raw_license = (self._raw_distribution_license(dist) or "").strip()
+        use = _dct_license_to_ckan(raw_license, self.default_rights)
+        resource["license"] = use
+        resource["rights"] = use
 
         # dates
         resource["issued"] = _normalize_datetime(self._dist_text(dist, "dct:issued"))

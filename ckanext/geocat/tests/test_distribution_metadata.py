@@ -160,8 +160,8 @@ class TestDcatServiceDistributions(unittest.TestCase):
         self.assertIn("map.geo.admin.ch", html["url"])
 
 
-class TestDcatDistributionDefaultRights(unittest.TestCase):
-    """Test that default_rights is used when no license is present in the distribution."""
+class TestDcatDistributionNoLicenseFallback(unittest.TestCase):
+    """No ``dct:license`` -> harvester ``default_rights`` when set, else ``ClosedData``."""
 
     FIXTURE_NO_LICENSE = """\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -184,13 +184,100 @@ class TestDcatDistributionDefaultRights(unittest.TestCase):
   </dcat:Dataset>
 </csw:GetRecordByIdResponse>
 """
+
     DEFAULT = "https://opendata.swiss/terms-of-use#terms_by"
 
-    def test_default_rights_used_when_no_license(self):
+    def test_no_license_uses_harvester_default_when_set(self):
         mapper = _make_mapper(default_rights=self.DEFAULT)
         dataset = mapper.get_metadata(self.FIXTURE_NO_LICENSE, "no-license-test")
-        self.assertEqual(self.DEFAULT, dataset["resources"][0]["rights"])
-        self.assertEqual(self.DEFAULT, dataset["resources"][0]["license"])
+        r = dataset["resources"][0]
+        self.assertEqual(self.DEFAULT, r["license"])
+        self.assertEqual(self.DEFAULT, r["rights"])
+
+    def test_no_license_is_closed_without_default(self):
+        mapper = _make_mapper(default_rights="")
+        dataset = mapper.get_metadata(self.FIXTURE_NO_LICENSE, "no-license-test")
+        r = dataset["resources"][0]
+        self.assertEqual("ClosedData", r["license"])
+        self.assertEqual("ClosedData", r["rights"])
+
+
+# Uses DCAT-AP CH vocabulary (VOCAB-CH-LICENSE) IRIs from dcat-ap.ch
+FIXTURE_DCAT_VOCAB_LICENSE = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <dcat:Dataset
+      xmlns:dcat="http://www.w3.org/ns/dcat#"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:dct="http://purl.org/dc/terms/"
+      rdf:about="https://example.org/ds-dcat-vocab">
+    <dct:identifier>dcat-vocab-lic</dct:identifier>
+    <dct:title xml:lang="de">Vocab test</dct:title>
+    <dct:issued>2020-01-01T00:00:00</dct:issued>
+    <dct:modified>2020-01-01T00:00:00</dct:modified>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://example.org/data"/>
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_by"/>
+        <dct:description xml:lang="de">Beschreibung</dct:description>
+      </dcat:Distribution>
+    </dcat:distribution>
+  </dcat:Dataset>
+</csw:GetRecordByIdResponse>
+"""
+
+EXPECTED_OGD_HOMEPAGE = "https://opendata.swiss/terms-of-use#terms_by"
+
+
+class TestDcatVocabChLicenseUri(unittest.TestCase):
+    def test_dcat_ap_ch_vocabulary_iri_maps_to_opendata_homepage(self):
+        mapper = _make_mapper()
+        dataset = mapper.get_metadata(FIXTURE_DCAT_VOCAB_LICENSE, "dcat-vocab-lic")
+        res = dataset["resources"][0]
+        self.assertEqual(EXPECTED_OGD_HOMEPAGE, res.get("license"))
+        self.assertEqual(EXPECTED_OGD_HOMEPAGE, res.get("rights"))
+
+
+class TestDcatLicenseUnmappedFallback(unittest.TestCase):
+    """Unmapped ``dct:license`` IRI → default when set, else ``ClosedData``."""
+
+    FIXTURE = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <dcat:Dataset
+      xmlns:dcat="http://www.w3.org/ns/dcat#"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:dct="http://purl.org/dc/terms/"
+      rdf:about="https://example.org/ds-unk">
+    <dct:identifier>unk-license</dct:identifier>
+    <dct:title xml:lang="de">T</dct:title>
+    <dct:issued>2020-01-01T00:00:00</dct:issued>
+    <dct:modified>2020-01-01T00:00:00</dct:modified>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://example.org/data"/>
+        <dct:license rdf:resource="https://example.com/not-a-terms-iri"/>
+      </dcat:Distribution>
+    </dcat:distribution>
+  </dcat:Dataset>
+  </csw:GetRecordByIdResponse>
+"""
+
+    HARVEST_DEFAULT = "https://opendata.swiss/terms-of-use#terms_by"
+
+    def test_unmapped_uses_harvester_default_when_set(self):
+        mapper = _make_mapper(default_rights=self.HARVEST_DEFAULT)
+        d = mapper.get_metadata(self.FIXTURE, "unk-license")
+        res = d["resources"][0]
+        self.assertEqual(self.HARVEST_DEFAULT, res.get("license"))
+        self.assertEqual(self.HARVEST_DEFAULT, res.get("rights"))
+
+    def test_unmapped_is_closed_without_default(self):
+        mapper = _make_mapper(default_rights="")
+        d = mapper.get_metadata(self.FIXTURE, "unk-license")
+        res = d["resources"][0]
+        self.assertEqual("ClosedData", res.get("license"))
+        self.assertEqual("ClosedData", res.get("rights"))
 
 
 # ---------------------------------------------------------------------------
