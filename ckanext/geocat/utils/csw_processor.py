@@ -83,7 +83,7 @@ class GeocatCswClientBase(object):
         """
         List dataset identifiers via OWSLib ``getrecords2`` (summary records).
         """
-        nextrecord = 0
+        nextrecord = 1
         record_ids = []
         csw_args = {"maxrecords": 50, "startposition": nextrecord}
 
