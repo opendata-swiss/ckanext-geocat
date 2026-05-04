@@ -190,8 +190,8 @@ class GeocatDcatCatalogueServiceWeb(GeocatCswClientBase):
         start = 1
         seen_ids = set()
         while True:
-            params["START"] = str(start)
-            log.debug("GetRecords DCAT batch start=%s url=%s", start, base_url)
+            params["STARTPOSITION"] = str(start)
+            log.debug("GetRecords DCAT batch startPosition=%s url=%s", start, base_url)
             resp = requests.get(base_url, params=params, timeout=60)
             resp.raise_for_status()
 
