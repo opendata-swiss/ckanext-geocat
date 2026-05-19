@@ -260,7 +260,9 @@ def _map_geocat_resource_name_to_title(normed_protocol, name):
 def _remove_duplicate_term_in_name(name, term):
     if not name:
         return ""
-    return name.lstrip(term)
+    if name.startswith(term):
+        return name[len(term) :]
+    return name
 
 
 def map_service(geocat_service, issued, modified, description, rights, license):

@@ -585,5 +585,90 @@ class TestCswMappingDatasetMetadata(unittest.TestCase):
         ]
 
 
+class TestLandesschwerenetzDcatMapping(unittest.TestCase):
+    """Smoke-tests for the Landesschwerenetz DCAT-AP-CH fixture."""
+
+    GEOCAT_ID = "95879cd4-e93d-4d4d-af57-4ec6731b9c97"
+    ORG_SLUG = "swisstopo"
+
+    def setUp(self):
+        mapper = _make_mapper(
+            organization_slug=self.ORG_SLUG,
+            valid_identifiers=[f"{self.GEOCAT_ID}@{self.ORG_SLUG}"],
+        )
+        xml = _load_xml("landesschwerenetz-dcat-ap-ch.xml")
+        self.dataset = mapper.get_metadata(xml, self.GEOCAT_ID)
+
+    # --- dataset-level ---
+
+    def test_identifier(self):
+        self.assertEqual(
+            self.dataset["identifier"],
+            f"{self.GEOCAT_ID}@{self.ORG_SLUG}",
+        )
+
+    def test_title_de(self):
+        self.assertEqual(self.dataset["title"]["de"], "Landesschwerenetz")
+
+    def test_title_fr(self):
+        self.assertEqual(self.dataset["title"]["fr"], "Réseau gravimétrique national")
+
+    def test_issued(self):
+        self.assertEqual(self.dataset["issued"], "2015-08-10T00:00:00")
+
+    def test_accrual_periodicity(self):
+        self.assertIn("UNKNOWN", self.dataset["accrual_periodicity"])
+
+    def test_five_resources(self):
+        self.assertEqual(len(self.dataset["resources"]), 5)
+
+    # --- distribution-level ---
+
+    def _resource_by_url(self, fragment):
+        for r in self.dataset["resources"]:
+            if fragment in r.get("url", ""):
+                return r
+        self.fail(f"No resource with url containing '{fragment}'")
+
+    def test_wms_resource_format(self):
+        wms = self._resource_by_url("wms.geo.admin.ch")
+        self.assertIn("WMS_SRVC", wms.get("format", ""))
+
+    def test_rest_resource_format(self):
+        rest = self._resource_by_url("api3.geo.admin.ch")
+        self.assertIn("REST", rest.get("format", ""))
+
+    def test_download_resource_has_download_url(self):
+        dl = self._resource_by_url("data.geo.admin.ch/browser")
+        self.assertTrue(dl.get("download_url"))
+
+    def test_map_preview_resource_url(self):
+        preview = self._resource_by_url("map.geo.admin.ch")
+        self.assertIn("map.geo.admin.ch", preview["url"])
+
+    def test_map_preview_title_prefixed_all_langs(self):
+        # DCAT path: missing language titles filled from description, then prefixed.
+        preview = self._resource_by_url("map.geo.admin.ch")
+        title = preview.get("title", {})
+        # All four CKAN langs must start with the prefix
+        for lang in ["de", "fr", "it", "en"]:
+            self.assertTrue(
+                title.get(lang, "").startswith("Map (Preview)"),
+                f"title[{lang}] = {title.get(lang)!r} does not start with 'Map (Preview)'",
+            )
+        # DE: sourced from dct:title
+        self.assertEqual("Map (Preview) Vorschau map.geo.admin.ch", title["de"])
+        # FR: sourced from dct:description (no dct:title in fr)
+        self.assertEqual("Map (Preview) Aperçu map.geo.admin.ch", title["fr"])
+        # IT: sourced from dct:description
+        self.assertEqual("Map (Preview) Previsione map.geo.admin.ch", title["it"])
+        # EN: "Preview" prefix stripped before adding "Map (Preview)"
+        self.assertEqual("Map (Preview) map.geo.admin.ch", title["en"])
+
+    def test_license_mapped(self):
+        for r in self.dataset["resources"]:
+            self.assertIn("terms_open", r.get("rights", ""))
+
+
 if __name__ == "__main__":
     unittest.main()

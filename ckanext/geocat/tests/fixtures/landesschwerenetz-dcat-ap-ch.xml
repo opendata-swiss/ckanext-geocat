@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:dct="http://purl.org/dc/terms/" xmlns:dcat="http://www.w3.org/ns/dcat#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:vcard="http://www.w3.org/2006/vcard/ns#" xmlns:prov="http://www.w3.org/ns/prov#" xmlns:org="http://www.w3.org/ns/org#" xmlns:pav="http://purl.org/pav/" xmlns:adms="http://www.w3.org/ns/adms#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:dcatapch="http://dcat-ap.ch/ns/">
+  <dcat:Dataset rdf:about="https://www.geocat.ch/geonetwork/srv/api/records/95879cd4-e93d-4d4d-af57-4ec6731b9c97/formatters/dcat-ap-ch">
+    <dct:identifier>95879cd4-e93d-4d4d-af57-4ec6731b9c97</dct:identifier>
+    <dct:title xml:lang="de">Landesschwerenetz</dct:title>
+    <dct:title xml:lang="fr">Réseau gravimétrique national</dct:title>
+    <dct:title xml:lang="it">Rete gravimetrica nazionale</dct:title>
+    <dct:title xml:lang="en">National Gravity Network</dct:title>
+    <dct:title xml:lang="rm">Rait gravimetrica naziunala</dct:title>
+    <dct:description xml:lang="de">Aktuell verwendete Basisstationen des Landesschwerenetzes. Diese Stationen werden regelmässig neu vermessen und dienen als Referenzpunkte für gravimetrische Projekte.Das Rückgrat des Netzes bilden die absoluten Schweremessungen. Diese werden verdichtet durch relative Schweremessungen auf Fixpunkten der Landesvermessung.</dct:description>
+    <dct:description xml:lang="fr">Stations actuelles du réseau gravimétrique national. Ces stations sont observées régulièrement et servent comme points de référence pour des projets gravimétriques.La base de ce réseau est formée par les stations absolues qui sont densifiées par des mesures relatives sur des points fixes de la mensuration nationale.</dct:description>
+    <dct:description xml:lang="it">Stazioni di base della rete gravimetrica nazionale attualmente utilizzate. Queste stazioni vengono regolarmente sottoposte a nuove misurazioni e fungono da punti di riferimento per i progetti gravimetrici. La base della rete è costituita dalle misurazioni gravimetriche assolute. Queste vengono intensificate attraverso misurazioni gravimetriche relative eseguite su punti fissi della misurazione nazionale.</dct:description>
+    <dct:description xml:lang="en">Current base stations of the national gravity network. These stations are observed regularly and serve as reference Points for gravimetric projects.The backbone of this network is formed by absolute gravity stations. They are densified by relative measurements on Benchmarks of national Survey.</dct:description>
+    <dct:description xml:lang="rm">Staziuns da basa utilisadas actualmain da la rait gravimetrica naziunala. Las coordinatas da questas staziuns vegnan controlladas regularmain da nov e servan sco puncts da referenza per projects gravimetrics. La basa da la rait èn las staziuns absolutas. Quellas vegnan densifitgadas tras mesiraziuns relativas sur puncts fixs da la mesiraziun naziunala.</dct:description>
+    <dct:publisher>
+      <foaf:Agent rdf:about="https://www.cadastre.ch/">
+        <foaf:name xml:lang="de">Bundesamt für Landestopografie swisstopo, Vermessung</foaf:name>
+        <foaf:name xml:lang="en">Federal office of topography swisstopo, survey</foaf:name>
+        <foaf:name xml:lang="fr">Office fédéral de topographie, mensuration</foaf:name>
+        <foaf:name xml:lang="it">Ufficio federale di topografia swisstopo, misurazione</foaf:name>
+        <foaf:name xml:lang="rm">Bundesamt für Landestopografie swisstopo, Vermessung</foaf:name>
+      </foaf:Agent>
+    </dct:publisher>
+    <dcat:contactPoint>
+      <vcard:Organization>
+        <vcard:fn>Bundesamt für Landestopografie swisstopo, Vermessung</vcard:fn>
+        <vcard:hasEmail rdf:resource="mailto:vermessung@swisstopo.ch" />
+      </vcard:Organization>
+    </dcat:contactPoint>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://map.geo.admin.ch/?layers=ch.swisstopo.landesschwerenetz" />
+        <dct:title xml:lang="de">Vorschau map.geo.admin.ch</dct:title>
+        <dct:description xml:lang="de">Vorschau map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="fr">Aperçu map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="it">Previsione map.geo.admin.ch</dct:description>
+        <dct:description xml:lang="en">Preview map.geo.admin.ch</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML" />
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html" />
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        <dct:rights>
+          <dct:RightsStatement rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        </dct:rights>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-08-10T00:00:00+00:00</dct:issued>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ROH" />
+      </dcat:Distribution>
+    </dcat:distribution>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://wms.geo.admin.ch/?SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetCapabilities&amp;lang=de" />
+        <dct:title xml:lang="de">ch.swisstopo.landesschwerenetz</dct:title>
+        <dct:description xml:lang="de">WMS-BGDI Dienst, Layer "Schweregrundnetz"</dct:description>
+        <dct:description xml:lang="fr">Service WMS-IFDG, couche "Réseau de base gravimétrique"</dct:description>
+        <dct:description xml:lang="it">Servizio WMS-IFDG, strato "Rete gravimetrica di base"</dct:description>
+        <dct:description xml:lang="en">WMS-FSDI service, layer "Gravimetric base network"</dct:description>
+        <dct:description xml:lang="rm">WMS-BGDI Dienst, Layer "Schweregrundnetz"</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/WMS_SRVC" />
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        <dct:rights>
+          <dct:RightsStatement rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        </dct:rights>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-08-10T00:00:00+00:00</dct:issued>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ROH" />
+      </dcat:Distribution>
+    </dcat:distribution>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://www.swisstopo.admin.ch/de/landesschwerenetz" />
+        <dct:description xml:lang="de">Link zu Zusatzinformationen</dct:description>
+        <dct:description xml:lang="fr">Lien vers des informations additionelles</dct:description>
+        <dct:description xml:lang="en">Link to additional information</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML" />
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html" />
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        <dct:rights>
+          <dct:RightsStatement rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        </dct:rights>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-08-10T00:00:00+00:00</dct:issued>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ROH" />
+      </dcat:Distribution>
+    </dcat:distribution>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://api3.geo.admin.ch/rest/services/api/MapServer/ch.swisstopo.landesschwerenetz" />
+        <dct:title xml:lang="de">RESTful API von geo.admin.ch</dct:title>
+        <dct:description xml:lang="de">RESTful API von geo.admin.ch</dct:description>
+        <dct:description xml:lang="fr">RESTful API de geo.admin.ch</dct:description>
+        <dct:description xml:lang="it">RESTful API da geo.admin.ch</dct:description>
+        <dct:description xml:lang="en">RESTful API from geo.admin.ch</dct:description>
+        <dct:description xml:lang="rm">RESTful API dad geo.admin.ch</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/REST" />
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        <dct:rights>
+          <dct:RightsStatement rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        </dct:rights>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-08-10T00:00:00+00:00</dct:issued>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ROH" />
+      </dcat:Distribution>
+    </dcat:distribution>
+    <dcat:distribution>
+      <dcat:Distribution>
+        <dcat:accessURL rdf:resource="https://data.geo.admin.ch/browser/index.html#/collections/ch.swisstopo.landesschwerenetz/items/landesschwerenetz" />
+        <dcat:downloadURL rdf:resource="https://data.geo.admin.ch/browser/index.html#/collections/ch.swisstopo.landesschwerenetz/items/landesschwerenetz" />
+        <dct:title xml:lang="de">Download von data/geo.admin.ch</dct:title>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML" />
+        <dcat:mediaType rdf:resource="http://www.iana.org/assignments/media-types/text/html" />
+        <dct:license rdf:resource="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        <dct:rights>
+          <dct:RightsStatement rdf:about="http://dcat-ap.ch/vocabulary/licenses/terms_open" />
+        </dct:rights>
+        <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-08-10T00:00:00+00:00</dct:issued>
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+        <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ROH" />
+      </dcat:Distribution>
+    </dcat:distribution>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-08-10T00:00:00+00:00</dct:issued>
+    <dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/REGI" />
+    <dcat:landingPage rdf:resource="https://www.swisstopo.admin.ch/de/landesschwerenetz" />
+    <dct:relation>
+      <rdf:Description rdf:about="https://www.geocat.ch/datahub/dataset/95879cd4-e93d-4d4d-af57-4ec6731b9c97">
+        <rdfs:label xml:lang="de">geocat.ch Permalink</rdfs:label>
+        <rdfs:label xml:lang="fr">geocat.ch permalien</rdfs:label>
+        <rdfs:label xml:lang="it">geocat.ch link permanente</rdfs:label>
+        <rdfs:label xml:lang="en">geocat.ch permalink</rdfs:label>
+      </rdf:Description>
+    </dct:relation>
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/DEU" />
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/FRA" />
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA" />
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG" />
+    <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ROH" />
+    <dcat:keyword xml:lang="de">Gravimetrie</dcat:keyword>
+    <dcat:keyword xml:lang="fr">gravimétrie</dcat:keyword>
+    <dcat:keyword xml:lang="it">gravimetria</dcat:keyword>
+    <dcat:keyword xml:lang="en">gravimetry</dcat:keyword>
+    <dcat:keyword xml:lang="de">Geobasisdaten</dcat:keyword>
+    <dcat:keyword xml:lang="fr">géodonnées de base</dcat:keyword>
+    <dcat:keyword xml:lang="it">geodati di base</dcat:keyword>
+    <dcat:keyword xml:lang="en">official geodata</dcat:keyword>
+    <dcat:keyword xml:lang="de">Aufbewahrungs- und Archivierungsplanung AAP - Bund</dcat:keyword>
+    <dcat:keyword xml:lang="fr">Planification de la conservation et de l'archivage AAP - Conféderation</dcat:keyword>
+    <dcat:keyword xml:lang="it">Pianificazione della conservazione e dell’archiviazione AAP - Confederazione</dcat:keyword>
+    <dcat:keyword xml:lang="en">Conservation and archiving planning AAP - Confederation</dcat:keyword>
+    <dcat:keyword xml:lang="de">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="fr">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="it">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="en">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="rm">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="de">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="fr">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="it">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="en">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="rm">opendata.swiss</dcat:keyword>
+    <dcat:keyword xml:lang="de">BGDI Bundesgeodaten-Infrastruktur</dcat:keyword>
+    <dcat:keyword xml:lang="fr">IFDG l’Infrastructure Fédérale de données géographiques</dcat:keyword>
+    <dcat:keyword xml:lang="it">IFDG Infrastruttura federale dei dati geografici</dcat:keyword>
+    <dcat:keyword xml:lang="en">FSDI Federal Spatial Data Infrastructure</dcat:keyword>
+    <dct:spatial>Schweiz (mit grenznahem Ausland)</dct:spatial>
+    <dct:accrualPeriodicity rdf:resource="http://publications.europa.eu/resource/authority/frequency/UNKNOWN" />
+    <foaf:page>
+      <foaf:Document rdf:about="https://www.swisstopo.admin.ch/de/landesschwerenetz" />
+    </foaf:page>
+  </dcat:Dataset>
+</rdf:RDF>
+

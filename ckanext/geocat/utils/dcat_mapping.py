@@ -12,8 +12,15 @@ from lxml import etree
 
 from ckanext.geocat.utils.mapping_utils import MetadataFormatError
 from ckanext.geocat.utils.ogdch_map_utils import (
+    MAP_PROTOCOL_PREFIX,
+    _remove_duplicate_term_in_name,
     get_legal_basis_link,
     map_geocat_to_ogdch_identifier,
+)
+
+# EU file-type URI for map-preview distributions
+_MAP_PREVIEW_FORMAT_URI = (
+    "http://publications.europa.eu/resource/authority/file-type/MAP_PRVW"
 )
 
 log = logging.getLogger(__name__)
@@ -136,6 +143,60 @@ def _normalize_datetime(value):
     if not value:
         return ""
     return value.split("+")[0].split("Z")[0].strip()
+
+
+def _is_map_preview(title_dict, desc_dict, format_uri):
+    """
+    Detect a map-preview distribution in the DCAT-AP-CH path.
+
+    Signals (at least one must match):
+    - dct:format is the EU MAP_PRVW file-type URI
+    - DE title or description starts with "Vorschau" (German for preview)
+    - EN description starts with "Preview" (case-insensitive)
+    """
+    if format_uri == _MAP_PREVIEW_FORMAT_URI:
+        return True
+    de_title = title_dict.get("de", "")
+    de_desc = desc_dict.get("de", "")
+    en_desc = desc_dict.get("en", "")
+    if de_title.startswith("Vorschau") or de_desc.startswith("Vorschau"):
+        return True
+    if en_desc.lower().startswith("preview"):
+        return True
+    return False
+
+
+def _apply_map_preview_title(title_dict, desc_dict, format_uri):
+    """
+    For map-preview distributions arriving via the DCAT-AP-CH path:
+
+    1. Fill any language that has no title by using the description for that
+       language (the DCAT XML often only carries a DE title while supplying
+       descriptions in all four languages).
+    2. Prefix every language with "Map (Preview)", stripping a leading
+       "Preview" from the EN value to avoid "Map (Preview) Preview …".
+
+    For all other distributions the title_dict is returned unchanged.
+    """
+    if not _is_map_preview(title_dict, desc_dict, format_uri):
+        return title_dict
+
+    # Step 1 – fill missing languages from description
+    filled = {
+        lang: title_dict.get(lang) or desc_dict.get(lang, "") for lang in CKAN_LANGS
+    }
+
+    # Step 2 – prepend "Map (Preview)" prefix
+    return {
+        "de": (MAP_PROTOCOL_PREFIX + " " + filled.get("de", "")).strip(),
+        "fr": (MAP_PROTOCOL_PREFIX + " " + filled.get("fr", "")).strip(),
+        "it": (MAP_PROTOCOL_PREFIX + " " + filled.get("it", "")).strip(),
+        "en": (
+            MAP_PROTOCOL_PREFIX
+            + " "
+            + _remove_duplicate_term_in_name(filled.get("en", ""), "Preview").strip()
+        ).strip(),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -413,13 +474,20 @@ class DcatMetadataMapping:
         )
 
         # multilingual description
-        resource["description"] = _filter_ckan_langs(
-            _xml_lang_dict(dist, "dct:description")
-        )
+        desc_dict = _filter_ckan_langs(_xml_lang_dict(dist, "dct:description"))
+        resource["description"] = desc_dict
 
-        # format (EU file-type URI, passed through as-is)
+        # format (EU file-type URI) — read early so _apply_map_preview_title can use it
         fmt_elems = dist.xpath("dct:format", namespaces=DCAT_NS)
         resource["format"] = _rdf_resource(fmt_elems[0]) if fmt_elems else ""
+
+        # Map-preview distributions: fill missing language titles from descriptions,
+        # then prefix all titles with "Map (Preview)".
+        resource["title"] = _apply_map_preview_title(
+            resource["title"], desc_dict, resource["format"]
+        )
+
+        # format already set above
 
         # media type (IANA URI, passed through as-is)
         mt_elems = dist.xpath("dcat:mediaType", namespaces=DCAT_NS)
